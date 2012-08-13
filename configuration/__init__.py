@@ -1,0 +1,1 @@
+"""Configuration information for the site"""

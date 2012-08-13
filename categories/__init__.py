@@ -1,0 +1,1 @@
+"""Defines user groups, departments, projects, clients"""

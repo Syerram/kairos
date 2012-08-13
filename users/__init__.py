@@ -1,0 +1,1 @@
+"""Defines user related configuration such as user projects, preferences, etc"""
