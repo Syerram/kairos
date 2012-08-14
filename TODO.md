@@ -23,6 +23,10 @@
 10. Admin Page - Add/Remove Project
     + Project Lead Setup for Approval
     + Add/Remove Activity
+    
+11. Rally Integration
+    + Text box search for Rally Story
+    + DB Table to store rally attributes
 
 # UI
 1. Use of Picto Fonts

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="/static/css/common.css" type="text/css" media="screen">
+<meta charset="ISO-8859-1">
+<title>Kairos | Select Projects</title>
+</head>
+<body>
+     <div class="proj-sub-home">
+        <span class="welcome-user">Welcome {{request.user.first_name}}, {{request.user.last_name}}</span>
+        <span class="welcome-question">Please select projects to subscribe..</span>
+        {% for project in projects %}
+            <div class="circle"><a href="#"><span>{{project.name}}</span></a></div>            
+        {% endfor %}
+        <div id="section" style="clear:both;display:inline-block;margin-top:10px;" class="section">
+            <input type="submit" style="float:right;margin:6px 10px 0 0;width:75px;" class="blue-button" value="Done!"/>
+            <input type="submit" style="float:right;margin:6px 10px 0 0;width:75px;" class="grey-button" value="Logout"/>
+        </div>
+    </div>
+</body>
+</html>

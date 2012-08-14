@@ -6,7 +6,7 @@ from django.contrib.comments.models import Comment
 from django.utils.translation import ugettext_lazy as _
 
 from kairos import util
-
+from common.models import DropdownModel
 
 class TimesheetManager(models.Manager):
     
@@ -49,6 +49,11 @@ class Timesheet(models.Model):
         return self.day_1_hours + self.day_2_hours + self.day_3_hours + self.day_4_hours + self.day_5_hours + self.day_6_hours + self.day_7_hours
     
     total_hours = property(__total_hours)
+    
+    def __available_statuses(self):
+        return DropdownModel.objects.get(category='TS')
+    
+    available_statuses = property(__available_statuses)
         
 
 class TimesheetNote(models.Model):
@@ -65,3 +70,8 @@ class TimesheetNote(models.Model):
     day_6_note = models.CharField(max_length=1000, null=True, blank=True)
     day_7_note = models.CharField(max_length=1000, null=True, blank=True)
 
+class TimesheetHistory(models.Model):
+    """Represents different statuses for timesheet"""
+    timesheet = models.ForeignKey(Timesheet)
+    timesheet_status = models.ForeignKey(DropdownModel)
+    last_updated = models.DateTimeField(auto_now=True)   

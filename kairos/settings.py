@@ -160,6 +160,7 @@ INSTALLED_APPS = (
     'south',
     
     #kairos,
+    'common',
     'configuration',
     'categories',
     'users',
@@ -205,6 +206,8 @@ HAYSTACK_CONNECTIONS = {
 }
 
 LOGIN_URL = '/login/'
+
+AUTH_PROFILE_MODULE = 'configuration.UserProfile'
 
 #MESSAGE_STORAGE = 'main.util.ExternalMessageRequestStorage'
 

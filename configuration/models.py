@@ -8,13 +8,13 @@ class UserProfile(models.Model):
     '''
         user profile
     '''
-    class Meta:
-        db_table = 'user_profile'        
-
     user = models.ForeignKey(User, unique=True)
     projects = models.ManyToManyField(Project, verbose_name=_('user_projects'), related_name="user_projects", through='UserProject')
+    configured = models.BooleanField(verbose_name=_('configured'), default=False)
 
 class UserProject(models.Model):
+    """Stores projects for each user"""
+    
     user_profile = models.ForeignKey(UserProfile)
     project = models.ForeignKey(Project)
     last_updated = models.DateTimeField(auto_now=True)    

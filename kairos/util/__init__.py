@@ -2,6 +2,9 @@
 from django.contrib.messages.storage.session import SessionStorage
 from django.conf import settings
 from datetime import date, datetime, timedelta, time as time_obj
+from django.http import HttpRequest
+from django.shortcuts import redirect, render_to_response
+from django.template.context import RequestContext
 
 
 class ExternalMessageRequestStorage(SessionStorage):
@@ -30,5 +33,88 @@ def determine_period(the_date=date.today()):
     return (start_week, end_week,)
     
     
+def enum(*sequential, **named):
+    '''
+        creates a enum for the passed in list of values.
+        The enum created is list of tuples with name as attribute and index as its value.
+        Also adds 'values' attribute having tuple of value and index position
+    '''
+    enums = dict(zip(sequential, range(len(sequential))), **named)
+    enums['values'] = zip(range(len(sequential)), sequential)
+    return type('Enum', (), enums)
+
+
+def check_for_request(*args):
+    '''
+    ensures the request exists in the parameter list
+    '''
+    request = None
+    for arg in args:
+        if isinstance(arg, HttpRequest):
+            request = arg
+            break
+    assert request is not None
+    return request
+
+def render_html(html, data, request):
+    '''
+    helper function to render the response with given data and request.
+    wraps the request in RequestContext
+    '''
+    if data is None:
+        data = {}
+    return render_to_response(html, data, context_instance=RequestContext(request))
+
+def render_to_html(html, re_direct=False):
+    '''
+    decorator function for view handlers that renders the given html.
+    removes the need for the redundant usage of returning responses, preparing requests etc
+    usage: 
+    @render_to_html('target.html')
+    def target_handler(request):
+        #code..
+        return {'context_data': data}
+    '''
+    def render_decorator(func):
+        def wrapper(*args, **kwargs):
+            if re_direct:
+                return redirect(html)
+            else:
+                return render_html(html, func(*args, **kwargs), check_for_request(*args))
+
+def render_to_html_dict(html):
+    '''
+    decorator function for the view handlers that renders the html from the given dictionary.
+    it also supports redirection by rendering to view.
+    usage:
+    @render_to_html_dict({'view_1':'view_1.html', 'view_2':'view_2.html'}) 
+    def view_handler(request):
+        #code
+        if view_1_data:
+            return 'view_1', view_1_data
+        elif view_2_data:
+            reutrn 'view_2', view_2_data
     
-    
+    usage: for redirect
+    @render_to_html_dict({'view_1':{'url':'/url/to/view', redirect=True}})
+    '''
+    def render_decorator(func):
+        def wrapper(*args, **kwargs):
+            request = check_for_request(*args)
+            html_key, data = func(*args, **kwargs)
+            assert html_key in html
+            
+            view = html[html_key]
+            is_redirect = False
+            
+            if type(view) == type(dict()):
+                is_redirect = view['redirect']
+                view = view['url']
+                
+            if is_redirect:
+                return redirect(view)
+            else:
+                return render_html(view, data, request)
+            
+        return wrapper
+    return render_decorator    
