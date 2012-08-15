@@ -72,4 +72,7 @@ class ProjectActivity(models.Model):
     project = models.ForeignKey(Project, related_name="project", verbose_name=_('project'))
     activity = models.ForeignKey(Activity, related_name="activity")
 
+    def __unicode__(self):
+        return 'Project: ' + self.project.name + ", Activity: " + self.activity.name
+
 admin.site.register(ProjectActivity)

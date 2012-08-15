@@ -21,9 +21,21 @@
 			"height" : 16
 		}, 15);
 	}
-
-	$(document).ready(function() {
-		$('#menu li.drop').hoverIntent(makeTall, makeShort);
+	
+	$(document).ready(function() {		
+// 		$('#menu li.drop').hoverIntent(makeTall, makeShort);
+	    
+	    $('.reset').click(function(e) {
+	    	e.preventDefault();
+	    	$('#time-table .hour-input').val('');
+	    });
+	    
+	    $('.project-dropdown').change(function() {
+	    	$.get('/activities/'+ $(this).val(), function(data) {
+	    		  $('#activity-dropdown').html(data);
+	    	});
+	    });
+	    
 	});
 </script>
 </head>
@@ -45,8 +57,8 @@
 			<div class="week-spanner" style="float: right; position: relative;">
 				<!-- 		       <a href="#" class="grey-button week-backward"><i class="icon-chevron-left"></i></a> -->
 				<span class="week-display"
-					style="background-color: white; height: 18px">08.Aug 2011 -
-					14.Aug 2011</span>
+					style="background-color: white; height: 18px">{{start_week|date:"d.NY"}} -
+					{{end_week|date:"d.NY"}}</span>
 				<!-- 		       <a href="#" class="grey-button week-forward"><i class="icon-chevron-right"></i></a> -->
 			</div>
 		</div>
@@ -70,32 +82,30 @@
 					</thead>
 					<tbody>
 						<tr>
-							<td><div id="project-dropdown">
-									<select name="select" id="dropdown-select">
+							<td>
+							    <div id="project-dropdown">
+									<select name="select" class="project-dropdown" id="dropdown-select">
 										<option class="dropdown-option">Choose Project</option>
-										<option value="google" class="dropdown-option">Beacon</option>
-										<option value="facebook" class="dropdown-option">Burst</option>
-										<option value="twitter" class="dropdown-option">RPT</option>
+										{% for project in projects.all %}
+										      <option value="{{project.id}}" class="dropdown-option">{{project.name}}</option>  
+										{% endfor %}
 									</select>
 								</div>
 							</td>
 							<td>
-								<div id="activity-dropdown">
-									<select name="select" id="dropdown-select">
-										<option class="dropdown-option">Choose Activity</option>
-										<option value="google" class="dropdown-option">Programming</option>
-										<option value="facebook" class="dropdown-option">Design</option>
-										<option value="twitter" class="dropdown-option">Work</option>
-									</select>
-								</div>
-							</td>
-							<td><input type="text" placeholder="0.00" /></td>
-							<td><input type="text" placeholder="0.00" /></td>
-							<td><input type="text" placeholder="0.00" /></td>
-							<td><input type="text" placeholder="0.00" /></td>
-							<td><input type="text" placeholder="0.00" /></td>
-							<td><input type="text" placeholder="0.00" /></td>
-							<td><input type="text" placeholder="0.00" /></td>
+							     <div id="activity-dropdown">
+                                    <select name="select" class="activity-dropdown" id="dropdown-select">
+                                        <option class="dropdown-option">Choose Activity</option>                                        
+                                    </select>
+                                </div>
+                            </td>
+							<td><input class="hour-input" type="text" placeholder="0.00" /></td>
+							<td><input class="hour-input" type="text" placeholder="0.00" /></td>
+							<td><input class="hour-input" type="text" placeholder="0.00" /></td>
+							<td><input class="hour-input" type="text" placeholder="0.00" /></td>
+							<td><input class="hour-input" type="text" placeholder="0.00" /></td>
+							<td><input class="hour-input" type="text" placeholder="0.00" /></td>
+							<td><input class="hour-input" type="text" placeholder="0.00" /></td>
 						</tr>										    
 					</tbody>
 				</table>
@@ -103,12 +113,13 @@
 		</div>
 		<div class="span12 papier section">
 		    <input type="submit" class="yellow-button"
-                style="float: left; margin-left: 10px;" value="Add+" />
+                style="float: left; margin-left: 10px;padding-right:25px;padding-left:25px;" value="Add+" />
 			<input type="submit" class="blue-button"
-				style="float: right; margin-right: -5px;" value="Submit" /> <input
+				style="float: right; margin-right: -5px;padding-right:20px;padding-left:20px;" value="Submit" /> 
+			<input
 				type="submit" class="grey-button"
-				style="float: right; margin-right: 10px;" value="Save" /> <a
-				href="#" class="reset">Reset</a>
+				style="float: right; margin-right: 10px;padding-right:25px;padding-left:25px;" value="Save" /> 
+			<a href="#" class="reset">Reset</a>
 		</div>
 	</div>
 

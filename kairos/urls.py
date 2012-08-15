@@ -3,7 +3,9 @@ import traceback
 from django.http import Http404
 from django.views.generic.simple import direct_to_template
 from django.contrib import admin
-from categories.views import user_configure_check
+from configuration.views import user_configure
+from tracker.views import current_timesheet
+from categories.views import activities
 
 # Uncomment the next two lines to enable the admin:
 # from django.contrib import admin
@@ -12,8 +14,11 @@ from categories.views import user_configure_check
 urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
     (r'^login/$', 'django.contrib.auth.views.login', {'template_name': 'auth/login.html'}),
-    url(r'^home/$', user_configure_check, name='home'),
-    (r'^timesheet/$', 'kairos.urls.to_template', {'page_name': 'timetracker/timesheet'}),
+    url(r'^home/$', user_configure, name='home'),
+    url(r'^u/conf/$', user_configure, name='user_projects_configure'),
+    url(r'^timesheet/$', current_timesheet, name='timesheet'),
+    
+    url(r'^activities/(?P<project_id>\d+)/$', activities, name="activities"),
 )
 
 

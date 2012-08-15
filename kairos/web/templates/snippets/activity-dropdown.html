@@ -1,0 +1,6 @@
+<select name="select" id="dropdown-select">
+	<option class="dropdown-option">Choose Activity</option> 
+	{% for activity in activities.all %}
+	   <option value="{{activity.id}}" class="dropdown-option">{{activity.name}}</option>
+	{% endfor %}
+</select>

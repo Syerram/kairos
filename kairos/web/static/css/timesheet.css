@@ -2,7 +2,8 @@
 
 body {
 	margin: 0;
-	background-color: whiteSmoke;
+	background: #EAEBEC url(http://dialog.gs/static/images/bg.png) repeat left top;
+	color: #2C2C2C;font-family: 'Helvetica Neue', helvetica, sans-serif;
 }
 
 .header {
@@ -166,7 +167,7 @@ body {
 .timesheet-header {
 	display: block;	
 	padding: 5px 29px 5px 10px;
-	box-shadow: 0 1px 2px rgba(0, 0, 0, .3);
+	box-shadow: 0 1px 1px rgba(0, 0, 0, .3);
 	height: 25px;
 	z-index: 999;
 	background-color: #DDF0F7;
@@ -341,8 +342,9 @@ body {
 	width: 35px;
 	height: 20px;
 	font-family: Arial, sans-serif;
-    font-size: 10px;
+    font-size: 12px;
     font-weight: bold;
+    text-align: right;
 }
 
 .papier {
@@ -382,7 +384,7 @@ body {
 	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 	-webkit-appearance: button;
 	-webkit-user-select: none;
-	font-size: 11px;
+	font-size: 12px;
 	font-weight: bold;
 	width:150px;
 	overflow: visible;

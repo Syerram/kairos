@@ -1,11 +1,15 @@
 # Functionality
-1. User First Sign in - Signup Projects
-    + DB field 1st Signin in UserProfile
+1. ~~User First Sign in - Signup Projects~~
+    + ~~DB field 1st Signin in UserProfile~~
 2. Draft DB Field for Timesheet
+3. ~~Project/Activities fill up~~
+    + Fill with user projects
+    + Fill activities based on project selection
 3. Timesheet Status Table - Can have multiple statuses [history like]
     + Status
     + Status Comment
     + Last Updated
+4. Update admin projects to show correct name
 4. Save/Submit Timesheet 
     + OnSubmit signal for Email
 5. Toggle Buttons - Approvals, Mine

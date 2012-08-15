@@ -247,6 +247,7 @@ home page
 	display: block;
     margin: 250px auto;
     max-width: 500px;
+    min-height: 225px;
     width: 550px;
     height: auto;
     background: #fff;
@@ -303,26 +304,28 @@ home page
     background: #fff;
     box-shadow: inset 1px 1px 10px 1px #000;
     -webkit-box-shadow: inset 1px 1px 10px 1px #000;
-    -moz-box-shadow: inset 1px 1px 10px 1px #000;
+    -moz-box-shadow: inset 1px 1px 10px 1px #000;    
 }
 
 .selected_circle {
     display: block;
-    background: #d0ffb6 !important;
+    background: #DDF0F7 !important;
 }
 
-.circle a {
+.circle span, .circle a {
+	display: block;
+    margin: 45px 5px;
     text-decoration: none;
     color: #6d6d6d;
 }
 
-.circle:hover a {
+.circle:hover span {
     color: black;
+    cursor: pointer;
 }
 
-.circle a span {
-    display: block;
-    margin: 45px 5px;
+.selected_circle span{
+    color: black !important;
 }
 
 

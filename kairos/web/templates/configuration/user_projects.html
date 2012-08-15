@@ -1,21 +1,70 @@
 <!DOCTYPE html>
 <html>
 <head>
-<link rel="stylesheet" href="/static/css/common.css" type="text/css" media="screen">
+<link rel="stylesheet" href="/static/css/common.css" type="text/css"
+	media="screen">
+<script type="text/javascript"
+	src="http://code.jquery.com/jquery-latest.js"></script>
+<script src="http://cdn.jquerytools.org/1.2.7/full/jquery.tools.min.js"></script>
 <meta charset="ISO-8859-1">
 <title>Kairos | Select Projects</title>
+<script type="text/javascript">
+	    $(document).ready(
+	            function() {                
+	                $('.circle').toggle(function() {
+	                	   $(this).addClass('selected_circle');
+	                    },
+	                    function() {
+	                    	  $(this).removeClass('selected_circle');
+	                    }
+	                );
+	                
+	                $('#done').click(function(e) {
+	                	$(this).attr("disabled", true);  
+	                	var project_ids= '';
+	                	$('.selected_circle').each(function(idx, item){
+	                		project_ids += $(item).data('project-id') + ',';
+	                	});
+	                	project_ids=project_ids.slice(0, -1);
+	                	console.info(project_ids);
+	                	$('#id_projects').val(project_ids);
+	                	$(this).attr("disabled", false);  
+	                	return true;
+	                });
+	                
+	                $('#reset').click(function() {
+	                	$('.circle').removeClass('selected_circle');
+	                });
+	       });
+    
+    </script>
 </head>
 <body>
-     <div class="proj-sub-home">
-        <span class="welcome-user">Welcome {{request.user.first_name}}, {{request.user.last_name}}</span>
-        <span class="welcome-question">Please select projects to subscribe..</span>
-        {% for project in projects %}
-            <div class="circle"><a href="#"><span>{{project.name}}</span></a></div>            
-        {% endfor %}
-        <div id="section" style="clear:both;display:inline-block;margin-top:10px;" class="section">
-            <input type="submit" style="float:right;margin:6px 10px 0 0;width:75px;" class="blue-button" value="Done!"/>
-            <input type="submit" style="float:right;margin:6px 10px 0 0;width:75px;" class="grey-button" value="Logout"/>
-        </div>
-    </div>
+	<div class="proj-sub-home">
+		<span class="welcome-user">Welcome {{request.user.first_name}},
+			{{request.user.last_name}}</span> <span class="welcome-question">Please
+			select projects to subscribe..</span> 
+			{% for project in projects %}
+		          <div class="circle" data-project-id="{{project.id}}">
+			            <span>{{project.name}}</span>
+		           </div>
+		    {% endfor %}
+		<div id="section"
+			style="clear: both; display: inline-block; margin-top: 10px;"
+			class="section">
+			<form style="margin: 0; padding: 0"
+				action="/u/conf/" method="post">
+				{% csrf_token %} 
+				<input type="hidden" id="id_projects" name="projects" value="" /> 
+				<input type="hidden" id="id_next" name="next" value="{{next}}" />
+				<input type="submit"
+					style="float: right; margin: 6px 10px 0 0; width: 75px;" id="done"
+					class="blue-button" value="Done!" />
+			</form>
+			<input type="submit"
+				style="float: right; margin: 6px 10px 0 0; width: 75px;" id="reset"
+				class="grey-button" value="Reset" />
+		</div>
+	</div>
 </body>
 </html>
