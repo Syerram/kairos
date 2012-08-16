@@ -19,28 +19,26 @@ class TimesheetManager(models.Manager):
     def _in_period(self, week, user):
         return self.get_query_set().filter(start_week__lte=week[0], end_week__gte=week[1], user=user)
 
+
 # Create your models here.
 class Timesheet(models.Model):
     """
-        Represents timesheet per week per project
+        Represents timesheet per week per project per day
     """
     
     project = models.ForeignKey(Project)
     activity = models.ForeignKey(Activity)
-    user = models.ForeignKey(User)
+    day = models.DateTimeField(auto_now_add=True)
     
-    start_week = models.DateTimeField()
-    end_week = models.DateTimeField()
+    day_1_hours = models.DecimalField(_('day one hours'), max_digits=4, decimal_places=2, null=True, blank=True)
+    day_2_hours = models.DecimalField(_('day two hours'), max_digits=4, decimal_places=2, null=True, blank=True)
+    day_3_hours = models.DecimalField(_('day three hours'), max_digits=4, decimal_places=2, null=True, blank=True)
+    day_4_hours = models.DecimalField(_('day four hours'), max_digits=4, decimal_places=2, null=True, blank=True)
+    day_5_hours = models.DecimalField(_('day five hours'), max_digits=4, decimal_places=2, null=True, blank=True)
+    day_6_hours = models.DecimalField(_('day six hours'), max_digits=4, decimal_places=2, null=True, blank=True)
+    day_7_hours = models.DecimalField(_('day seven hours'), max_digits=4, decimal_places=2, null=True, blank=True)
     
-    day_1_hours = models.DecimalField(_('day one hours'), max_digits=4, decimal_places=2, null=True)
-    day_2_hours = models.DecimalField(_('day two hours'), max_digits=4, decimal_places=2, null=True)
-    day_3_hours = models.DecimalField(_('day three hours'), max_digits=4, decimal_places=2, null=True)
-    day_4_hours = models.DecimalField(_('day four hours'), max_digits=4, decimal_places=2, null=True)
-    day_5_hours = models.DecimalField(_('day five hours'), max_digits=4, decimal_places=2, null=True)
-    day_6_hours = models.DecimalField(_('day six hours'), max_digits=4, decimal_places=2, null=True)
-    day_7_hours = models.DecimalField(_('day seven hours'), max_digits=4, decimal_places=2, null=True)
-    
-    comment = GenericRelation(Comment, object_id_field='object_pk')
+    comment = GenericRelation(Comment, object_id_field='object_pk', null=True, blank=True)
     
     objects = TimesheetManager()
     
@@ -75,3 +73,13 @@ class TimesheetHistory(models.Model):
     timesheet = models.ForeignKey(Timesheet)
     timesheet_status = models.ForeignKey(DropdownModel)
     last_updated = models.DateTimeField(auto_now=True)   
+
+class WeekSnapshot(models.Model):
+    """holds the week snapshot of timesheets"""
+    
+    start_week = models.DateTimeField()
+    end_week = models.DateTimeField()
+    
+    user = models.ForeignKey(User)
+    
+    timesheets = models.ManyToManyField(Timesheet, null=True, blank=True)

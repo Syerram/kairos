@@ -32,8 +32,13 @@
 	    
 	    $('.project-dropdown').change(function() {
 	    	$.get('/activities/'+ $(this).val(), function(data) {
-	    		  $('#activity-dropdown').html(data);
+	    		  $('#id_activity').html(data);
 	    	});
+	    });
+	    
+	    $('#id_submit').click(function(e) {
+	    	$('#id_is_draft').val('false');
+	    	return true;
 	    });
 	    
 	});
@@ -52,76 +57,84 @@
 		</div>
 	</div>
 
-	<div class="row" style="margin: 25px 0 0 20%;">
-		<div class="span12 timesheet-header">
-			<div class="week-spanner" style="float: right; position: relative;">
-				<!-- 		       <a href="#" class="grey-button week-backward"><i class="icon-chevron-left"></i></a> -->
-				<span class="week-display"
-					style="background-color: white; height: 18px">{{start_week|date:"d.NY"}} -
-					{{end_week|date:"d.NY"}}</span>
-				<!-- 		       <a href="#" class="grey-button week-forward"><i class="icon-chevron-right"></i></a> -->
+    <div class="row" style="margin: 25px 0 0 20%;">
+			<div class="span12 timesheet-header">
+				<div class="week-spanner" style="float: right; position: relative;">
+							       <a href="#" class="grey-button week-backward"><i class="icon-chevron-left"></i></a>
+					<span class="week-display"
+						style="background-color: white; height: 18px">{{week_snapshot_form.start_week.value|date:"d.NY"}} -
+						{{week_snapshot_form.end_week.value|date:"d.NY"}}</span>
+							       <a href="#" class="grey-button week-forward"><i class="icon-chevron-right"></i></a>
+				</div>
 			</div>
-		</div>
-		<div style="clear: both;" class="span12 time-logging">
-			<div class="time-logging-header">
-				<table id="time-table" cellspacing="0" summary="Time sheet">
-					<thead>
-						<tr id="header">
-							<th scope="col" abbr="Project"><span style="display: block">Projects</span>
-							<th scope="col" abbr="Project"><span style="display: block">Activity</span>
-							<th scope="col" abbr="Monday"><span
-								style="display: block; margin-left: 5px;">M</span><span
-								style="display: block; font-weight: normal; font-size: 10px;">08.04</span></th>
-							<th scope="col" abbr="Tuesday">Tue</th>
-							<th scope="col" abbr="Wednesday">Wed</th>
-							<th scope="col" abbr="Thursday">Thu</th>
-							<th scope="col" abbr="Friday">Fri</th>
-							<th scope="col" abbr="Saturday">Sat</th>
-							<th scope="col" abbr="Sunday">Sun</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td>
-							    <div id="project-dropdown">
-									<select name="select" class="project-dropdown" id="dropdown-select">
-										<option class="dropdown-option">Choose Project</option>
-										{% for project in projects.all %}
-										      <option value="{{project.id}}" class="dropdown-option">{{project.name}}</option>  
-										{% endfor %}
-									</select>
-								</div>
-							</td>
-							<td>
-							     <div id="activity-dropdown">
-                                    <select name="select" class="activity-dropdown" id="dropdown-select">
-                                        <option class="dropdown-option">Choose Activity</option>                                        
-                                    </select>
-                                </div>
-                            </td>
-							<td><input class="hour-input" type="text" placeholder="0.00" /></td>
-							<td><input class="hour-input" type="text" placeholder="0.00" /></td>
-							<td><input class="hour-input" type="text" placeholder="0.00" /></td>
-							<td><input class="hour-input" type="text" placeholder="0.00" /></td>
-							<td><input class="hour-input" type="text" placeholder="0.00" /></td>
-							<td><input class="hour-input" type="text" placeholder="0.00" /></td>
-							<td><input class="hour-input" type="text" placeholder="0.00" /></td>
-						</tr>										    
-					</tbody>
-				</table>
-			</div>
-		</div>
-		<div class="span12 papier section">
-		    <input type="submit" class="yellow-button"
-                style="float: left; margin-left: 10px;padding-right:25px;padding-left:25px;" value="Add+" />
-			<input type="submit" class="blue-button"
-				style="float: right; margin-right: -5px;padding-right:20px;padding-left:20px;" value="Submit" /> 
-			<input
-				type="submit" class="grey-button"
-				style="float: right; margin-right: 10px;padding-right:25px;padding-left:25px;" value="Save" /> 
-			<a href="#" class="reset">Reset</a>
-		</div>
+			<form id="id_timesheet" name="timesheet" action="/timesheet/" method="POST">
+				<div style="clear: both;" class="span12 time-logging">
+					<div class="time-logging-header">
+					    
+						<table id="time-table" cellspacing="0" summary="Time sheet">
+							<thead>
+								<tr id="header">
+									<th scope="col" abbr="Project"><span style="display: block">Projects</span>
+									<th scope="col" abbr="Project"><span style="display: block">Activity</span>
+									<th scope="col" abbr="Monday"><span
+										style="display: block; margin-left: 5px;">M</span><span
+										style="display: block; font-weight: normal; font-size: 10px;">08.04</span></th>
+									<th scope="col" abbr="Tuesday">Tue</th>
+									<th scope="col" abbr="Wednesday">Wed</th>
+									<th scope="col" abbr="Thursday">Thu</th>
+									<th scope="col" abbr="Friday">Fri</th>
+									<th scope="col" abbr="Saturday">Sat</th>
+									<th scope="col" abbr="Sunday">Sun</th>
+								</tr>
+							</thead>
+							<tbody>
+							    {% for timesheet_form in timesheet_form_set.forms %}							        						       
+									    <tr>								    
+	                                        <td>
+	                                            {% csrf_token %}
+	                                            {{timesheet_form.id}}
+	                                            <input type="hidden" name="start_week" id="id_start_week" value="{{week_snapshot_form.start_week.value}}"/>
+	                                            <input type="hidden" name="end_week" id="id_end_week" value="{{week_snapshot_form.end_week.value}}"/>
+	                                            <div id="project-dropdown">										    
+													<select name="{{timesheet_form.project.html_name}}" data-activity-element="{{timesheet_form.activity.auto_id}}" class="dropdown-select project-dropdown" id="{{timesheet_form.project.auto_id}}">
+														<option class="dropdown-option">Choose Project</option>
+														{% for project in projects.all %}
+														      <option value="{{project.id}}" class="dropdown-option">{{project.name}}</option>  
+														{% endfor %}
+													</select>
+												</div>
+											</td>
+											<td>
+											     <div id="activity-dropdown">
+				                                    <select name="{{timesheet_form.activity.html_name}}" class="dropdown-select" id="{{timesheet_form.activity.auto_id}}">
+				                                        <option class="dropdown-option">Choose Activity</option>                                        
+				                                    </select>
+				                                </div>
+				                            </td>
+											<td><input class="hour-input" type="text" value="{% if timesheet_form.day_1_hours.value %} {{timesheet_form.day_1_hours.value}} {% endif %}" placeholder="0.00" id="{{timesheet_form.day_1_hours.auto_id}}" name="{{timesheet_form.day_1_hours.html_name}}" /></td>
+											<td><input class="hour-input" type="text" value="{% if timesheet_form.day_2_hours.value %} {{timesheet_form.day_2_hours.value}} {% endif %}" placeholder="0.00" id="{{timesheet_form.day_2_hours.auto_id}}" name="{{timesheet_form.day_2_hours.html_name}}" /></td>
+											<td><input class="hour-input" type="text" value="{% if timesheet_form.day_3_hours.value %} {{timesheet_form.day_3_hours.value}} {% endif %}" placeholder="0.00" id="{{timesheet_form.day_3_hours.auto_id}}" name="{{timesheet_form.day_3_hours.html_name}}" /></td>
+											<td><input class="hour-input" type="text" value="{% if timesheet_form.day_4_hours.value %} {{timesheet_form.day_4_hours.value}} {% endif %}" placeholder="0.00" id="{{timesheet_form.day_4_hours.auto_id}}" name="{{timesheet_form.day_4_hours.html_name}}" /></td>
+											<td><input class="hour-input" type="text" value="{% if timesheet_form.day_5_hours.value %} {{timesheet_form.day_5_hours.value}} {% endif %}" placeholder="0.00" id="{{timesheet_form.day_5_hours.auto_id}}" name="{{timesheet_form.day_5_hours.html_name}}" /></td>
+											<td><input class="hour-input" type="text" value="{% if timesheet_form.day_6_hours.value %} {{timesheet_form.day_6_hours.value}} {% endif %}" placeholder="0.00" id="{{timesheet_form.day_6_hours.auto_id}}" name="{{timesheet_form.day_6_hours.html_name}}" /></td>
+											<td><input class="hour-input" type="text" value="{% if timesheet_form.day_7_hours.value %} {{timesheet_form.day_7_hours.value}} {% endif %}" placeholder="0.00" id="{{timesheet_form.day_7_hours.auto_id}}" name="{{timesheet_form.day_7_hours.html_name}}" /></td>																										
+									    </tr>
+								 {% endfor %}									    
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<div class="span12 papier section">
+				    <input type="button" class="yellow-button"
+		                style="float: left; margin-left: 10px;padding-right:25px;padding-left:25px;" value="Add+" />
+					<input id="id_submit" type="submit" class="blue-button"
+						style="float: right; margin-right: -5px;padding-right:20px;padding-left:20px;" value="Submit" /> 
+					<input id="id_draft" type="submit" class="grey-button" style="float: right; margin-right: 10px;padding-right:25px;padding-left:25px;" value="Draft" /> 
+					<a href="#" class="reset">Reset</a>
+				</div>
+				<input type="hidden" name="is_draft" id="id_is_draft" value="true"/>	
+				{{ timesheet_form_set.management_form }}
+			</form>
 	</div>
-
 </body>
 </html>
