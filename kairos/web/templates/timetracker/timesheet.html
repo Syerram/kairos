@@ -1,15 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-<script type="text/javascript"
-	src="http://code.jquery.com/jquery-latest.js"></script>
-<script type="text/javascript"
-	src="/static/js/jquery.hoverIntent.minified.js"></script>
-<link rel="stylesheet" href="/static/css/timesheet.css" type="text/css"
-	media="screen">
-<link href="/static/css/bootstrap.css" rel="stylesheet" />
-<meta charset="ISO-8859-1">
-<title>Kairos | Timesheet</title>
+	<script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
+	<script type="text/javascript" src="/static/js/jquery.hoverIntent.minified.js"></script>
+	<link rel="stylesheet" href="/static/css/timesheet.css" type="text/css" media="screen">
+	<link rel="stylesheet" href="/static/css/glyphicon-icons.css" type="text/css" media="screen">
+	<link href="/static/css/bootstrap.css" rel="stylesheet" />
+	<meta charset="ISO-8859-1">
+    <title>Kairos | Timesheet</title>
 <script type="text/javascript">
 	function makeTall() {
 		$(this).stop().animate({
@@ -85,6 +83,7 @@
 									<th scope="col" abbr="Friday">Fri</th>
 									<th scope="col" abbr="Saturday">Sat</th>
 									<th scope="col" abbr="Sunday">Sun</th>
+									<th scope="col" abbr="action"></th>
 								</tr>
 							</thead>
 							<tbody>
@@ -117,16 +116,18 @@
 											<td><input class="hour-input" type="text" value="{% if timesheet_form.day_4_hours.value %} {{timesheet_form.day_4_hours.value}} {% endif %}" placeholder="0.00" id="{{timesheet_form.day_4_hours.auto_id}}" name="{{timesheet_form.day_4_hours.html_name}}" /></td>
 											<td><input class="hour-input" type="text" value="{% if timesheet_form.day_5_hours.value %} {{timesheet_form.day_5_hours.value}} {% endif %}" placeholder="0.00" id="{{timesheet_form.day_5_hours.auto_id}}" name="{{timesheet_form.day_5_hours.html_name}}" /></td>
 											<td><input class="hour-input" type="text" value="{% if timesheet_form.day_6_hours.value %} {{timesheet_form.day_6_hours.value}} {% endif %}" placeholder="0.00" id="{{timesheet_form.day_6_hours.auto_id}}" name="{{timesheet_form.day_6_hours.html_name}}" /></td>
-											<td><input class="hour-input" type="text" value="{% if timesheet_form.day_7_hours.value %} {{timesheet_form.day_7_hours.value}} {% endif %}" placeholder="0.00" id="{{timesheet_form.day_7_hours.auto_id}}" name="{{timesheet_form.day_7_hours.html_name}}" /></td>																										
+											<td><input class="hour-input" type="text" value="{% if timesheet_form.day_7_hours.value %} {{timesheet_form.day_7_hours.value}} {% endif %}" placeholder="0.00" id="{{timesheet_form.day_7_hours.auto_id}}" name="{{timesheet_form.day_7_hours.html_name}}" /></td>
+											<td><a class="sprite-glyphicons_016_bin" style="padding-bottom:10px;margin:0 5px 0 5px;" href="#"></a> </td>																										
+									    </tr>
+									    <tr style="background:none;">
+									       <td colspan="10" style="border:0;"><a class="sprite-glyphicons_190_circle_plus" style="float:left;padding-bottom:10px;margin:0 8px 0 0;" href="#"></a><span style="display:block;margin: 0 0 5px 2px;padding-top:2px;">Add new row</span></td>
 									    </tr>
 								 {% endfor %}									    
-							</tbody>
+							</tbody>							
 						</table>
 					</div>
 				</div>
-				<div class="span12 papier section">
-				    <input type="button" class="yellow-button"
-		                style="float: left; margin-left: 10px;padding-right:25px;padding-left:25px;" value="Add+" />
+				<div class="span12 papier section">				   
 					<input id="id_submit" type="submit" class="blue-button"
 						style="float: right; margin-right: -5px;padding-right:20px;padding-left:20px;" value="Submit" /> 
 					<input id="id_draft" type="submit" class="grey-button" style="float: right; margin-right: 10px;padding-right:25px;padding-left:25px;" value="Draft" /> 

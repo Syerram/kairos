@@ -12,7 +12,6 @@
 4. Update admin projects to show correct name
 4. Save/Submit Timesheet 
     + OnSubmit signal for Email
-5. Toggle Buttons - Approvals, Mine
 6. Approvals Page
     + Masonary Style Timesheet Snapshot
     + Hover for direct approval
@@ -31,6 +30,9 @@
 11. Rally Integration
     + Text box search for Rally Story
     + DB Table to store rally attributes
+12. Fogbugz Integration
+
+13. Reports
 
 # UI
 1. Use of Picto Fonts
