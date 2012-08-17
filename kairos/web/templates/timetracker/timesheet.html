@@ -1,3 +1,4 @@
+{% load tracker_tags %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -56,17 +57,19 @@
 	</div>
 
     <div class="row" style="margin: 25px 0 0 20%;">
-			<div class="span12 timesheet-header">
-				<div class="week-spanner" style="float: right; position: relative;">
-							       <a href="#" class="grey-button week-backward"><i class="icon-chevron-left"></i></a>
-					<span class="week-display"
-						style="background-color: white; height: 18px">{{week_snapshot_form.start_week.value|date:"d.NY"}} -
+			<div class="span12 timesheet-header" style="width:820px !important;">
+			    <div class="title" style="float:left;">
+			         <span>Week 15</span>
+			    </div>     
+				<div class="week-spanner" style="float: right;">				    
+			        <a href="#" class="grey-button week-backward"><i class="sprite-glyphicons_224_thin_arrow_left" style="margin:3px 1px 0 0;"></i></a>
+					<span class="week-display" >{{week_snapshot_form.start_week.value|date:"d.NY"}} -
 						{{week_snapshot_form.end_week.value|date:"d.NY"}}</span>
-							       <a href="#" class="grey-button week-forward"><i class="icon-chevron-right"></i></a>
+					<a href="#" class="grey-button week-forward"><i class="sprite-glyphicons_223_thin_right_arrow" style="margin-top:3px;"></i></a>
 				</div>
 			</div>
 			<form id="id_timesheet" name="timesheet" action="/timesheet/" method="POST">
-				<div style="clear: both;" class="span12 time-logging">
+				<div class="span12 time-logging" style="clear: both;width:820px !important;">
 					<div class="time-logging-header">
 					    
 						<table id="time-table" cellspacing="0" summary="Time sheet">
@@ -74,15 +77,27 @@
 								<tr id="header">
 									<th scope="col" abbr="Project"><span style="display: block">Projects</span>
 									<th scope="col" abbr="Project"><span style="display: block">Activity</span>
-									<th scope="col" abbr="Monday"><span
-										style="display: block; margin-left: 5px;">M</span><span
-										style="display: block; font-weight: normal; font-size: 10px;">08.04</span></th>
-									<th scope="col" abbr="Tuesday">Tue</th>
-									<th scope="col" abbr="Wednesday">Wed</th>
-									<th scope="col" abbr="Thursday">Thu</th>
-									<th scope="col" abbr="Friday">Fri</th>
-									<th scope="col" abbr="Saturday">Sat</th>
-									<th scope="col" abbr="Sunday">Sun</th>
+									<th scope="col" abbr="Monday">
+									    <span style="display: block; margin-left: 5px;">Mon</span>
+									    <span style="display: block; font-weight: normal; font-size: 10px;">{{week_snapshot_form.start_week.value|date:"d"}}</span></th>
+									<th scope="col" abbr="Tuesday">
+									    <span style="display: block; margin-left: 5px;">Tue</span>
+                                        <span style="display: block; font-weight: normal; font-size: 10px;">{{week_snapshot_form.start_week.value|day_plus:"1"|date:"d"}}</span></th>
+									<th scope="col" abbr="Wednesday">
+									   <span style="display: block; margin-left: 5px;">Wed</span>
+                                        <span style="display: block; font-weight: normal; font-size: 10px;">{{week_snapshot_form.start_week.value|day_plus:"2"|date:"d"}}</span></th>
+									<th scope="col" abbr="Thursday">
+									   <span style="display: block; margin-left: 5px;">Thu</span>
+                                        <span style="display: block; font-weight: normal; font-size: 10px;">{{week_snapshot_form.start_week.value|day_plus:"3"|date:"d"}}</span></th>
+									<th scope="col" abbr="Friday">
+									   <span style="display: block; margin-left: 5px;">Fri</span>
+                                        <span style="display: block; font-weight: normal; font-size: 10px;">{{week_snapshot_form.start_week.value|day_plus:"4"|date:"d"}}</span></th>
+									<th scope="col" abbr="Saturday">
+									   <span style="display: block; margin-left: 5px;">Sat</span>
+                                        <span style="display: block; font-weight: normal; font-size: 10px;">{{week_snapshot_form.start_week.value|day_plus:"5"|date:"d"}}</span></th>
+									<th scope="col" abbr="Sunday">
+									   <span style="display: block; margin-left: 5px;">Sun</span>
+                                        <span style="display: block; font-weight: normal; font-size: 10px;">{{week_snapshot_form.start_week.value|day_plus:"6"|date:"d"}}</span></th>
 									<th scope="col" abbr="action"></th>
 								</tr>
 							</thead>
@@ -127,7 +142,7 @@
 						</table>
 					</div>
 				</div>
-				<div class="span12 papier section">				   
+				<div class="span12 papier section" style="width:820px !important;">				   
 					<input id="id_submit" type="submit" class="blue-button"
 						style="float: right; margin-right: -5px;padding-right:20px;padding-left:20px;" value="Submit" /> 
 					<input id="id_draft" type="submit" class="grey-button" style="float: right; margin-right: 10px;padding-right:25px;padding-left:25px;" value="Draft" /> 
