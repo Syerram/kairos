@@ -3,8 +3,8 @@
     + ~~DB field 1st Signin in UserProfile~~
 2. Draft DB Field for Timesheet
 3. ~~Project/Activities fill up~~
-    + Fill with user projects
-    + Fill activities based on project selection
+    + ~~Fill with user projects~~
+    + ~~Fill activities based on project selection~~
 3. Timesheet Status Table - Can have multiple statuses [history like]
     + Status
     + Status Comment

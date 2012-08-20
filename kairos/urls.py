@@ -4,7 +4,7 @@ from django.http import Http404
 from django.views.generic.simple import direct_to_template
 from django.contrib import admin
 from configuration.views import user_configure
-from tracker.views import current_timesheet
+from tracker.views import timesheet_by_week
 from categories.views import activities
 
 # Uncomment the next two lines to enable the admin:
@@ -16,7 +16,7 @@ urlpatterns = patterns('',
     (r'^login/$', 'django.contrib.auth.views.login', {'template_name': 'auth/login.html'}),
     url(r'^home/$', user_configure, name='home'),
     url(r'^u/conf/$', user_configure, name='user_projects_configure'),
-    url(r'^timesheet/$', current_timesheet, name='timesheet'),
+    url(r'^timesheet/(?P<week>\d+)/$', timesheet_by_week, name='timesheet'),
     
     url(r'^activities/(?P<project_id>\d+)/$', activities, name="activities"),
 )

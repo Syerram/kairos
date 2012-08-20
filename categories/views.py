@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from kairos.util import render_to_html_dict
 
 @login_required
-@render_to_html_dict({'activity-dropdown':'snippets/activity-dropdown.html', })
+@render_to_html_dict({'activity-dropdown':'snippets/dd-refresh.html', })
 def activities(request, project_id):
     activities = []
     try:
@@ -13,4 +13,4 @@ def activities(request, project_id):
     except Project.DoesNotExist:
         pass    
     
-    return 'activity-dropdown', {'activities': activities} 
+    return 'activity-dropdown', {'options': activities} 

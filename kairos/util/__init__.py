@@ -27,7 +27,7 @@ class ExternalMessageRequestStorage(SessionStorage):
         
 def determine_period(the_date=date.today()):
     """determines the start and end date of the week and returns tuple"""
-    start_week = date.today() - timedelta(days=date.today().weekday())
+    start_week = the_date - timedelta(days=the_date.weekday())
     end_week = start_week + timedelta(days=6)
     
     return (start_week, end_week,)

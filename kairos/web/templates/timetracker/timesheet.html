@@ -4,44 +4,54 @@
 <head>
 	<script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
 	<script type="text/javascript" src="/static/js/jquery.hoverIntent.minified.js"></script>
+	<script type="text/javascript" src="/static/js/jquery.formset.js"></script>
 	<link rel="stylesheet" href="/static/css/timesheet.css" type="text/css" media="screen">
 	<link rel="stylesheet" href="/static/css/glyphicon-icons.css" type="text/css" media="screen">
 	<link href="/static/css/bootstrap.css" rel="stylesheet" />
 	<meta charset="ISO-8859-1">
     <title>Kairos | Timesheet</title>
-<script type="text/javascript">
-	function makeTall() {
-		$(this).stop().animate({
-			"height" : 75
-		}, 15);
-	}
-	function makeShort() {
-		$(this).stop().animate({
-			"height" : 16
-		}, 15);
-	}
-	
-	$(document).ready(function() {		
-// 		$('#menu li.drop').hoverIntent(makeTall, makeShort);
-	    
-	    $('.reset').click(function(e) {
-	    	e.preventDefault();
-	    	$('#time-table .hour-input').val('');
-	    });
-	    
-	    $('.project-dropdown').change(function() {
-	    	$.get('/activities/'+ $(this).val(), function(data) {
-	    		  $('#id_activity').html(data);
-	    	});
-	    });
-	    
-	    $('#id_submit').click(function(e) {
-	    	$('#id_is_draft').val('false');
-	    	return true;
-	    });
-	    
-	});
-</script>
+    <script type="text/javascript">
+		function makeTall() {
+			$(this).stop().animate({
+				"height" : 75
+			}, 15);
+		}
+		function makeShort() {
+			$(this).stop().animate({
+				"height" : 16
+			}, 15);
+		}
+		
+		$(document).ready(function() {		
+	// 		$('#menu li.drop').hoverIntent(makeTall, makeShort);
+		    
+		    $('.reset').click(function(e) {
+		    	e.preventDefault();
+		    	$('#time-table .hour-input').val('');
+		    });
+		    
+		    $('.project-dropdown').change(function() {
+		    	if($(this).val) {
+			    	$.get('/activities/'+ $(this).val(), function(data) {
+			    		  $('.activity-dropdown').empty().append($(data));
+			    	});
+		    	}
+		    });
+		    
+		    $('#id_submit').click(function(e) {
+		    	$('#id_is_draft').val('false');
+		    	return true;
+		    });
+		    
+		    $('#id_timesheet tbody tr').formset({
+		    	addText: '',
+		        addCssClass:'sprite-glyphicons_190_circle_plus',
+		        deleteText:'',
+		        deleteCssClass:'sprite-glyphicons_016_bin',		        
+		    });
+		    
+		});
+	</script>
 </head>
 <body>
 	<div class="header">
@@ -55,20 +65,24 @@
 			</ul>
 		</div>
 	</div>
-
     <div class="row" style="margin: 25px 0 0 20%;">
 			<div class="span12 timesheet-header" style="width:820px !important;">
 			    <div class="title" style="float:left;">
-			         <span>Week 15</span>
+			         <span>Week {{week}} - {{week_snapshot.last_status.weeksnapshot_status.display}}</span>
 			    </div>     
 				<div class="week-spanner" style="float: right;">				    
-			        <a href="#" class="grey-button week-backward"><i class="sprite-glyphicons_224_thin_arrow_left" style="margin:3px 1px 0 0;"></i></a>
-					<span class="week-display" >{{week_snapshot_form.start_week.value|date:"d.NY"}} -
-						{{week_snapshot_form.end_week.value|date:"d.NY"}}</span>
-					<a href="#" class="grey-button week-forward"><i class="sprite-glyphicons_223_thin_right_arrow" style="margin-top:3px;"></i></a>
+			        <a href='/timesheet/{{week|add:"-1"}}' class="grey-button week-backward"><i class="sprite-glyphicons_224_thin_arrow_left" style="margin:5px 1px 0 0;"></i></a>
+					<span class="week-display" >{{week_snapshot.start_week|date:"d.NY"}} -
+						{{week_snapshot.end_week|date:"d.NY"}}</span>
+					{% if week_snapshot.end_week|is_in_future %}
+					   <a href='#' class="grey-button week-forward disable-link"><i class="sprite-glyphicons_223_thin_right_arrow" style="margin:5px 1px 0 0;"></i></a>
+					{% else %}
+					   <a href='/timesheet/{{week|add:"1"}}' class="grey-button week-forward"><i class="sprite-glyphicons_223_thin_right_arrow" style="margin:5px 1px 0 0;"></i></a>
+					{% endif %}
 				</div>
 			</div>
-			<form id="id_timesheet" name="timesheet" action="/timesheet/" method="POST">
+			<form id="id_timesheet" name="timesheet" action="/timesheet/{{week}}/" method="POST">
+			     {% csrf_token %}
 				<div class="span12 time-logging" style="clear: both;width:820px !important;">
 					<div class="time-logging-header">
 					    
@@ -79,48 +93,51 @@
 									<th scope="col" abbr="Project"><span style="display: block">Activity</span>
 									<th scope="col" abbr="Monday">
 									    <span style="display: block; margin-left: 5px;">Mon</span>
-									    <span style="display: block; font-weight: normal; font-size: 10px;">{{week_snapshot_form.start_week.value|date:"d"}}</span></th>
+									    <span style="display: block; font-weight: normal; font-size: 10px;">{{week_snapshot.start_week|date:"d"}}</span></th>
 									<th scope="col" abbr="Tuesday">
 									    <span style="display: block; margin-left: 5px;">Tue</span>
-                                        <span style="display: block; font-weight: normal; font-size: 10px;">{{week_snapshot_form.start_week.value|day_plus:"1"|date:"d"}}</span></th>
+                                        <span style="display: block; font-weight: normal; font-size: 10px;">{{week_snapshot.start_week|day_plus:"1"|date:"d"}}</span></th>
 									<th scope="col" abbr="Wednesday">
 									   <span style="display: block; margin-left: 5px;">Wed</span>
-                                        <span style="display: block; font-weight: normal; font-size: 10px;">{{week_snapshot_form.start_week.value|day_plus:"2"|date:"d"}}</span></th>
+                                        <span style="display: block; font-weight: normal; font-size: 10px;">{{week_snapshot.start_week|day_plus:"2"|date:"d"}}</span></th>
 									<th scope="col" abbr="Thursday">
 									   <span style="display: block; margin-left: 5px;">Thu</span>
-                                        <span style="display: block; font-weight: normal; font-size: 10px;">{{week_snapshot_form.start_week.value|day_plus:"3"|date:"d"}}</span></th>
+                                        <span style="display: block; font-weight: normal; font-size: 10px;">{{week_snapshot.start_week|day_plus:"3"|date:"d"}}</span></th>
 									<th scope="col" abbr="Friday">
 									   <span style="display: block; margin-left: 5px;">Fri</span>
-                                        <span style="display: block; font-weight: normal; font-size: 10px;">{{week_snapshot_form.start_week.value|day_plus:"4"|date:"d"}}</span></th>
+                                        <span style="display: block; font-weight: normal; font-size: 10px;">{{week_snapshot.start_week|day_plus:"4"|date:"d"}}</span></th>
 									<th scope="col" abbr="Saturday">
 									   <span style="display: block; margin-left: 5px;">Sat</span>
-                                        <span style="display: block; font-weight: normal; font-size: 10px;">{{week_snapshot_form.start_week.value|day_plus:"5"|date:"d"}}</span></th>
+                                        <span style="display: block; font-weight: normal; font-size: 10px;">{{week_snapshot.start_week|day_plus:"5"|date:"d"}}</span></th>
 									<th scope="col" abbr="Sunday">
 									   <span style="display: block; margin-left: 5px;">Sun</span>
-                                        <span style="display: block; font-weight: normal; font-size: 10px;">{{week_snapshot_form.start_week.value|day_plus:"6"|date:"d"}}</span></th>
+                                        <span style="display: block; font-weight: normal; font-size: 10px;">{{week_snapshot.start_week|day_plus:"6"|date:"d"}}</span></th>
 									<th scope="col" abbr="action"></th>
 								</tr>
 							</thead>
 							<tbody>
 							    {% for timesheet_form in timesheet_form_set.forms %}							        						       
 									    <tr>								    
-	                                        <td>
-	                                            {% csrf_token %}
-	                                            {{timesheet_form.id}}
-	                                            <input type="hidden" name="start_week" id="id_start_week" value="{{week_snapshot_form.start_week.value}}"/>
-	                                            <input type="hidden" name="end_week" id="id_end_week" value="{{week_snapshot_form.end_week.value}}"/>
+	                                        <td>	                                            
+	                                            {{timesheet_form.id}}                                                                                            
 	                                            <div id="project-dropdown">										    
-													<select name="{{timesheet_form.project.html_name}}" data-activity-element="{{timesheet_form.activity.auto_id}}" class="dropdown-select project-dropdown" id="{{timesheet_form.project.auto_id}}">
-														<option class="dropdown-option">Choose Project</option>
+													<select name="{{timesheet_form.project.html_name}}" data-activity-element="{{timesheet_form.project.auto_id}}" 
+													       class="dropdown-select project-dropdown" id="{{timesheet_form.project.auto_id}}">
+														<option value="0" class="dropdown-option">Choose Project</option>
 														{% for project in projects.all %}
-														      <option value="{{project.id}}" class="dropdown-option">{{project.name}}</option>  
+														      {% if project.id == timesheet_form.initial.project %}
+														          <option value="{{project.id}}" class="dropdown-option" selected="selected">{{project.name}}</option>
+														      {% else %}
+														          <option value="{{project.id}}" class="dropdown-option">{{project.name}}</option>														          
+														      {% endif %}														        
 														{% endfor %}
 													</select>
+													<input type="hidden" value="{{timesheet_form.project_id}}"/>
 												</div>
 											</td>
 											<td>
 											     <div id="activity-dropdown">
-				                                    <select name="{{timesheet_form.activity.html_name}}" class="dropdown-select" id="{{timesheet_form.activity.auto_id}}">
+				                                    <select name="{{timesheet_form.activity.html_name}}" class="dropdown-select activity-dropdown" id="{{timesheet_form.activity.auto_id}}">
 				                                        <option class="dropdown-option">Choose Activity</option>                                        
 				                                    </select>
 				                                </div>
@@ -132,11 +149,8 @@
 											<td><input class="hour-input" type="text" value="{% if timesheet_form.day_5_hours.value %} {{timesheet_form.day_5_hours.value}} {% endif %}" placeholder="0.00" id="{{timesheet_form.day_5_hours.auto_id}}" name="{{timesheet_form.day_5_hours.html_name}}" /></td>
 											<td><input class="hour-input" type="text" value="{% if timesheet_form.day_6_hours.value %} {{timesheet_form.day_6_hours.value}} {% endif %}" placeholder="0.00" id="{{timesheet_form.day_6_hours.auto_id}}" name="{{timesheet_form.day_6_hours.html_name}}" /></td>
 											<td><input class="hour-input" type="text" value="{% if timesheet_form.day_7_hours.value %} {{timesheet_form.day_7_hours.value}} {% endif %}" placeholder="0.00" id="{{timesheet_form.day_7_hours.auto_id}}" name="{{timesheet_form.day_7_hours.html_name}}" /></td>
-											<td><a class="sprite-glyphicons_016_bin" style="padding-bottom:10px;margin:0 5px 0 5px;" href="#"></a> </td>																										
-									    </tr>
-									    <tr style="background:none;">
-									       <td colspan="10" style="border:0;"><a class="sprite-glyphicons_190_circle_plus" style="float:left;padding-bottom:10px;margin:0 8px 0 0;" href="#"></a><span style="display:block;margin: 0 0 5px 2px;padding-top:2px;">Add new row</span></td>
-									    </tr>
+											<td></td>																										
+									    </tr>									    
 								 {% endfor %}									    
 							</tbody>							
 						</table>
@@ -145,11 +159,14 @@
 				<div class="span12 papier section" style="width:820px !important;">				   
 					<input id="id_submit" type="submit" class="blue-button"
 						style="float: right; margin-right: -5px;padding-right:20px;padding-left:20px;" value="Submit" /> 
-					<input id="id_draft" type="submit" class="grey-button" style="float: right; margin-right: 10px;padding-right:25px;padding-left:25px;" value="Draft" /> 
+					<input id="id_draft" type="submit" class="grey-button" style="float: right; margin-right: 10px;padding-right:25px;padding-left:25px;" value="Save" /> 
 					<a href="#" class="reset">Reset</a>
 				</div>
 				<input type="hidden" name="is_draft" id="id_is_draft" value="true"/>	
 				{{ timesheet_form_set.management_form }}
+				<div style="display:none">				    
+                    {{week_snapshot_form.as_p}}                                          
+				</div>
 			</form>
 	</div>
 </body>

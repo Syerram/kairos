@@ -3,8 +3,9 @@
 body {
 	margin: 0;
 	padding: 0;
-    background: #EAEBEC url(http://dialog.gs/static/images/bg.png) repeat left top;
-    color: #2C2C2C;
+	background: #EAEBEC url(http://dialog.gs/static/images/bg.png) repeat
+		left top;
+	color: #2C2C2C;
 	font-family: 'Helvetica Neue', helvetica, sans-serif;
 }
 
@@ -21,7 +22,7 @@ body {
 
 .center-form .papier {
 	display: block;
-/* 	height: 250px; */
+	/* 	height: 250px; */
 	margin: 50px auto 10px auto;
 	background: #fff;
 	box-shadow: 0 2px 0 #ffffff, 0 3px 0 rgba(0, 0, 0, .2), 0 5px 0 #ffffff,
@@ -130,7 +131,7 @@ body {
 }
 
 .grey-button {
-	color: #5A5A5A;
+	color: #333;
 	text-shadow: 0px 1px 0px #fff;
 	border: 1px solid #e5e5e5;
 	border-bottom-color: #acacac;
@@ -225,107 +226,166 @@ home page
 .landing-home {
 	display: block;
 	margin: 250px auto;
-	width: 250px;
+	width: 315px;
 	height: 342px;
 	background: #fff;
 	box-shadow: 0 2px 0 #ffffff, 0 3px 0 rgba(0, 0, 0, .2), 0 5px 0 #ffffff,
 		0 6px 0 rgba(0, 0, 0, .2), 0 0 3px rgba(0, 0, 0, .2);
 	border-radius: 4px;
+	z-index: -99;
+	position: relative;
 }
 
 .user-stats {
 	float: left;
 	margin: 12px;
 	font-family: arial, sans-serif;
-    font-size: 10px;
-    font-weight: bold;
-    padding-top: 5px;
+	font-size: 10px;
+	font-weight: bold;
+	padding-top: 5px;
 }
 
 /* Project subscribe */
 .proj-sub-home {
 	display: block;
-    margin: 250px auto;
-    max-width: 500px;
-    min-height: 225px;
-    width: 550px;
-    height: auto;
-    background: #fff;
-    box-shadow: 0 2px 0 #ffffff, 0 3px 0 rgba(0, 0, 0, .2), 0 5px 0 #ffffff,
-        0 6px 0 rgba(0, 0, 0, .2), 0 0 3px rgba(0, 0, 0, .2);
-    border-radius: 4px;
+	margin: 250px auto;
+	max-width: 500px;
+	min-height: 225px;
+	width: 550px;
+	height: auto;
+	background: #fff;
+	box-shadow: 0 2px 0 #ffffff, 0 3px 0 rgba(0, 0, 0, .2), 0 5px 0 #ffffff,
+		0 6px 0 rgba(0, 0, 0, .2), 0 0 3px rgba(0, 0, 0, .2);
+	border-radius: 4px;
 }
 
-
-.landing-home .welcome-user, .proj-sub-home .welcome-user {
-    display:block;
-    font-family: Verdana, arial, sans-serif;
-    font-size: 12px;
-    font-weight: bold;
-    color: black;
-    margin: 0 0 0 15px;
-    padding-top:10px;
+.landing-home .welcome-user,.proj-sub-home .welcome-user {
+	display: block;
+	font-family: Verdana, arial, sans-serif;
+	font-size: 12px;
+	font-weight: bold;
+	color: black;
+	margin: 0 0 0 15px;
+	padding-top: 10px;
 }
 
-.landing-home .welcome-question, .proj-sub-home  .welcome-question{
-    display:block;
-    font-family: Verdana, arial, sans-serif;
-    font-size: 11px;
-    font-weight: bold;
-    color: #6d6d6d;
-    margin: 0 0 0 15px;
+.landing-home .welcome-question,.proj-sub-home  .welcome-question {
+	display: block;
+	font-family: Verdana, arial, sans-serif;
+	font-size: 11px;
+	font-weight: bold;
+	color: #6d6d6d;
+	margin: 0 0 0 15px;
 }
-
 
 /* circle thingy */
 .circle {
-    display: inline-block;
-    float: left;
-    background: #f2f2f2;
-    width: 110px;
-    height: 110px;
-    border-radius: 50%;
-    -moz-border-radius: 50%;
-    -webkit-border-radius: 50%;
-    border: 1px solid #d2d2d2;
-    box-shadow: inset 1px 1px 2px 1px #f1f1f1;
-    -webkit-box-shadow: inset 1px 1px 2px 1px #f1f1f1;
-    -moz-box-shadow: inset 1px 1px 2px 1px #f1f1f1;
-    text-align: center;
-    cursor: pointer;
-    background: #f2f2f2;
-    margin: 10px 0 0 10px;
-    font-family: "helvetica neue", helvetica, arial, sans-serif;
-    font-size: 15px;
-    font-weight: bold;
+	display: inline-block;
+	float: left;
+	background: #f2f2f2;
+	width: 110px;
+	height: 110px;
+	border-radius: 50%;
+	-moz-border-radius: 50%;
+	-webkit-border-radius: 50%;
+	border: 1px solid #d2d2d2;
+	box-shadow: inset 1px 1px 2px 1px #f1f1f1;
+	-webkit-box-shadow: inset 1px 1px 2px 1px #f1f1f1;
+	-moz-box-shadow: inset 1px 1px 2px 1px #f1f1f1;
+	text-align: center;
+	cursor: pointer;
+	background: #f2f2f2;
+	margin: 10px 0 0 10px;
+	font-family: "helvetica neue", helvetica, arial, sans-serif;
+	font-size: 15px;
+	font-weight: bold;
 }
 
 .circle:hover,.selected_circle {
-    background: #fff;
-    box-shadow: inset 1px 1px 10px 1px #000;
-    -webkit-box-shadow: inset 1px 1px 10px 1px #000;
-    -moz-box-shadow: inset 1px 1px 10px 1px #000;    
+	background: #fff;
+	box-shadow: inset 1px 1px 10px 1px #000;
+	-webkit-box-shadow: inset 1px 1px 10px 1px #000;
+	-moz-box-shadow: inset 1px 1px 10px 1px #000;
 }
 
 .selected_circle {
-    display: block;
-    background: #DDF0F7 !important;
+	display: block;
+	background: #DDF0F7 !important;
 }
 
-.circle span, .circle a {
+.circle span,.circle a {
 	display: block;
-    margin: 45px 5px;
-    text-decoration: none;
-    color: #6d6d6d;
+	margin: 45px 5px;
+	text-decoration: none;
+	color: #6d6d6d;
 }
 
 .circle:hover span {
-    color: black;
-    cursor: pointer;
+	color: black;
+	cursor: pointer;
 }
 
-.selected_circle span{
-    color: black !important;
+.selected_circle span {
+	color: black !important;
 }
 
+.solid-circle a {
+	display: block;
+	float: left;
+	width: 110px;
+	height: 110px;
+	background-color: #f7f7f7;
+	background-image: -webkit-gradient(linear, left top, left bottom, from(#f7f7f7),
+		to(#e7e7e7) );
+	background-image: -webkit-linear-gradient(top, #f7f7f7, #e7e7e7);
+	background-image: -moz-linear-gradient(top, #f7f7f7, #e7e7e7);
+	background-image: -ms-linear-gradient(top, #f7f7f7, #e7e7e7);
+	background-image: -o-linear-gradient(top, #f7f7f7, #e7e7e7);
+	margin: 20px 0 10px 30px;
+	position: relative;
+	text-align: center;
+	line-height: 110px;
+	border-radius: 50%;
+	box-shadow: 0px 3px 8px #aaa, inset 0px 2px 3px #fff;
+	text-decoration: none;
+	cursor: pointer;
+}
 
+.solid-circle a span {
+	color: #6D6D6D;
+	font-weight: bold;
+}
+
+.solid-circle a:hover {
+	background: #f5f5f5;
+}
+
+.solid-circle a:hover span {
+	color: #333;
+}
+
+.solid-circle a:active {
+	box-shadow: 0px 1px 1px #aaa, inset 0px 2px 3px #fff;
+}
+
+.solid-circle a:hover:before {
+	background: #DDF0F7;
+	border-top: 2px solid #DDF0F7;
+	box-shadow: inset 0px 8px 48px #DDF0F7;
+}
+
+.solid-circle a:before {
+	content: "";
+	display: block;
+	background: #fff;
+	border-top: 2px solid #ddd;
+	position: absolute;
+	top: -8px;
+	left: -8px;
+	bottom: -8px;
+	right: -8px;
+	z-index: -1;
+	border-radius: 50%;
+	box-shadow: inset 0px 8px 48px #ddd;
+	cursor: pointer;
+}
