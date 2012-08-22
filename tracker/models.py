@@ -116,7 +116,7 @@ class WeekSnapshotHistory(models.Model):
 @monkey_patch(WeekSnapshot)
 class PatchedWeekSnapshot(object):
     """If it doesn't exists, returns by default DRAFT status"""
-    #TODO create settings attribute to return status in absence
+    #TODO create settings attribute instead of hardcoding to DRAFT
     
     def __last_status(self):
         try:
