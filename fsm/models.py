@@ -9,7 +9,7 @@ from common.models import DropdownValue
 """
 Defines the finite state machine models
 
-Workflow --> has N States ---> that can Transition ---> depending on a Event ---> managed by WorkflowProcessor ---> that logs WorkflowLog
+Workflow --> has N States ---> that can Transition [activity] ---> depending on a Event ---> managed by WorkflowProcessor ---> that logs WorkflowLog
 
 """
 
@@ -40,7 +40,7 @@ class State(models.Model):
     is_terminator = models.BooleanField(_('Is End State?'), default=False)
     
     #workflow foreign key
-    workflow = models.ForeignKey(Workflow, related_names='states')
+    workflow = models.ForeignKey(Workflow, related_name='states')
     roles = models.ManyToManyField(Role, blank=True)
     
     class Meta:

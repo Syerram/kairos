@@ -1,4 +1,5 @@
 from kairos.util import enum
+from django.utils.translation import ugettext_lazy as _
 
 WORKFLOW_STATUS = enum('DEFINITION', 'ACTIVE', 'RETIRED')
 

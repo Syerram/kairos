@@ -10,6 +10,7 @@ from categories.models import Project, Activity
 from kairos import util
 from common.models import DropdownValue
 import datetime
+from fsm.models import WorkflowActivity
 
 class Timesheet(models.Model):
     """
@@ -77,6 +78,7 @@ class WeekSnapshot(models.Model):
     end_week = models.DateTimeField()
     comment = GenericRelation(Comment, object_id_field='object_pk', null=True, blank=True)
     week = models.PositiveIntegerField(_('week number'))
+    workflow_activity=models.ForeignKey(WorkflowActivity, null=True)
     
     user = models.ForeignKey(User)
     
