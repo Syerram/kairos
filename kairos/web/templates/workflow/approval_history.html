@@ -1,0 +1,19 @@
+{% load tracker_tags %}
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+</head>
+<body>
+    {% for h_item in history_items %}
+            {% total_hours h_item.approver_queue.content_object as total_hours %}
+            <div class="queue-box">
+                <span>{{h_item.prev_user.username}}</span>
+                <span>{{total_hours}}</span>
+                <span>{{h_item.status.display}}</span>
+                <span>{{h_item.created_on}}</span>                         
+            </div>
+        {% endfor %}
+</body>
+</html>

@@ -8,16 +8,15 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Deleting model 'WeekSnapshotManager'
-        db.delete_table('tracker_weeksnapshotmanager')
+        # Adding field 'ProjectRole.project'
+        db.add_column('categories_projectrole', 'project',
+                      self.gf('django.db.models.fields.related.ForeignKey')(default=None, to=orm['categories.Project']),
+                      keep_default=False)
 
 
     def backwards(self, orm):
-        # Adding model 'WeekSnapshotManager'
-        db.create_table('tracker_weeksnapshotmanager', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-        ))
-        db.send_create_signal('tracker', ['WeekSnapshotManager'])
+        # Deleting field 'ProjectRole.project'
+        db.delete_column('categories_projectrole', 'project_id')
 
 
     models = {
@@ -89,29 +88,12 @@ class Migration(SchemaMigration):
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'project': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'project'", 'to': "orm['categories.Project']"})
         },
-        'comments.comment': {
-            'Meta': {'ordering': "('submit_date',)", 'object_name': 'Comment', 'db_table': "'django_comments'"},
-            'comment': ('django.db.models.fields.TextField', [], {'max_length': '3000'}),
-            'content_type': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'content_type_set_for_comment'", 'to': "orm['contenttypes.ContentType']"}),
+        'categories.projectrole': {
+            'Meta': {'object_name': 'ProjectRole'},
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'ip_address': ('django.db.models.fields.IPAddressField', [], {'max_length': '15', 'null': 'True', 'blank': 'True'}),
-            'is_public': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'is_removed': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'object_pk': ('django.db.models.fields.TextField', [], {}),
-            'site': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['sites.Site']"}),
-            'submit_date': ('django.db.models.fields.DateTimeField', [], {'default': 'None'}),
-            'user': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'comment_comments'", 'null': 'True', 'to': "orm['auth.User']"}),
-            'user_email': ('django.db.models.fields.EmailField', [], {'max_length': '75', 'blank': 'True'}),
-            'user_name': ('django.db.models.fields.CharField', [], {'max_length': '50', 'blank': 'True'}),
-            'user_url': ('django.db.models.fields.URLField', [], {'max_length': '200', 'blank': 'True'})
-        },
-        'common.dropdownmodel': {
-            'Meta': {'object_name': 'DropdownModel'},
-            'active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'category': ('django.db.models.fields.CharField', [], {'max_length': '5'}),
-            'description': ('django.db.models.fields.CharField', [], {'max_length': '20', 'null': 'True', 'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '20'})
+            'project': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['categories.Project']"}),
+            'role': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['users.Role']"}),
+            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']"})
         },
         'contenttypes.contenttype': {
             'Meta': {'ordering': "('name',)", 'unique_together': "(('app_label', 'model'),)", 'object_name': 'ContentType', 'db_table': "'django_content_type'"},
@@ -120,53 +102,13 @@ class Migration(SchemaMigration):
             'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
         },
-        'sites.site': {
-            'Meta': {'ordering': "('domain',)", 'object_name': 'Site', 'db_table': "'django_site'"},
-            'domain': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
+        'users.role': {
+            'Meta': {'ordering': "['name']", 'object_name': 'Role'},
+            'active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
+            'description': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '50'})
-        },
-        'tracker.timesheet': {
-            'Meta': {'object_name': 'Timesheet'},
-            'activity': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['categories.Activity']"}),
-            'day': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'day_1_hours': ('django.db.models.fields.DecimalField', [], {'null': 'True', 'max_digits': '4', 'decimal_places': '2', 'blank': 'True'}),
-            'day_2_hours': ('django.db.models.fields.DecimalField', [], {'null': 'True', 'max_digits': '4', 'decimal_places': '2', 'blank': 'True'}),
-            'day_3_hours': ('django.db.models.fields.DecimalField', [], {'null': 'True', 'max_digits': '4', 'decimal_places': '2', 'blank': 'True'}),
-            'day_4_hours': ('django.db.models.fields.DecimalField', [], {'null': 'True', 'max_digits': '4', 'decimal_places': '2', 'blank': 'True'}),
-            'day_5_hours': ('django.db.models.fields.DecimalField', [], {'null': 'True', 'max_digits': '4', 'decimal_places': '2', 'blank': 'True'}),
-            'day_6_hours': ('django.db.models.fields.DecimalField', [], {'null': 'True', 'max_digits': '4', 'decimal_places': '2', 'blank': 'True'}),
-            'day_7_hours': ('django.db.models.fields.DecimalField', [], {'null': 'True', 'max_digits': '4', 'decimal_places': '2', 'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'project': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['categories.Project']"})
-        },
-        'tracker.timesheethistory': {
-            'Meta': {'object_name': 'TimesheetHistory'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'last_updated': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
-            'timesheet': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['tracker.Timesheet']"}),
-            'timesheet_status': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['common.DropdownModel']"})
-        },
-        'tracker.timesheetnote': {
-            'Meta': {'object_name': 'TimesheetNote'},
-            'day_1_note': ('django.db.models.fields.CharField', [], {'max_length': '1000', 'null': 'True', 'blank': 'True'}),
-            'day_2_note': ('django.db.models.fields.CharField', [], {'max_length': '1000', 'null': 'True', 'blank': 'True'}),
-            'day_3_note': ('django.db.models.fields.CharField', [], {'max_length': '1000', 'null': 'True', 'blank': 'True'}),
-            'day_4_note': ('django.db.models.fields.CharField', [], {'max_length': '1000', 'null': 'True', 'blank': 'True'}),
-            'day_5_note': ('django.db.models.fields.CharField', [], {'max_length': '1000', 'null': 'True', 'blank': 'True'}),
-            'day_6_note': ('django.db.models.fields.CharField', [], {'max_length': '1000', 'null': 'True', 'blank': 'True'}),
-            'day_7_note': ('django.db.models.fields.CharField', [], {'max_length': '1000', 'null': 'True', 'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'timesheet': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['tracker.Timesheet']"})
-        },
-        'tracker.weeksnapshot': {
-            'Meta': {'object_name': 'WeekSnapshot'},
-            'end_week': ('django.db.models.fields.DateTimeField', [], {}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'start_week': ('django.db.models.fields.DateTimeField', [], {}),
-            'timesheets': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'to': "orm['tracker.Timesheet']", 'null': 'True', 'blank': 'True'}),
-            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']"})
         }
     }
 
-    complete_apps = ['tracker']
+    complete_apps = ['categories']

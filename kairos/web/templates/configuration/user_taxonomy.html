@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="/static/css/common.css" type="text/css"
+    media="screen">
+<script type="text/javascript"
+    src="http://code.jquery.com/jquery-latest.js"></script>
+<script src="http://cdn.jquerytools.org/1.2.7/full/jquery.tools.min.js"></script>
+<meta charset="ISO-8859-1">
+<title>Kairos | Select Team/Product</title>
+<script type="text/javascript">
+        $(document).ready(
+                function() {        
+                	$('.circle').click(function() {
+                        $(this).addClass('selected_circle');
+                        return true;
+                     });
+                });
+</script>
+
+</head>
+<body>
+    <div class="proj-sub-home">
+        <span class="welcome-user">Welcome {{request.user.first_name}},
+            {{request.user.last_name}}</span> <span class="welcome-question">Please select a Team/Product you're working on..</span> 
+            {% for taxonomy in taxonomies %}
+                  <div class="circle">
+                        <a class="taxonomy_choice" href="/u/conf/{{taxonomy.id}}"><span>{{taxonomy.name}}</span></a>
+                   </div>
+            {% endfor %}       
+    </div>
+</body>
+</html>

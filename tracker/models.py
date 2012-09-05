@@ -7,10 +7,7 @@ from django.db.models import Q
 
 from kairos.util.monkey_patch import decorator as monkey_patch
 from categories.models import Project, Activity
-from kairos import util
 from common.models import DropdownValue
-import datetime
-from fsm.models import WorkflowActivity
 
 class Timesheet(models.Model):
     """
@@ -31,7 +28,8 @@ class Timesheet(models.Model):
     
     def __total_hours(self):
         """Determines the amount of total hours for the time period"""
-        return self.day_1_hours + self.day_2_hours + self.day_3_hours + self.day_4_hours + self.day_5_hours + self.day_6_hours + self.day_7_hours
+        return (self.day_1_hours or 0) + (self.day_2_hours or 0) + (self.day_3_hours or 0) + \
+            (self.day_4_hours or 0) + (self.day_5_hours or 0) + (self.day_6_hours or 0) + (self.day_7_hours or 0)
     
     total_hours = property(__total_hours)
     
@@ -77,17 +75,11 @@ class WeekSnapshot(models.Model):
     start_week = models.DateTimeField()
     end_week = models.DateTimeField()
     comment = GenericRelation(Comment, object_id_field='object_pk', null=True, blank=True)
-    week = models.PositiveIntegerField(_('week number'))
-    workflow_activity=models.ForeignKey(WorkflowActivity, null=True)
+    week = models.PositiveIntegerField(_('week number'))    
     
     user = models.ForeignKey(User)
     
     timesheets = models.ManyToManyField(Timesheet, null=True, blank=True)
-    
-    def __available_statuses(self):
-        return DropdownValue.objects.dropdownvalues(category='WS')
-    
-    available_statuses = property(__available_statuses)
     
     def __history(self):
         return WeekSnapshotHistory.objects.get(weeksnapshot=self)
@@ -97,14 +89,15 @@ class WeekSnapshot(models.Model):
     def __total_hours(self):
         """Returns total hours for all timesheets"""
         total_hours = 0
-        for timesheet in self.timesheets:
+        for timesheet in self.timesheets.all():
             total_hours += timesheet.total_hours
         
         return total_hours
     
     total_hours = property(__total_hours)
     
-    objects = WeekSnapshotManager()
+    objects = WeekSnapshotManager()   
+
 
 class WeekSnapshotHistory(models.Model):
     """Represents different statuses for weekly timesheets"""
@@ -117,14 +110,19 @@ class WeekSnapshotHistory(models.Model):
 
 @monkey_patch(WeekSnapshot)
 class PatchedWeekSnapshot(object):
-    """If it doesn't exists, returns by default DRAFT status"""
-    #TODO create settings attribute instead of hardcoding to DRAFT
     
     def __last_status(self):
+        """If it doesn't exists, returns by default DRAFT status"""
+        #TODO create settings attribute instead of hardcoding to DRAFT    
         try:
             return WeekSnapshotHistory.objects.filter(Q(weeksnapshot=self)).latest(field_name='last_updated')
         except WeekSnapshotHistory.DoesNotExist:
-            draft_dropdownvalue = self.available_statuses.filter(code='DRFT')[0]
+            draft_dropdownvalue = DropdownValue.objects.dropdownvalue('WF', 'DRAFT')
             return WeekSnapshotHistory(weeksnapshot=self, weeksnapshot_status=draft_dropdownvalue)
     
-    last_status = property(__last_status)
+    last_status = property(__last_status)   
+    
+    def __last_workflow(self):
+        """return brand new workflow object or existing workflow instance"""
+        return None
+        

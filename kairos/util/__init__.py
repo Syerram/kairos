@@ -5,6 +5,7 @@ from datetime import date, datetime, timedelta, time as time_obj
 from django.http import HttpRequest
 from django.shortcuts import redirect, render_to_response
 from django.template.context import RequestContext
+from django.core.cache import cache
 
 
 class ExternalMessageRequestStorage(SessionStorage):
@@ -118,3 +119,23 @@ def render_to_html_dict(html):
             
         return wrapper
     return render_decorator    
+
+def cacher(key=None, timeout=None):
+    """
+    Allows value returning methods to cache their data. Uses the settings defined in the `settings.py` file.
+    If no `key` is passed, it will create a key using the arguments supplied to the method.
+    """
+    def cache_decorator(func):
+        def wrapper(*args, **kwargs):
+            #TODO: if key None then we use function kwargs for key                
+            value = cache.get(key)
+            if not value:
+                value = func(*args, **kwargs)
+                if timeout:
+                    cache.set(key, value, timeout)
+                else:
+                    cache.set(key, value)
+            return value
+        
+        return wrapper
+    return cache_decorator

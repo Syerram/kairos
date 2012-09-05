@@ -41,8 +41,7 @@
 </head>
 <body>
 	<div class="proj-sub-home">
-		<span class="welcome-user">Welcome {{request.user.first_name}},
-			{{request.user.last_name}}</span> <span class="welcome-question">Please
+		<span class="welcome-user">Almost Done!</span> <span class="welcome-question">Please
 			select projects to subscribe..</span> 
 			{% for project in projects %}
 		          <div class="circle" data-project-id="{{project.id}}">
@@ -53,7 +52,7 @@
 			style="clear: both; display: inline-block; margin-top: 10px;"
 			class="section">
 			<form style="margin: 0; padding: 0"
-				action="/u/conf/" method="post">
+				action="/u/conf/proj/" method="post">
 				{% csrf_token %} 
 				<input type="hidden" id="id_projects" name="projects" value="" /> 
 				<input type="hidden" id="id_next" name="next" value="{{next}}" />

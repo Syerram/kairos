@@ -1,0 +1,39 @@
+{% load tracker_tags %}
+<!DOCTYPE html>
+<html>
+<head>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
+    <script type="text/javascript" src="/static/js/jquery.hoverIntent.minified.js"></script>
+    <link rel="stylesheet" href="/static/css/queue.css" type="text/css" media="screen">
+    <link rel="stylesheet" href="/static/css/glyphicon-icons.css" type="text/css" media="screen">    
+    <meta charset="ISO-8859-1">
+    <title>Kairos | Queue</title>
+</head>
+
+<body>
+    <div class="header">
+        <div id="dashboard">
+            <span class="welcome-user">{{request.user.first_name}}, {{request.user.last_name}}</span>
+            <ul id="menu">
+                <li>My Profile</li>
+                <li class="drop">Reports</li>
+                <li class="drop">Logout</li>
+            </ul>
+        </div>
+    </div>
+    <div class="row" style="margin: 25px 0 0 5%;">
+        {% for queue_item in queue_items %}
+            {% total_hours queue_item.content_object as total_hours %}
+            <div class="queue-box">
+	            <span>{{queue_item.content_object.user.username}}</span>
+	            <span>{{total_hours}}</span>
+	            <span>{{queue_item.content_object.week}}</span>
+	            <span>{{queue_item.content_object.start_week}}</span>
+	            <span>{{queue_item.content_object.end_week}}</span>
+	            <a href="/q/+/{{queue_item.id}}" class="blue-button"><span>Approve</span></a>
+	            <a href="/q/-/{{queue_item.id}}" class="red-button"><span>Reject</span></a>
+            </div>
+        {% endfor %}
+    </div>
+</body>
+</html>

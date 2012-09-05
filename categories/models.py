@@ -1,6 +1,9 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.contrib import admin
+from users.models import Role
+from django.contrib.auth.models import User
+from django.db.models import Q
 
 class Client(models.Model):
     
@@ -22,6 +25,44 @@ class Client(models.Model):
 
 admin.site.register(Client)
 
+class TaxonomyManager(models.Manager):
+    
+    def active(self):
+        return self.get_query_set().filter(active=True)
+
+class Taxonomy(models.Model):
+    """Represents a categorization smaller than client but higher than Project. e.g. Team or Product"""
+    
+    name = models.CharField(max_length=255)
+    description = models.TextField(blank=True, null=True)
+    active = models.BooleanField(default=True)
+    
+    client = models.ForeignKey(Client)
+    
+    objects = TaxonomyManager()
+    
+    def __unicode__(self):
+        return self.name
+
+admin.site.register(Taxonomy)
+
+class TaxonomyRole(models.Model):
+    """Defines Taxonomy roles"""
+    
+    role = models.ForeignKey(Role)
+    user = models.ForeignKey(User)
+    taxonomy = models.ForeignKey(Taxonomy)
+    
+    class meta:
+        unique_together = ('taxonomy', 'role', 'user')
+        verbose_name = _("Taxonomy Role")
+        verbose_name_plural = _("Taxonomy Roles")
+    
+    def __unicode__(self):
+        return 'Taxonomy: ' + self.taxonomy.name + ", Role: " + self.role.name + ", User: " + self.user.username
+
+admin.site.register(TaxonomyRole)
+
 class Activity(models.Model):
     code = models.CharField(max_length=5, unique=True)
     name = models.CharField(max_length=50)
@@ -40,12 +81,12 @@ admin.site.register(Activity)
 
 class ProjectManager(models.Manager):
     
-    def active(self):
-        return self.get_query_set().filter(active=True)
+    def active(self, taxonomy):
+        return self.get_query_set().filter(Q(active=True) & Q(taxonomy=taxonomy))
 
 class Project(models.Model):
     
-    client = models.ForeignKey(Client)
+    taxonomy = models.ForeignKey(Taxonomy)
     name = models.CharField(max_length=10)
     description = models.TextField(blank=True, null=True)
     project_code = models.CharField(max_length=5)
@@ -66,11 +107,11 @@ class Project(models.Model):
 admin.site.register(Project)
 
 class ProjectActivity(models.Model):
-    class Meta:
-        verbose_name_plural = "project_activities"
-    
     project = models.ForeignKey(Project, related_name="project", verbose_name=_('project'))
     activity = models.ForeignKey(Activity, related_name="activity")
+
+    class Meta:
+        verbose_name_plural = _("Project Activities")
 
     def __unicode__(self):
         return 'Project: ' + self.project.name + ", Activity: " + self.activity.name

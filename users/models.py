@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from django.contrib import admin
 
 # Create your models here.
 class Role(models.Model):
@@ -19,3 +20,5 @@ class Role(models.Model):
         ordering = ['name', ]
         verbose_name = _('Role')
         verbose_name_plural = _('Roles')
+
+admin.site.register(Role)

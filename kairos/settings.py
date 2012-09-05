@@ -125,6 +125,7 @@ CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
         'LOCATION': 'global',
+        'TIMEOUT': '300000',
     }
           
 }
@@ -161,12 +162,13 @@ INSTALLED_APPS = (
     
     #kairos,
     'common',
+    'users',    
+    'categories',    
     'configuration',
-    'categories',
-    'users',
     'tracker',
     'timeoff',    
     'fsm',
+    'workflow',
 )
 
 # A sample logging configuration. The only tangible logging

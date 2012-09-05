@@ -12,10 +12,10 @@
     <div class="landing-home">
         <span class="welcome-user">Welcome {{request.user.first_name}}, {{request.user.last_name}}</span>
         <span class="welcome-question">What would you like to do?</span>
-        <div class="solid-circle"><a href="/timesheet/{{current_week_number}}"><span>Timesheets</span></a></div>
+        <div class="solid-circle"><a href="/timesheet/{{current_week_number}}/"><span>Timesheets</span></a></div>
         <div class="solid-circle"><a href="#"><span>Time Off</span></a></div>
         <div class="solid-circle"><a href="#"><span>Profile</span></a></div>
-        <div class="solid-circle"><a href="#"><span>Approvals</span></a></div>
+        <div class="solid-circle"><a href="/q/"><span>Queue</span></a></div>
         <div id="section" style="clear:both;display:inline-block;margin-top:10px;" class="section">
              <span class="user-stats">1 pending, 2 review</span>
              <input type="submit" style="float:right;margin:6px 10px 0 0;width:75px;" class="grey-button" value="Logout"/>

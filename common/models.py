@@ -33,4 +33,5 @@ class DropdownValue(models.Model):
     def __unicode__(self):
         return self.display
 
+
 admin.site.register(DropdownValue)

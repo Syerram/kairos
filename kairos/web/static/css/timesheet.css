@@ -2,7 +2,7 @@
 
 body {
 	margin: 0;
-	background: #EAEBEC url(http://dialog.gs/static/images/bg.png) repeat
+	background: #EAEBEC url(/static/img/bg.png) repeat
 		left top;
 	color: #2C2C2C;
 	font-family: 'Helvetica Neue', helvetica, sans-serif;

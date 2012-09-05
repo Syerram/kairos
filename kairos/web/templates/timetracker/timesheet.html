@@ -24,32 +24,40 @@
 		
 		$(document).ready(function() {		
 	// 		$('#menu li.drop').hoverIntent(makeTall, makeShort);
-		    
-		    $('.reset').click(function(e) {
-		    	e.preventDefault();
-		    	$('#time-table .hour-input').val('');
-		    });
-		    
-		    $('.project-dropdown').change(function() {
-		    	if($(this).val) {
-			    	$.get('/activities/'+ $(this).val(), function(data) {
-			    		  $('.activity-dropdown').empty().append($(data));
-			    	});
-		    	}
-		    });
-		    
-		    $('#id_submit').click(function(e) {
-		    	$('#id_is_draft').val('false');
-		    	return true;
-		    });
-		    
-		    $('#id_timesheet tbody tr').formset({
-		    	addText: '',
-		        addCssClass:'sprite-glyphicons_190_circle_plus',
-		        deleteText:'',
-		        deleteCssClass:'sprite-glyphicons_016_bin',		        
-		    });
-		    
+	
+	       {% if week_snapshot.last_status.weeksnapshot_status|is_editable %}		    
+			    $('.reset').click(function(e) {
+			    	e.preventDefault();
+			    	$('#time-table .hour-input').val('');
+			    });
+			    
+			    $('.project-dropdown').change(function() {
+			    	if($(this).val) {
+				    	$.get('/activities/'+ $(this).val(), function(data) {
+				    		  $('.activity-dropdown').empty().append($(data));
+				    	});
+			    	}
+			    });
+			    
+			    $('#id_submit').click(function(e) {
+			    	$('#id_is_draft').val('false');
+			    	return true;
+			    });
+			    
+			    $('#id_timesheet tbody tr').formset({
+			    	addText: '',
+			        addCssClass:'sprite-glyphicons_190_circle_plus',
+			        deleteText:'',
+			        deleteCssClass:'sprite-glyphicons_016_bin',		        
+			    });
+		    {% else %}
+		        $('.hour-input').prop('disabled', true);
+		        $('.hour-input').css('background-color', 'silver');
+		        $('#id_submit').prop('value', 'Re-open');
+		        $('#id_draft').hide();
+		        $('.reset').hide();
+		        //rest of disabling goes here		        
+		    {% endif %}
 		});
 	</script>
 </head>
@@ -137,8 +145,8 @@
 											</td>
 											<td>
 											     <div id="activity-dropdown">
-				                                    <select name="{{timesheet_form.activity.html_name}}" class="dropdown-select activity-dropdown" id="{{timesheet_form.activity.auto_id}}">
-				                                        <option class="dropdown-option">Choose Activity</option>                                        
+				                                    <select name="{{timesheet_form.activity.html_name}}" class="dropdown-select activity-dropdown" id="{{timesheet_form.activity.auto_id}}">				                                        
+				                                        {% activity_dropdown timesheet_form.initial.project timesheet_form.initial.activity %}                                 
 				                                    </select>
 				                                </div>
 				                            </td>
