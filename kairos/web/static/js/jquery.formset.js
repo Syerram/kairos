@@ -32,7 +32,7 @@
             },
 
             hasChildElements = function(row) {
-                return row.find('input,select,textarea,label').length > 0;
+                return row.find('input,select,textarea,label,span').length > 0;
             },
 
             insertDeleteLink = function(row) {
@@ -66,7 +66,7 @@
                         $('#id_' + options.prefix + '-TOTAL_FORMS').val(forms.length);
                         for (var i=0, formCount=forms.length; i<formCount; i++) {
                             applyExtraClasses(forms.eq(i), i);
-                            forms.eq(i).find('input,select,textarea,label').each(function() {
+                            forms.eq(i).find('input,select,textarea,label,span').each(function() {
                                 updateElementIndex($(this), options.prefix, i);
                             });
                         }
@@ -100,7 +100,7 @@
                 // If a form template was specified, we'll clone it to generate new form instances:
                 template = (options.formTemplate instanceof $) ? options.formTemplate : $(options.formTemplate);
                 template.removeAttr('id').addClass(options.formCssClass).addClass('formset-custom-template');
-                template.find('input,select,textarea,label').each(function() {
+                template.find('input,select,textarea,label,span').each(function() {
                     updateElementIndex($(this), options.prefix, 2012);
                 });
                 insertDeleteLink(template);
@@ -109,14 +109,21 @@
                 // extra (>= 1) forms (thnaks to justhamade for pointing this out):
                 template = $('.' + options.formCssClass + ':last').clone(true).removeAttr('id');
                 template.find('input:hidden[id $= "-DELETE"]').remove();
-                template.find('input,select,textarea,label').each(function() {
+                template.find('input,select,textarea,label,span').each(function() {
                     var elem = $(this);
                     // If this is a checkbox or radiobutton, uncheck it.
                     // This fixes Issue 1, reported by Wilson.Andrew.J:
                     if (elem.is('input:checkbox') || elem.is('input:radio')) {
                         elem.attr('checked', false);
                     } else {
-                        elem.val('');
+                    	if (elem.is('span')) {
+                    		elem.text('');
+                    	} else if (elem.is('select')) {
+                    		elem.prop('selectedIndex', 0);
+                    	} else {
+                    		elem.val('');
+                    	}                        
+                        //TODO: reset the controls according to their type
                     }
                 });
             }
@@ -141,7 +148,7 @@
                     buttonRow = $(this).parents('tr.' + options.formCssClass + '-add').get(0) || this;
                 applyExtraClasses(row, formCount);
                 row.insertBefore($(buttonRow)).show();
-                row.find('input,select,textarea,label').each(function() {
+                row.find('input,select,textarea,label,span').each(function() {
                     updateElementIndex($(this), options.prefix, formCount);
                 });
                 $('#id_' + options.prefix + '-TOTAL_FORMS').val(formCount + 1);

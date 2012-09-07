@@ -5,6 +5,8 @@
 	<script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
 	<script type="text/javascript" src="/static/js/jquery.hoverIntent.minified.js"></script>
 	<script type="text/javascript" src="/static/js/jquery.formset.js"></script>
+	<script type="text/javascript" src="/static/js/jquery.numeric.js"></script>	
+	 
 	<link rel="stylesheet" href="/static/css/timesheet.css" type="text/css" media="screen">
 	<link rel="stylesheet" href="/static/css/glyphicon-icons.css" type="text/css" media="screen">
 	<link href="/static/css/bootstrap.css" rel="stylesheet" />
@@ -16,10 +18,37 @@
 				"height" : 75
 			}, 15);
 		}
+		
 		function makeShort() {
 			$(this).stop().animate({
 				"height" : 16
 			}, 15);
+		}
+		
+		function update_totals() {
+            var orig_hours = parseFloat($(this).data('hours'));
+            var new_hours = parseFloat(this.value);
+            if(orig_hours!=this.value) {
+                var day_total_hours_class= '.' +  $(this).data('ptr-total-hours');
+                var day_total_hours = parseFloat($(day_total_hours_class).text());
+                day_total_hours = day_total_hours - orig_hours + new_hours;
+                $(day_total_hours_class).text(day_total_hours.toFixed(2));
+                
+                var row_totals_elem = $(this).parent().parent().find('span');
+                var row_totals = parseFloat(row_totals_elem.text());
+                row_totals = row_totals - orig_hours + new_hours;
+                row_totals_elem.text(row_totals.toFixed(2));
+                
+                var total_hours = parseFloat($('.total_hours').text());
+                total_hours = total_hours - orig_hours + new_hours;
+                $('.total_hours').text(total_hours.toFixed(2));
+                
+                $(this).data('hours', new_hours);
+            }        
+		}
+
+		function added_row(row) {
+			console.info(row);
 		}
 		
 		$(document).ready(function() {		
@@ -30,6 +59,8 @@
 			    	e.preventDefault();
 			    	$('#time-table .hour-input').val('');
 			    });
+			    
+			    $('.hour-input').numeric({decimal: ".", negative: false}, null, update_totals);
 			    
 			    $('.project-dropdown').change(function() {
 			    	if($(this).val) {
@@ -48,12 +79,13 @@
 			    	addText: '',
 			        addCssClass:'sprite-glyphicons_190_circle_plus',
 			        deleteText:'',
-			        deleteCssClass:'sprite-glyphicons_016_bin',		        
+			        deleteCssClass:'sprite-glyphicons_016_bin',
+			        added: added_row,
 			    });
 		    {% else %}
 		        $('.hour-input').prop('disabled', true);
 		        $('.hour-input').css('background-color', 'silver');
-		        $('#id_submit').prop('value', 'Re-open');
+		        $('#id_submit').prop('value', 'Print');
 		        $('#id_draft').hide();
 		        $('.reset').hide();
 		        //rest of disabling goes here		        
@@ -120,6 +152,7 @@
 									<th scope="col" abbr="Sunday">
 									   <span style="display: block; margin-left: 5px;">Sun</span>
                                         <span style="display: block; font-weight: normal; font-size: 10px;">{{week_snapshot.start_week|day_plus:"6"|date:"d"}}</span></th>
+                                    <th scope="col"><span>Total</span></th>
 									<th scope="col" abbr="action"></th>
 								</tr>
 							</thead>
@@ -150,17 +183,34 @@
 				                                    </select>
 				                                </div>
 				                            </td>
-											<td><input class="hour-input" type="text" value="{% if timesheet_form.day_1_hours.value %} {{timesheet_form.day_1_hours.value}} {% endif %}" placeholder="0.00" id="{{timesheet_form.day_1_hours.auto_id}}" name="{{timesheet_form.day_1_hours.html_name}}" /></td>
-											<td><input class="hour-input" type="text" value="{% if timesheet_form.day_2_hours.value %} {{timesheet_form.day_2_hours.value}} {% endif %}" placeholder="0.00" id="{{timesheet_form.day_2_hours.auto_id}}" name="{{timesheet_form.day_2_hours.html_name}}" /></td>
-											<td><input class="hour-input" type="text" value="{% if timesheet_form.day_3_hours.value %} {{timesheet_form.day_3_hours.value}} {% endif %}" placeholder="0.00" id="{{timesheet_form.day_3_hours.auto_id}}" name="{{timesheet_form.day_3_hours.html_name}}" /></td>
-											<td><input class="hour-input" type="text" value="{% if timesheet_form.day_4_hours.value %} {{timesheet_form.day_4_hours.value}} {% endif %}" placeholder="0.00" id="{{timesheet_form.day_4_hours.auto_id}}" name="{{timesheet_form.day_4_hours.html_name}}" /></td>
-											<td><input class="hour-input" type="text" value="{% if timesheet_form.day_5_hours.value %} {{timesheet_form.day_5_hours.value}} {% endif %}" placeholder="0.00" id="{{timesheet_form.day_5_hours.auto_id}}" name="{{timesheet_form.day_5_hours.html_name}}" /></td>
-											<td><input class="hour-input" type="text" value="{% if timesheet_form.day_6_hours.value %} {{timesheet_form.day_6_hours.value}} {% endif %}" placeholder="0.00" id="{{timesheet_form.day_6_hours.auto_id}}" name="{{timesheet_form.day_6_hours.html_name}}" /></td>
-											<td><input class="hour-input" type="text" value="{% if timesheet_form.day_7_hours.value %} {{timesheet_form.day_7_hours.value}} {% endif %}" placeholder="0.00" id="{{timesheet_form.day_7_hours.auto_id}}" name="{{timesheet_form.day_7_hours.html_name}}" /></td>
+											<td><input class="hour-input" type="text" value="{% if timesheet_form.day_1_hours.value %}{{timesheet_form.day_1_hours.value}}{% endif %}" data-hours="{{timesheet_form.day_1_hours.value}}" data-ptr-total-hours="day_total_1_hours" placeholder="0.00" id="{{timesheet_form.day_1_hours.auto_id}}" name="{{timesheet_form.day_1_hours.html_name}}" /></td>
+											<td><input class="hour-input" type="text" value="{% if timesheet_form.day_2_hours.value %}{{timesheet_form.day_2_hours.value}}{% endif %}" data-hours="{{timesheet_form.day_2_hours.value}}" data-ptr-total-hours="day_total_2_hours"  placeholder="0.00" id="{{timesheet_form.day_2_hours.auto_id}}" name="{{timesheet_form.day_2_hours.html_name}}" /></td>
+											<td><input class="hour-input" type="text" value="{% if timesheet_form.day_3_hours.value %}{{timesheet_form.day_3_hours.value}}{% endif %}" data-hours="{{timesheet_form.day_3_hours.value}}" data-ptr-total-hours="day_total_3_hours"  placeholder="0.00" id="{{timesheet_form.day_3_hours.auto_id}}" name="{{timesheet_form.day_3_hours.html_name}}" /></td>
+											<td><input class="hour-input" type="text" value="{% if timesheet_form.day_4_hours.value %}{{timesheet_form.day_4_hours.value}}{% endif %}" data-hours="{{timesheet_form.day_4_hours.value}}" data-ptr-total-hours="day_total_4_hours"  placeholder="0.00" id="{{timesheet_form.day_4_hours.auto_id}}" name="{{timesheet_form.day_4_hours.html_name}}" /></td>
+											<td><input class="hour-input" type="text" value="{% if timesheet_form.day_5_hours.value %}{{timesheet_form.day_5_hours.value}}{% endif %}" data-hours="{{timesheet_form.day_5_hours.value}}" data-ptr-total-hours="day_total_5_hours"  placeholder="0.00" id="{{timesheet_form.day_5_hours.auto_id}}" name="{{timesheet_form.day_5_hours.html_name}}" /></td>
+											<td><input class="hour-input" type="text" value="{% if timesheet_form.day_6_hours.value %}{{timesheet_form.day_6_hours.value}}{% endif %}" data-hours="{{timesheet_form.day_6_hours.value}}" data-ptr-total-hours="day_total_6_hours"  placeholder="0.00" id="{{timesheet_form.day_6_hours.auto_id}}" name="{{timesheet_form.day_6_hours.html_name}}" /></td>
+											<td><input class="hour-input" type="text" value="{% if timesheet_form.day_7_hours.value %}{{timesheet_form.day_7_hours.value}}{% endif %}" data-hours="{{timesheet_form.day_7_hours.value}}" data-ptr-total-hours="day_total_7_hours"  placeholder="0.00" id="{{timesheet_form.day_7_hours.auto_id}}" name="{{timesheet_form.day_7_hours.html_name}}" /></td>
+											<td><span id="{{timesheet_form.total_hours.auto_id}}">{{timesheet_form.initial.total_hours}}</span></td>
 											<td></td>																										
 									    </tr>									    
 								 {% endfor %}									    
-							</tbody>							
+							</tbody>	
+							<tfoot>
+							     <tr>
+							         <td></td>
+							         <td></td>
+							         <td><span  class="day_total_1_hours" style="display: block; margin-left: 15px;">{% total_hours_day week_snapshot 1 %}</span></td>
+							         <td><span  class="day_total_2_hours" style="display: block; margin-left: 15px;">{% total_hours_day week_snapshot 2 %}</span></td>
+							         <td><span  class="day_total_3_hours" style="display: block; margin-left: 15px;">{% total_hours_day week_snapshot 3 %}</span></td>
+							         <td><span  class="day_total_4_hours" style="display: block; margin-left: 15px;">{% total_hours_day week_snapshot 4 %}</span></td>
+							         <td><span  class="day_total_5_hours" style="display: block; margin-left: 15px;">{% total_hours_day week_snapshot 5 %}</span></td>
+							         <td><span  class="day_total_6_hours" style="display: block; margin-left: 15px;">{% total_hours_day week_snapshot 6 %}</span></td>
+							         <td><span  class="day_total_7_hours" style="display: block; margin-left: 15px;">{% total_hours_day week_snapshot 7 %}</span></td>
+							         <td><span  class="total_hours" style="display: block; margin-left: 0;">{{week_snapshot.total_hours}}</span></td>
+							         <td></td>
+							     </tr>
+							     
+							</tfoot>						
 						</table>
 					</div>
 				</div>

@@ -1,7 +1,7 @@
 # Create your views here.
 from django.contrib.auth.decorators import login_required
 from kairos.util import determine_period, render_to_html_dict
-from tracker.forms import WeekSnapshotForm
+from tracker.forms import WeekSnapshotForm, TimesheetForm
 from tracker.models import WeekSnapshot, Timesheet
 from tracker.templatetags.tracker_tags import current_week_number, monday_of_week
 from django.forms.models import modelformset_factory
@@ -35,7 +35,7 @@ def timesheet_by_week(request, week=None):
             
         week_snapshot_form = WeekSnapshotForm(prefix="week_snapshot", instance=week_snapshot)
         
-        TimesheetFormSet = modelformset_factory(Timesheet, can_delete=True, extra=extra_form)
+        TimesheetFormSet = modelformset_factory(Timesheet, can_delete=True, extra=extra_form, form=TimesheetForm)
         timesheet_form_set = TimesheetFormSet(queryset=timesheets)
         
         return 'timesheet', {'projects': user_projects, 'week': int(week), 'timesheet_form_set': timesheet_form_set, \

@@ -18,13 +18,13 @@ class Timesheet(models.Model):
     activity = models.ForeignKey(Activity)
     day = models.DateTimeField(auto_now_add=True)
     
-    day_1_hours = models.DecimalField(_('day one hours'), max_digits=4, decimal_places=2, null=True, blank=True)
-    day_2_hours = models.DecimalField(_('day two hours'), max_digits=4, decimal_places=2, null=True, blank=True)
-    day_3_hours = models.DecimalField(_('day three hours'), max_digits=4, decimal_places=2, null=True, blank=True)
-    day_4_hours = models.DecimalField(_('day four hours'), max_digits=4, decimal_places=2, null=True, blank=True)
-    day_5_hours = models.DecimalField(_('day five hours'), max_digits=4, decimal_places=2, null=True, blank=True)
-    day_6_hours = models.DecimalField(_('day six hours'), max_digits=4, decimal_places=2, null=True, blank=True)
-    day_7_hours = models.DecimalField(_('day seven hours'), max_digits=4, decimal_places=2, null=True, blank=True)
+    day_1_hours = models.DecimalField(_('day one hours'), max_digits=4, decimal_places=2, default=0, null=True, blank=True)
+    day_2_hours = models.DecimalField(_('day two hours'), max_digits=4, decimal_places=2, default=0, null=True, blank=True)
+    day_3_hours = models.DecimalField(_('day three hours'), max_digits=4, decimal_places=2, default=0, null=True, blank=True)
+    day_4_hours = models.DecimalField(_('day four hours'), max_digits=4, decimal_places=2, default=0, null=True, blank=True)
+    day_5_hours = models.DecimalField(_('day five hours'), max_digits=4, decimal_places=2, default=0, null=True, blank=True)
+    day_6_hours = models.DecimalField(_('day six hours'), max_digits=4, decimal_places=2, default=0, null=True, blank=True)
+    day_7_hours = models.DecimalField(_('day seven hours'), max_digits=4, decimal_places=2, default=0, null=True, blank=True)
     
     def __total_hours(self):
         """Determines the amount of total hours for the time period"""

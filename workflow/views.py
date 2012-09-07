@@ -20,12 +20,14 @@ def post_attach_queue_save(sender, **kwargs):
                                               weeksnapshot_status=status)            
     weeksnapshot_status.save()
     
+    #if not draft, then get next approver queue.
     if(not is_draft):
         queue = Queue.objects.get_queue_for_model(sender)
     
         #add the next user in sequence
         approver_queue = next_approver_in_queue(instance, 0, queue)
         
+        #found one, so lets move to the next approver. create approver queue history
         if approver_queue:
             #create a history for approver_queue with the original user 
             #save record with 0 sequence in the history for the submitter
@@ -133,6 +135,7 @@ def queue_shift(request, bit, id):
         approver_queue_history_head = ApproverQueueHistory.objects.get_head(approver_queue)
         
         #add a new approver-queue-history
+        #TODO: duplicate code, make it generic
         approver_queue_history = ApproverQueueHistory(
                           approver_queue=approver_queue,
                           from_user=current_user,
