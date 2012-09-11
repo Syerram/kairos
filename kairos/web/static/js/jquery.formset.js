@@ -72,7 +72,7 @@
                         }
                     }
                     // If a post-delete callback was provided, call it with the deleted form:
-                    if (options.removed) options.removed(row);
+                    if (options.removed) options.removed(row, forms.last());
                     return false;
                 });
             };
@@ -116,14 +116,7 @@
                     if (elem.is('input:checkbox') || elem.is('input:radio')) {
                         elem.attr('checked', false);
                     } else {
-                    	if (elem.is('span')) {
-                    		elem.text('');
-                    	} else if (elem.is('select')) {
-                    		elem.prop('selectedIndex', 0);
-                    	} else {
-                    		elem.val('');
-                    	}                        
-                        //TODO: reset the controls according to their type
+                        elem.val('');
                     }
                 });
             }

@@ -113,7 +113,6 @@ class ApproverQueue(models.Model):
         verbose_name = _('Approver Queue')
         verbose_name_plural = _('Approver Queues')
     
-    #TODO: Cache all four of these methods. perhaps create a new class in Common to fetch the status
     @staticmethod
     @cacher(key='SUBMITTED')
     def submitted_status():

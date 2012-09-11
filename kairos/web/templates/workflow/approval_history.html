@@ -3,9 +3,10 @@
 <html>
 <head>
 <meta charset="ISO-8859-1">
-<title>Insert title here</title>
+<title>Q history</title>
 </head>
 <body>
+    <p>request.user.username</p>
     {% for h_item in history_items %}
             {% total_hours h_item.approver_queue.content_object as total_hours %}
             <div class="queue-box">

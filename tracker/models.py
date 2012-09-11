@@ -125,4 +125,3 @@ class PatchedWeekSnapshot(object):
     def __last_workflow(self):
         """return brand new workflow object or existing workflow instance"""
         return None
-        

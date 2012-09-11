@@ -1,10 +1,10 @@
 # Create your views here.
 from django.db.models import Q
 from workflow.models import ApproverQueue, Queue, Approver, ApproverQueueHistory
-from tracker.models import WeekSnapshotHistory
 from categories.models import TaxonomyRole
 from django.contrib.auth.decorators import login_required
 from kairos.util import render_to_html_dict
+import workflow
 
 def post_attach_queue_save(sender, **kwargs):
     """
@@ -14,12 +14,6 @@ def post_attach_queue_save(sender, **kwargs):
     
     is_draft = kwargs['is_draft']
     instance = kwargs['instance']
-    status = ApproverQueue.draft_status if is_draft else ApproverQueue.in_queue_status()
-    #add new status to the weeksnapshot
-    weeksnapshot_status = WeekSnapshotHistory(weeksnapshot=instance, \
-                                              weeksnapshot_status=status)            
-    weeksnapshot_status.save()
-    
     #if not draft, then get next approver queue.
     if(not is_draft):
         queue = Queue.objects.get_queue_for_model(sender)
@@ -40,11 +34,10 @@ def post_attach_queue_save(sender, **kwargs):
                                       to_status=approver_queue.current_status,
                                       to_sequence=approver_queue.current_sequence)    
             approver_queue_history.save()  
-        
+            #TODO: post signal to send email to the next person in queue           
         else:
-            weeksnapshot_status = WeekSnapshotHistory(weeksnapshot=instance,
-                                                  weeksnapshot_status=ApproverQueue.approved_status())
-            weeksnapshot_status.save() 
+            workflow.signals.post_final_status_event.send(sender=ApproverQueue, instance=instance, status=ApproverQueue.approved_status())
+            
         
         
 def next_approver_in_queue(instance, sequence, queue=None, approver_queue=None):
@@ -126,10 +119,11 @@ def queue_shift(request, bit, id):
         approver_queue_history.save()  
         
         if approver_queue.current_status == ApproverQueue.approved_status():
-            #add history with approved status
-            weeksnapshot_status = WeekSnapshotHistory(weeksnapshot=approver_queue.content_object,
-                                                  weeksnapshot_status=approver_queue.current_status)
-            weeksnapshot_status.save() 
+            workflow.signals.post_final_status_event.send(sender=ApproverQueue, 
+                                         instance=approver_queue.content_object, status=ApproverQueue.approved_status())   
+        
+        #TODO: post signal to send email to the next person in queue if not the last one
+                  
     elif bit == "-":
         #need to send it back to the original submitter
         approver_queue_history_head = ApproverQueueHistory.objects.get_head(approver_queue)
@@ -154,8 +148,9 @@ def queue_shift(request, bit, id):
         approver_queue.save()
         
         #update the weeksnapshot status
-        weeksnapshot_status = WeekSnapshotHistory(weeksnapshot=approver_queue.content_object,
-                                                  weeksnapshot_status=ApproverQueue.rejected_status())
-        weeksnapshot_status.save() 
+        workflow.signals.post_final_status_event.send(sender=ApproverQueue, 
+                                     instance=approver_queue.content_object, status=ApproverQueue.rejected_status())
+            
+        #TODO: post signal to send email to the submitter with the rejection   
     
     return 'queue', {'items': ApproverQueue.objects.user_queue(request.user, ApproverQueue.in_queue_status())}

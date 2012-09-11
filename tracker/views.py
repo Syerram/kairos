@@ -2,10 +2,13 @@
 from django.contrib.auth.decorators import login_required
 from kairos.util import determine_period, render_to_html_dict
 from tracker.forms import WeekSnapshotForm, TimesheetForm
-from tracker.models import WeekSnapshot, Timesheet
+from tracker.models import WeekSnapshot, Timesheet, WeekSnapshotHistory
 from tracker.templatetags.tracker_tags import current_week_number, monday_of_week
 from django.forms.models import modelformset_factory
-from workflow.signals import post_attach_queue_save_event
+import workflow
+from workflow.models import ApproverQueue
+from rules.models import RuleSet
+from rules.validators import GenericAspect
 
 @login_required
 @render_to_html_dict(
@@ -18,6 +21,7 @@ def timesheet_by_week(request, week=None):
     if one doesn't exists, it creates in-mem object.
     If Post, saves it to the database
     """
+    #TODO: have submit thru JSON
     if not week:
         week = current_week_number()
     
@@ -42,24 +46,50 @@ def timesheet_by_week(request, week=None):
                              'week_snapshot': week_snapshot, 'week_snapshot_form': week_snapshot_form}
     else:
         is_draft = request.POST['is_draft'] == 'true'
+        status = ApproverQueue.draft_status if is_draft else ApproverQueue.in_queue_status()
         
         week_snapshot = WeekSnapshot.objects.get_or_none(week=week, user=request.user)
         week_snapshot_form = WeekSnapshotForm(request.POST, prefix="week_snapshot", instance=week_snapshot)
         if week_snapshot_form.is_valid():
-            week_snapshot = week_snapshot_form.save(request.user)
+            week_snapshot = week_snapshot_form.save(request.user)            
         
         TimesheetFormSet = modelformset_factory(Timesheet, can_delete=True)    
         timesheet_form_set = TimesheetFormSet(request.POST)
+        #TODO: serve the errors through JSON errors
         if timesheet_form_set.is_valid():
             timsheets = timesheet_form_set.save()
             week_snapshot.timesheets.clear()
             for timesheet in timsheets:
+                rule_set = RuleSet.objects.for_instance(timesheet)
+                if rule_set:
+                    errors = GenericAspect.validate(rule_set, timesheet)
+                    if errors:
+                        raise TypeError('ruleset errors encountered')
                 week_snapshot.timesheets.add(timesheet)
             week_snapshot.save()
         else:
-            print 'raise errors'
-             
+            raise TypeError('validation errors encountered')
+        
+        #check if we have validators
+        rule_set = RuleSet.objects.for_instance(week_snapshot)
+        if rule_set:
+            errors = GenericAspect.validate(rule_set, week_snapshot)
+            if errors:
+                raise TypeError('ruleset errors encountered')
+        
+        
+        #add new status to the weeksnapshot
+        post_status_update(week_snapshot, status)            
+    
         #send signal since everything is done correctly
-        post_attach_queue_save_event.send(sender=WeekSnapshot, instance=week_snapshot, is_draft=is_draft)
+        workflow.signals.post_attach_queue_save_event.send(sender=WeekSnapshot, instance=week_snapshot, is_draft=is_draft)
             
         return 'home-r', {}
+    
+def post_status_update(instance, status):
+    weeksnapshot_status = WeekSnapshotHistory(weeksnapshot=instance, weeksnapshot_status=status)
+    weeksnapshot_status.save() 
+    
+def post_final_status_update(sender, **kwargs):
+    post_status_update(kwargs['instance'], kwargs['status']);
+    #TODO send email if rejected

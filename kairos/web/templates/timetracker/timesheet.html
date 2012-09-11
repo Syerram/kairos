@@ -13,17 +13,6 @@
 	<meta charset="ISO-8859-1">
     <title>Kairos | Timesheet</title>
     <script type="text/javascript">
-		function makeTall() {
-			$(this).stop().animate({
-				"height" : 75
-			}, 15);
-		}
-		
-		function makeShort() {
-			$(this).stop().animate({
-				"height" : 16
-			}, 15);
-		}
 		
 		function update_totals() {
             var orig_hours = parseFloat($(this).data('hours'));
@@ -47,13 +36,45 @@
             }        
 		}
 
-		function added_row(row) {
-			console.info(row);
+		function added_row(row) {			
+			row.find('select').val('0');
+			row.find('span').text('0.00');
+			var idx = 0;
+			row.find('.hour-input').each(function() {
+				$(this).data('hours', '0.00');
+				if(idx==0) {
+					$(this).focus();
+					idx++;
+				}
+			});
 		}
 		
-		$(document).ready(function() {		
-	// 		$('#menu li.drop').hoverIntent(makeTall, makeShort);
-	
+		function removed_row(deleted_row, last_row) {
+              //reset the hours
+              var del_total_hours = 0;
+              deleted_row.find('.hour-input').each(function() {
+                 hours = parseFloat(this.value);
+                 if(hours > 0) {
+                     del_total_hours += hours;
+                     
+                     var day_total_hours_class= '.' +  $(this).data('ptr-total-hours');
+                     var day_total_hours = parseFloat($(day_total_hours_class).text());
+                     day_total_hours = day_total_hours - hours;
+                     $(day_total_hours_class).text(day_total_hours.toFixed(2));
+                 }
+              });
+              
+              var total_hours_elem = $('.total_hours');
+              var total_hours = parseFloat(total_hours_elem.text());
+              total_hours = total_hours - del_total_hours;
+              total_hours_elem.text(total_hours.toFixed(2));
+              
+              if(last_row) {
+                  last_row.parent().find('tr').last().find('.hour-input').first().focus();
+              }
+		}
+		
+		$(document).ready(function() {
 	       {% if week_snapshot.last_status.weeksnapshot_status|is_editable %}		    
 			    $('.reset').click(function(e) {
 			    	e.preventDefault();
@@ -63,9 +84,10 @@
 			    $('.hour-input').numeric({decimal: ".", negative: false}, null, update_totals);
 			    
 			    $('.project-dropdown').change(function() {
-			    	if($(this).val) {
-				    	$.get('/activities/'+ $(this).val(), function(data) {
-				    		  $('.activity-dropdown').empty().append($(data));
+			    	that = this;
+			    	if($(this).val()) {
+				    	$.get('/activities/'+ $(this).val(), function(data) {				    		
+				    		$(that).parent().closest('tr').find('.activity-dropdown').empty().append($(data));
 				    	});
 			    	}
 			    });
@@ -81,6 +103,7 @@
 			        deleteText:'',
 			        deleteCssClass:'sprite-glyphicons_016_bin',
 			        added: added_row,
+			        removed: removed_row,
 			    });
 		    {% else %}
 		        $('.hour-input').prop('disabled', true);
@@ -88,6 +111,8 @@
 		        $('#id_submit').prop('value', 'Print');
 		        $('#id_draft').hide();
 		        $('.reset').hide();
+		        $('.project-dropdown').prop('disabled', true);
+		        $('.activity-dropdown').prop('disabled', true);
 		        //rest of disabling goes here		        
 		    {% endif %}
 		});
@@ -193,7 +218,7 @@
 											<td><span id="{{timesheet_form.total_hours.auto_id}}">{{timesheet_form.initial.total_hours}}</span></td>
 											<td></td>																										
 									    </tr>									    
-								 {% endfor %}									    
+								 {% endfor %}
 							</tbody>	
 							<tfoot>
 							     <tr>
@@ -206,7 +231,7 @@
 							         <td><span  class="day_total_5_hours" style="display: block; margin-left: 15px;">{% total_hours_day week_snapshot 5 %}</span></td>
 							         <td><span  class="day_total_6_hours" style="display: block; margin-left: 15px;">{% total_hours_day week_snapshot 6 %}</span></td>
 							         <td><span  class="day_total_7_hours" style="display: block; margin-left: 15px;">{% total_hours_day week_snapshot 7 %}</span></td>
-							         <td><span  class="total_hours" style="display: block; margin-left: 0;">{{week_snapshot.total_hours}}</span></td>
+							         <td><span  class="total_hours" style="display: block; margin-left: 0;">{{week_snapshot_form.initial.total_hours}}</span></td>
 							         <td></td>
 							     </tr>
 							     

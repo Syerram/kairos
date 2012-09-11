@@ -3,9 +3,8 @@ from django import template
 from datetime import datetime, timedelta
 import pytz
 from workflow.models import ApproverQueue
-from categories.models import Project
-from StringIO import StringIO
 from categories.views import activities_fetch
+from decimal import Decimal
 
 register = template.Library()
 
@@ -50,19 +49,21 @@ def is_editable(weeksnapshot_status):
 def total_hours(weeksnapshot):
     """provides total hours for the week"""
     total_hours = 0
-    for timesheet in weeksnapshot.timesheets.all():
-        total_hours += timesheet.total_hours
+    if weeksnapshot.pk:
+        for timesheet in weeksnapshot.timesheets.all():
+            total_hours += timesheet.total_hours
     
-    return total_hours
+    return "%0.2f" % (total_hours,)
 
 def total_hours_day(weeksnapshot, day):
     """returns day specific timesheet hours"""
     total_hours = 0
-    for timesheet in weeksnapshot.timesheets.all():
-        day_prop = 'day_' + str(day) + '_hours'
-        total_hours += getattr(timesheet, day_prop, 0) 
-    
-    return total_hours
+    if weeksnapshot.pk:
+        for timesheet in weeksnapshot.timesheets.all():
+            day_prop = 'day_' + str(day) + '_hours'
+            total_hours += (getattr(timesheet, day_prop, 0) or 0)  
+        
+    return "%0.2f" % (total_hours,)
 
 @register.inclusion_tag('snippets/dd-refresh.html')
 def activity_dropdown(project_id, selected_activity=None):

@@ -3,14 +3,14 @@
 <html>
 <head>
 <meta charset="ISO-8859-1">
-<title>Insert title here</title>
+<title>Queue History</title>
 </head>
 <body>
-    {% for queue_item in queue_items %}
-            {% total_hours queue_item.approver_queue.content_object as total_hours %}
-            <div class="queue-box">
-                <span>{{total_hours}}</span>
+    <p>{{request.user.username}}</p>
+    {% for queue_item in queue_items %}            
+            <div class="queue-box">                
                 <span>{{queue_item.from_user.username}}</span>
+                <span>on {{queue_item.created_on}}</span>
                 <span>from status {{queue_item.from_status.display}}</span>
                 <span>to</span>
                 <span>{{queue_item.to_user.username}}</span>

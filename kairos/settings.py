@@ -169,6 +169,7 @@ INSTALLED_APPS = (
     'timeoff',    
     'fsm',
     'workflow',
+    'rules',
 )
 
 # A sample logging configuration. The only tangible logging

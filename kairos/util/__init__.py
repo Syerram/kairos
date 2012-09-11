@@ -6,6 +6,9 @@ from django.http import HttpRequest
 from django.shortcuts import redirect, render_to_response
 from django.template.context import RequestContext
 from django.core.cache import cache
+import hashlib
+import types
+from django.conf.locale import fa
 
 
 class ExternalMessageRequestStorage(SessionStorage):
@@ -120,22 +123,50 @@ def render_to_html_dict(html):
         return wrapper
     return render_decorator    
 
-def cacher(key=None, timeout=None):
+def cacher(key, timeout=None):
     """
     Allows value returning methods to cache their data. Uses the settings defined in the `settings.py` file.
-    If no `key` is passed, it will create a key using the arguments supplied to the method.
+    `key` can be a unicode string or a function. the key function will be provided with all of the arguments the original function takes.
+    e.g.
+    def key_gen(*args, **kwargs):
+        #generate key here
+    
+    @cacher(key=key_gen)
+    def cacheable_function(...):
+    
+    or 
+    @cacher(key='some_key')
+    def cacheable_function(...):
     """
     def cache_decorator(func):
         def wrapper(*args, **kwargs):
-            #TODO: if key None then we use function kwargs for key                
-            value = cache.get(key)
+            #check if the passed in key is actually a func
+            if isinstance(key, types.FunctionType):
+                gen_key = key(*args, **kwargs)
+            else:
+                gen_key = key
+                
+            value = cache.get(gen_key)
             if not value:
+                print 'no cache hit'
                 value = func(*args, **kwargs)
                 if timeout:
-                    cache.set(key, value, timeout)
+                    cache.set(gen_key, value, timeout)
                 else:
-                    cache.set(key, value)
+                    cache.set(gen_key, value)
             return value
         
         return wrapper
     return cache_decorator
+
+def get_type(cls):
+    parts = cls.split('.')
+    #will return everything except the actual class
+    module = '.'.join(parts[:-1])
+    #import top module
+    m = __import__(module)
+    #import the remaining modules and class    
+    for part in parts[1:]:
+        m = getattr(m, part)
+    
+    return m    
