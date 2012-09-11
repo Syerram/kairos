@@ -87,7 +87,7 @@ class ProjectManager(models.Manager):
 class Project(models.Model):
     
     taxonomy = models.ForeignKey(Taxonomy)
-    name = models.CharField(max_length=10)
+    name = models.CharField(_('Name'), max_length=10)
     description = models.TextField(blank=True, null=True)
     project_code = models.CharField(max_length=5)
     project_url = models.URLField(blank=True, null=True)
@@ -117,3 +117,17 @@ class ProjectActivity(models.Model):
         return 'Project: ' + self.project.name + ", Activity: " + self.activity.name
 
 admin.site.register(ProjectActivity)
+
+
+class PayCodeType(models.Model):
+    name = models.CharField(_('Name'), max_length=125)
+    description = models.TextField(blank=True, null=True)
+    code = models.CharField(_('Code'), max_length=3)
+    multiplier = models.PositiveSmallIntegerField(_('Multiplier'), default=1)
+    active = models.BooleanField(_('Active'), default=True)
+    
+    #TODO lotta of these classes, have same unicode, and active flag that needs to be filtered. create abstract class that takes care of this 
+    
+    def __unicode__(self):
+        return self.name
+    

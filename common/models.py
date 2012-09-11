@@ -5,10 +5,13 @@ from django.contrib import admin
 from django.db.models import Q
 
 class Dropdown(models.Model):
-    name = models.CharField(_('name'), max_length=20)
-    category = models.CharField(_('category'), max_length=5)
+    name = models.CharField(_('Name'), max_length=20)
+    category = models.CharField(_('Category'), max_length=5)
     description = models.CharField(max_length=1000, null=True, blank=True)
     active = models.BooleanField(default=True)
+    
+    #system based dropdowns are internal and not editable
+    system = models.BooleanField(_('System'), default=False)
     
     def __unicode__(self):
         return self.name
@@ -35,3 +38,25 @@ class DropdownValue(models.Model):
 
 
 admin.site.register(DropdownValue)
+
+
+class Holiday(models.Model):
+    name = models.CharField(_('Name'), max_length=125)
+    description = models.CharField(_('Description'), max_length=1000, null=True, blank=True)    
+    day = models.DateTimeField(_('Day of the holiday'))
+
+    def __unicode__(self):
+        return self.name
+    
+class HolidaySet(models.Model):
+    """Stores different holiday sets """
+    name = models.CharField(_('Name'), max_length=125)
+    description = models.TextField(_('Description'), null=True, blank=True)
+    regional_code = models.CharField(_('Regional Code'), max_length=4)
+    holidays = models.ManyToManyField(Holiday, verbose_name=_('Holidays'), related_name="holidays")
+
+    active = models.BooleanField(_('Active'), default=True)
+    
+    def __unicode__(self):
+        return self.name
+    
