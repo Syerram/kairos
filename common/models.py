@@ -43,10 +43,12 @@ admin.site.register(DropdownValue)
 class Holiday(models.Model):
     name = models.CharField(_('Name'), max_length=125)
     description = models.CharField(_('Description'), max_length=1000, null=True, blank=True)    
-    day = models.DateTimeField(_('Day of the holiday'))
+    day = models.DateField(_('Day of the holiday'))
 
     def __unicode__(self):
         return self.name
+    
+admin.site.register(Holiday)
     
 class HolidaySet(models.Model):
     """Stores different holiday sets """
@@ -59,4 +61,7 @@ class HolidaySet(models.Model):
     
     def __unicode__(self):
         return self.name
+    
+admin.site.register(HolidaySet)   
+
     

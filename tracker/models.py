@@ -8,6 +8,7 @@ from django.db.models import Q
 from kairos.util.monkey_patch import decorator as monkey_patch
 from categories.models import Project, Activity
 from common.models import DropdownValue
+from timeoff.models import UserTimeOff
 
 class Timesheet(models.Model):
     """
@@ -80,6 +81,7 @@ class WeekSnapshot(models.Model):
     user = models.ForeignKey(User)
     
     timesheets = models.ManyToManyField(Timesheet, null=True, blank=True)
+    user_timeoffs = models.ManyToManyField(UserTimeOff, null=True, blank=True)
     
     def __history(self):
         return WeekSnapshotHistory.objects.get(weeksnapshot=self)

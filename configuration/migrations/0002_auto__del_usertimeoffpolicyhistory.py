@@ -8,77 +8,19 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding model 'UserProfile'
-        db.create_table('configuration_userprofile', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
-            ('taxonomy', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['categories.Taxonomy'])),
-            ('configured', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('holiday_set', self.gf('django.db.models.fields.related.ForeignKey')(related_name='user_holidayset', to=orm['common.HolidaySet'])),
-        ))
-        db.send_create_signal('configuration', ['UserProfile'])
-
-        # Adding unique constraint on 'UserProfile', fields ['user', 'taxonomy']
-        db.create_unique('configuration_userprofile', ['user_id', 'taxonomy_id'])
-
-        # Adding model 'UserProject'
-        db.create_table('configuration_userproject', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('user_profile', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['configuration.UserProfile'])),
-            ('project', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['categories.Project'])),
-            ('last_updated', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
-        ))
-        db.send_create_signal('configuration', ['UserProject'])
-
-        # Adding unique constraint on 'UserProject', fields ['user_profile', 'project']
-        db.create_unique('configuration_userproject', ['user_profile_id', 'project_id'])
-
-        # Adding model 'UserTimeOffPolicy'
-        db.create_table('configuration_usertimeoffpolicy', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('user_profile', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['configuration.UserProfile'])),
-            ('effective_date', self.gf('django.db.models.fields.DateTimeField')()),
-            ('starting_balance', self.gf('django.db.models.fields.DecimalField')(default=0, max_digits=4, decimal_places=2)),
-            ('starting_balance_type', self.gf('django.db.models.fields.related.ForeignKey')(related_name='user_balance_types', to=orm['common.DropdownValue'])),
-            ('accrue', self.gf('django.db.models.fields.DecimalField')(default=0, max_digits=4, decimal_places=2)),
-            ('accrue_frequency', self.gf('django.db.models.fields.related.ForeignKey')(related_name='user_accrue_type_frequencies', to=orm['common.DropdownValue'])),
-            ('reset_with', self.gf('django.db.models.fields.DecimalField')(default=0, max_digits=4, decimal_places=2)),
-            ('reset_frequency', self.gf('django.db.models.fields.related.ForeignKey')(related_name='user_reset_type_frequencies', to=orm['common.DropdownValue'])),
-            ('allow_prorate', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('time_remaining', self.gf('django.db.models.fields.DecimalField')(default=0, max_digits=4, decimal_places=2)),
-            ('max_balance_limit', self.gf('django.db.models.fields.SmallIntegerField')(default=0)),
-            ('max_overdraw_limit', self.gf('django.db.models.fields.PositiveSmallIntegerField')(default=0)),
-        ))
-        db.send_create_signal('configuration', ['UserTimeOffPolicy'])
-
-        # Adding model 'UserTimeOffPolicyHistory'
-        db.create_table('configuration_usertimeoffpolicyhistory', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('user_timeoff_policy', self.gf('django.db.models.fields.related.ForeignKey')(related_name='user_timeoff_policy', to=orm['configuration.UserTimeOffPolicy'])),
-            ('user_timeoff_status', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['common.DropdownValue'])),
-            ('last_updated', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
-        ))
-        db.send_create_signal('configuration', ['UserTimeOffPolicyHistory'])
+        # Deleting model 'UserTimeOffPolicyHistory'
+        db.delete_table('configuration_usertimeoffpolicyhistory')
 
 
     def backwards(self, orm):
-        # Removing unique constraint on 'UserProject', fields ['user_profile', 'project']
-        db.delete_unique('configuration_userproject', ['user_profile_id', 'project_id'])
-
-        # Removing unique constraint on 'UserProfile', fields ['user', 'taxonomy']
-        db.delete_unique('configuration_userprofile', ['user_id', 'taxonomy_id'])
-
-        # Deleting model 'UserProfile'
-        db.delete_table('configuration_userprofile')
-
-        # Deleting model 'UserProject'
-        db.delete_table('configuration_userproject')
-
-        # Deleting model 'UserTimeOffPolicy'
-        db.delete_table('configuration_usertimeoffpolicy')
-
-        # Deleting model 'UserTimeOffPolicyHistory'
-        db.delete_table('configuration_usertimeoffpolicyhistory')
+        # Adding model 'UserTimeOffPolicyHistory'
+        db.create_table('configuration_usertimeoffpolicyhistory', (
+            ('user_timeoff_policy', self.gf('django.db.models.fields.related.ForeignKey')(related_name='user_timeoff_policy', to=orm['configuration.UserTimeOffPolicy'])),
+            ('user_timeoff_status', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['common.DropdownValue'])),
+            ('last_updated', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
+            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+        ))
+        db.send_create_signal('configuration', ['UserTimeOffPolicyHistory'])
 
 
     models = {
@@ -176,7 +118,7 @@ class Migration(SchemaMigration):
         },
         'common.holiday': {
             'Meta': {'object_name': 'Holiday'},
-            'day': ('django.db.models.fields.DateTimeField', [], {}),
+            'day': ('django.db.models.fields.DateField', [], {}),
             'description': ('django.db.models.fields.CharField', [], {'max_length': '1000', 'null': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '125'})
@@ -193,7 +135,7 @@ class Migration(SchemaMigration):
         'configuration.userprofile': {
             'Meta': {'unique_together': "(('user', 'taxonomy'),)", 'object_name': 'UserProfile'},
             'configured': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'holiday_set': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'user_holidayset'", 'to': "orm['common.HolidaySet']"}),
+            'holiday_set': ('django.db.models.fields.related.ForeignKey', [], {'default': '1', 'related_name': "'user_holidayset'", 'to': "orm['common.HolidaySet']"}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'projects': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'user_projects'", 'symmetrical': 'False', 'through': "orm['configuration.UserProject']", 'to': "orm['categories.Project']"}),
             'taxonomy': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['categories.Taxonomy']"}),
@@ -221,13 +163,6 @@ class Migration(SchemaMigration):
             'starting_balance_type': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'user_balance_types'", 'to': "orm['common.DropdownValue']"}),
             'time_remaining': ('django.db.models.fields.DecimalField', [], {'default': '0', 'max_digits': '4', 'decimal_places': '2'}),
             'user_profile': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['configuration.UserProfile']"})
-        },
-        'configuration.usertimeoffpolicyhistory': {
-            'Meta': {'object_name': 'UserTimeOffPolicyHistory'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'last_updated': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
-            'user_timeoff_policy': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'user_timeoff_policy'", 'to': "orm['configuration.UserTimeOffPolicy']"}),
-            'user_timeoff_status': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['common.DropdownValue']"})
         },
         'contenttypes.contenttype': {
             'Meta': {'ordering': "('name',)", 'unique_together': "(('app_label', 'model'),)", 'object_name': 'ContentType', 'db_table': "'django_content_type'"},

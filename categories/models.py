@@ -131,3 +131,4 @@ class PayCodeType(models.Model):
     def __unicode__(self):
         return self.name
     
+admin.site.register(PayCodeType)

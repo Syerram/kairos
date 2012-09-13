@@ -165,11 +165,10 @@ INSTALLED_APPS = (
     'users',    
     'categories',    
     'configuration',
+    'timeoff',
     'tracker',
-    'timeoff',    
-    'fsm',
     'workflow',
-    'rules',
+    'rules',    
 )
 
 # A sample logging configuration. The only tangible logging
