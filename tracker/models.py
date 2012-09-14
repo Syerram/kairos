@@ -8,17 +8,19 @@ from django.db.models import Q
 from kairos.util.monkey_patch import decorator as monkey_patch
 from categories.models import Project, Activity
 from common.models import DropdownValue
-from timeoff.models import UserTimeOff
+from timeoff.models import TimeOffType
 
 class Timesheet(models.Model):
     """
         Represents timesheet per week per project per day
     """
     
-    project = models.ForeignKey(Project)
-    activity = models.ForeignKey(Activity)
-    day = models.DateTimeField(auto_now_add=True)
+    project = models.ForeignKey(Project, related_name="user_project", verbose_name=_('User Project'), null=True, blank=True, default=None)
+    activity = models.ForeignKey(Activity, related_name="user_activity", verbose_name=_('User Activity'), null=True, blank=True, default=None)
+    timeoff_type = models.ForeignKey(TimeOffType, related_name="user_timeoff_type", verbose_name=_('User TimeOff Type'), null=True, blank=True, default=None)
     
+    day = models.DateTimeField(auto_now_add=True)
+        
     day_1_hours = models.DecimalField(_('day one hours'), max_digits=4, decimal_places=2, default=0, null=True, blank=True)
     day_2_hours = models.DecimalField(_('day two hours'), max_digits=4, decimal_places=2, default=0, null=True, blank=True)
     day_3_hours = models.DecimalField(_('day three hours'), max_digits=4, decimal_places=2, default=0, null=True, blank=True)
@@ -38,6 +40,11 @@ class Timesheet(models.Model):
         return TimesheetNote.objects.get(timesheet=self)
     
     notes = property(__notes)
+    
+    def __is_timeoff(self):        
+        return self.timeoff_type is not None
+    
+    is_timeoff = property(__is_timeoff)
     
 class TimesheetNote(models.Model):
     """
@@ -81,7 +88,6 @@ class WeekSnapshot(models.Model):
     user = models.ForeignKey(User)
     
     timesheets = models.ManyToManyField(Timesheet, null=True, blank=True)
-    user_timeoffs = models.ManyToManyField(UserTimeOff, null=True, blank=True)
     
     def __history(self):
         return WeekSnapshotHistory.objects.get(weeksnapshot=self)
@@ -97,6 +103,26 @@ class WeekSnapshot(models.Model):
         return total_hours
     
     total_hours = property(__total_hours)
+    
+    def __total_timeoff_hours(self):
+        total_timeoff_hours = 0
+        for timesheet in self.timesheets.all():
+            if timesheet.is_timeoff:
+                total_timeoff_hours += timesheet.total_hours
+        
+        return total_timeoff_hours
+    
+    total_timeoff_hours = property(__total_timeoff_hours)
+    
+    def __total_work_hours(self):
+        total_work_hours = 0
+        for timesheet in self.timesheets.all():
+            if not timesheet.is_timeoff:
+                total_work_hours += timesheet.total_hours
+        
+        return total_work_hours
+    
+    total_work_hours = property(__total_work_hours)
     
     objects = WeekSnapshotManager()   
 

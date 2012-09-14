@@ -10,7 +10,6 @@ from django.contrib import admin
 from django.contrib.contenttypes.generic import GenericRelation
 from django.contrib.comments.models import Comment
 from django.db.models import Q
-from kairos.util import cacher
 
 """
 Models for workflow management
@@ -113,28 +112,23 @@ class ApproverQueue(models.Model):
         verbose_name = _('Approver Queue')
         verbose_name_plural = _('Approver Queues')
     
-    @staticmethod
-    @cacher(key='SUBMITTED')
+    @staticmethod    
     def submitted_status():
         return DropdownValue.objects.dropdownvalue('WF', 'SUBMT')
     
-    @staticmethod
-    @cacher(key='INQUEUE')
+    @staticmethod    
     def in_queue_status():
         return DropdownValue.objects.dropdownvalue('WF', 'INQUE')
 
-    @staticmethod
-    @cacher(key='APPROVED')
+    @staticmethod    
     def approved_status():
         return DropdownValue.objects.dropdownvalue('WF', 'APPRD')
     
-    @staticmethod
-    @cacher(key='REJECTED')
+    @staticmethod    
     def rejected_status():
         return DropdownValue.objects.dropdownvalue('WF', 'REJTD')    
     
-    @staticmethod
-    @cacher(key='DRAFT')
+    @staticmethod    
     def draft_status():
         return  DropdownValue.objects.dropdownvalue('WF', 'DRAFT')
     

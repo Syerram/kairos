@@ -126,7 +126,7 @@ def render_to_html_dict(html):
 def cacher(key, timeout=None):
     """
     Allows value returning methods to cache their data. Uses the settings defined in the `settings.py` file.
-    `key` can be a unicode string or a function. the key function will be provided with all of the arguments the original function takes.
+    `key` can be a unicode string, a dictionary of function kwargs, or a function itself. the key function will be provided with all of the arguments the original function takes.
     e.g.
     def key_gen(*args, **kwargs):
         #generate key here
@@ -137,6 +137,12 @@ def cacher(key, timeout=None):
     or 
     @cacher(key='some_key')
     def cacheable_function(...):
+    
+    or 
+    @cacher(key={'first_argument'})
+    def cacheable_function(first_argument, ..):
+    cacher will lookup `first_argument` in **kwargs
+    
     """
     def cache_decorator(func):
         def wrapper(*args, **kwargs):

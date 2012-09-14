@@ -2,7 +2,9 @@
 from django.contrib.auth.decorators import login_required
 from kairos.util import render_to_html_dict
 from categories.models import Taxonomy, Project
-from configuration.models import UserProject, UserProfile
+from configuration.models import UserProject, UserProfile, UserTimeOffPolicy
+from configuration.forms import UserTimeOffPolicyForm
+from django.contrib.auth.models import User
 
 @login_required
 @render_to_html_dict(
@@ -55,3 +57,20 @@ def user_configure_projects(request):
         return 'home-r', {}
     else:
         return 'taxonomy-r', {'taxonomies': Taxonomy.objects.active()}
+
+@render_to_html_dict(
+                     {
+                      'user_timeoff_policies':'configuration/user_timeoff.html',
+                    })
+def user_configure_timeoff_policies(request, user, timeoff=None):
+    """ 
+        fetches/configures policies for the user.
+    """    
+    
+    if request.method == 'POST':
+        user_timeoff_policy_form = UserTimeOffPolicyForm(request.POST)
+        if user_timeoff_policy_form.is_valid():
+            user_timeoff_policy_form.save()
+    
+    user_timeoff_policies = UserTimeOffPolicy.objects.policies(User.objects.get(id=user), timeoff)
+    return 'user_timeoff_policies', {'policies': user_timeoff_policies}

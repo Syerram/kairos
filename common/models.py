@@ -3,6 +3,7 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.contrib import admin
 from django.db.models import Q
+from kairos.util import cacher
 
 class Dropdown(models.Model):
     name = models.CharField(_('Name'), max_length=20)
@@ -18,11 +19,16 @@ class Dropdown(models.Model):
 
 admin.site.register(Dropdown)
 
+def dropdown_keygen(*args, **kwargs):
+    return args[1] + args[2] if len(args) > 1 else ''
+
 class DropdownValueManager(models.Manager):
-    
+        
+    @cacher(key=dropdown_keygen)
     def dropdownvalues(self, category):
         return self.get_query_set().filter(dropdown__category=category)
 
+    @cacher(key=dropdown_keygen)
     def dropdownvalue(self, category, code):
         return self.get_query_set().get(Q(dropdown__category=category) & Q(code=code))
 
@@ -63,5 +69,3 @@ class HolidaySet(models.Model):
         return self.name
     
 admin.site.register(HolidaySet)   
-
-    

@@ -8,25 +8,23 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Removing unique constraint on 'UserProfile', fields ['user']
-        db.delete_unique('configuration_userprofile', ['user_id'])
+        # Adding field 'UserTimeOffPolicy.timeoff_type'
+        db.add_column('configuration_usertimeoffpolicy', 'timeoff_type',
+                      self.gf('django.db.models.fields.related.ForeignKey')(default=None, to=orm['timeoff.TimeOffType']),
+                      keep_default=False)
 
-        # Removing unique constraint on 'UserProfile', fields ['taxonomy']
-        db.delete_unique('configuration_userprofile', ['taxonomy_id'])
-
-        # Adding unique constraint on 'UserProfile', fields ['taxonomy', 'user']
-        db.create_unique('configuration_userprofile', ['taxonomy_id', 'user_id'])
+        # Adding field 'UserTimeOffPolicy.tracked'
+        db.add_column('configuration_usertimeoffpolicy', 'tracked',
+                      self.gf('django.db.models.fields.BooleanField')(default=True),
+                      keep_default=False)
 
 
     def backwards(self, orm):
-        # Removing unique constraint on 'UserProfile', fields ['taxonomy', 'user']
-        db.delete_unique('configuration_userprofile', ['taxonomy_id', 'user_id'])
+        # Deleting field 'UserTimeOffPolicy.timeoff_type'
+        db.delete_column('configuration_usertimeoffpolicy', 'timeoff_type_id')
 
-        # Adding unique constraint on 'UserProfile', fields ['taxonomy']
-        db.create_unique('configuration_userprofile', ['taxonomy_id'])
-
-        # Adding unique constraint on 'UserProfile', fields ['user']
-        db.create_unique('configuration_userprofile', ['user_id'])
+        # Deleting field 'UserTimeOffPolicy.tracked'
+        db.delete_column('configuration_usertimeoffpolicy', 'tracked')
 
 
     models = {
@@ -79,6 +77,15 @@ class Migration(SchemaMigration):
             'phone_2': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
             'state': ('django.db.models.fields.CharField', [], {'max_length': '3'})
         },
+        'categories.paycodetype': {
+            'Meta': {'object_name': 'PayCodeType'},
+            'active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
+            'code': ('django.db.models.fields.CharField', [], {'max_length': '3'}),
+            'description': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'multiplier': ('django.db.models.fields.PositiveSmallIntegerField', [], {'default': '1'}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '125'})
+        },
         'categories.project': {
             'Meta': {'object_name': 'Project'},
             'active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
@@ -106,9 +113,42 @@ class Migration(SchemaMigration):
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '255'})
         },
+        'common.dropdown': {
+            'Meta': {'object_name': 'Dropdown'},
+            'active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
+            'category': ('django.db.models.fields.CharField', [], {'max_length': '5'}),
+            'description': ('django.db.models.fields.CharField', [], {'max_length': '1000', 'null': 'True', 'blank': 'True'}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '20'}),
+            'system': ('django.db.models.fields.BooleanField', [], {'default': 'False'})
+        },
+        'common.dropdownvalue': {
+            'Meta': {'object_name': 'DropdownValue'},
+            'code': ('django.db.models.fields.CharField', [], {'max_length': '5'}),
+            'display': ('django.db.models.fields.CharField', [], {'max_length': '25'}),
+            'dropdown': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['common.Dropdown']"}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'})
+        },
+        'common.holiday': {
+            'Meta': {'object_name': 'Holiday'},
+            'day': ('django.db.models.fields.DateField', [], {}),
+            'description': ('django.db.models.fields.CharField', [], {'max_length': '1000', 'null': 'True', 'blank': 'True'}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '125'})
+        },
+        'common.holidayset': {
+            'Meta': {'object_name': 'HolidaySet'},
+            'active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
+            'description': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
+            'holidays': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'holidays'", 'symmetrical': 'False', 'to': "orm['common.Holiday']"}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '125'}),
+            'regional_code': ('django.db.models.fields.CharField', [], {'max_length': '4'})
+        },
         'configuration.userprofile': {
             'Meta': {'unique_together': "(('user', 'taxonomy'),)", 'object_name': 'UserProfile'},
             'configured': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            'holiday_set': ('django.db.models.fields.related.ForeignKey', [], {'default': '1', 'related_name': "'user_holidayset'", 'to': "orm['common.HolidaySet']"}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'projects': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'user_projects'", 'symmetrical': 'False', 'through': "orm['configuration.UserProject']", 'to': "orm['categories.Project']"}),
             'taxonomy': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['categories.Taxonomy']"}),
@@ -121,12 +161,39 @@ class Migration(SchemaMigration):
             'project': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['categories.Project']"}),
             'user_profile': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['configuration.UserProfile']"})
         },
+        'configuration.usertimeoffpolicy': {
+            'Meta': {'object_name': 'UserTimeOffPolicy'},
+            'accrue': ('django.db.models.fields.DecimalField', [], {'default': '0', 'max_digits': '4', 'decimal_places': '2'}),
+            'accrue_frequency': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'user_accrue_type_frequencies'", 'to': "orm['common.DropdownValue']"}),
+            'allow_prorate': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            'effective_date': ('django.db.models.fields.DateTimeField', [], {}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'max_balance_limit': ('django.db.models.fields.SmallIntegerField', [], {'default': '0'}),
+            'max_overdraw_limit': ('django.db.models.fields.PositiveSmallIntegerField', [], {'default': '0'}),
+            'reset_frequency': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'user_reset_type_frequencies'", 'to': "orm['common.DropdownValue']"}),
+            'reset_with': ('django.db.models.fields.DecimalField', [], {'default': '0', 'max_digits': '4', 'decimal_places': '2'}),
+            'starting_balance': ('django.db.models.fields.DecimalField', [], {'default': '0', 'max_digits': '4', 'decimal_places': '2'}),
+            'starting_balance_type': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'user_balance_types'", 'to': "orm['common.DropdownValue']"}),
+            'time_remaining': ('django.db.models.fields.DecimalField', [], {'default': '0', 'max_digits': '4', 'decimal_places': '2'}),
+            'timeoff_type': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['timeoff.TimeOffType']"}),
+            'tracked': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
+            'user_profile': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['configuration.UserProfile']"})
+        },
         'contenttypes.contenttype': {
             'Meta': {'ordering': "('name',)", 'unique_together': "(('app_label', 'model'),)", 'object_name': 'ContentType', 'db_table': "'django_content_type'"},
             'app_label': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
+        },
+        'timeoff.timeofftype': {
+            'Meta': {'object_name': 'TimeOffType'},
+            'active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
+            'booking_required': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
+            'description': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '125'}),
+            'pay_code': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'paycode'", 'to': "orm['categories.PayCodeType']"})
         }
     }
 
