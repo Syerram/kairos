@@ -4,7 +4,6 @@ from datetime import datetime, timedelta
 import pytz
 from workflow.models import ApproverQueue
 from categories.views import activities_fetch
-from decimal import Decimal
 
 register = template.Library()
 

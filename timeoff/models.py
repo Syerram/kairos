@@ -1,37 +1,16 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from common.models import DropdownValue
-from categories.models import PayCodeType
-from django.contrib import admin
 from kairos.util import cacher
 from django.contrib.auth.models import User
 from kairos.util.monkey_patch import decorator as monkey_patch
 from django.db.models import Q
 from django.contrib.contenttypes.generic import GenericRelation
 from django.contrib.comments.models import Comment
-
-class TimeOffType(models.Model):
-    """    
-        Defines the `TimeOffType` for the system. Admins can create different timeoff types such as PTO, Jury Duty, Holiday etc.
-        `booking_required`, if true, forces time off approval by user supervisor. e.g. PTO. Non approval types include, Lunch, Holiday 
-        `pay_code` basically applies to the payout to be given if any
-    """
-    
-    name = models.CharField(_('Name'), max_length=125)
-    description = models.TextField(_('Description'), null=True, blank=True)
-    booking_required = models.BooleanField(_('Booking Required'), default=True)
-    
-    pay_code = models.ForeignKey(PayCodeType, related_name="paycode", verbose_name=_('Pay Code'))
-    active = models.BooleanField(_('Active'), default=True)
-    
-    class Meta:
-        verbose_name = _("TimeOff Type")
-        verbose_name_plural = _("TimeOff Types")
-    
-    def __unicode__(self):
-        return self.name
-
-admin.site.register(TimeOffType)
+from categories.models import TimeOffType
+from django.contrib import admin, messages
+from django.http import HttpResponseRedirect
+from django import forms
 
 class TimeOffPolicy(models.Model):
     """
@@ -87,7 +66,44 @@ class TimeOffPolicy(models.Model):
     def balance_carryover_types():
         return DropdownValue.objects.dropdownvalue('BALAT')
 
-admin.site.register(TimeOffPolicy)
+"""
+    TODO: Hack to load admin form. For some reason, this app cannot load Admin form when the Admin class is in admin.py
+    The issue relates to importing of objects, and causes circular import issues
+
+"""
+class TimeOffPolicyForm(forms.ModelForm):
+    
+    class Meta:
+        model = TimeOffPolicy
+    
+    def __init__(self, *args, **kwargs):
+        super(TimeOffPolicyForm, self).__init__(*args, **kwargs)
+        #TODO: consolidate code between TimeOffPolicyForm and UserTimeOffPolicyForm
+        self.fields['starting_balance_type'].queryset = DropdownValue.objects.dropdownvalues('BALAT')
+        self.fields['accrue_frequency'].queryset = DropdownValue.objects.dropdownvalues('FREQT')
+        self.fields['reset_frequency'].queryset = DropdownValue.objects.dropdownvalues('FREQT')
+
+class TimeOffPolicyAdmin(admin.ModelAdmin):
+    
+    form = TimeOffPolicyForm
+    actions = ['copy_to_user_policy', 'copy_to_user_policy_with_defaults']    
+
+    def copy_to_user_policy(self, request, queryset):
+        if queryset.count() > 1:
+            messages.error(request, "only one selection allowed!")
+        else:
+            return HttpResponseRedirect("/u/conf/timeoff/" + str(queryset.all()[0].id))
+            
+        
+    def copy_to_user_policy_with_defaults(self, request, queryset):
+        pass
+    
+    copy_to_user_policy.short_description = "Copy to a User Policy"
+    copy_to_user_policy_with_defaults.short_description = "Copy & Save to a User Policy with Defaults"
+
+admin.site.register(TimeOffPolicy, TimeOffPolicyAdmin)
+
+"""Models to store user bookings"""
 
 class BookTimeOff(models.Model):
     """Booked timeoff by the user"""

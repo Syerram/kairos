@@ -149,7 +149,8 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.comments',    
+    'django.contrib.comments',  
+    'grappelli',  
      'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
@@ -216,6 +217,8 @@ AUTH_PROFILE_MODULE = 'configuration.UserProfile'
 
 #image placeholder
 IMG_PLACEHOLDER_URL = 'http://placehold.it/350x350&text=%s'
+
+GRAPPELLI_ADMIN_TITLE = 'Kairos Admin Tool'
 
 try:
     from local_settings import *

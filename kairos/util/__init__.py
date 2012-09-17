@@ -9,6 +9,7 @@ from django.core.cache import cache
 import hashlib
 import types
 from django.conf.locale import fa
+from django.db.models.fields.related import ForeignKey
 
 
 class ExternalMessageRequestStorage(SessionStorage):
@@ -164,6 +165,43 @@ def cacher(key, timeout=None):
         
         return wrapper
     return cache_decorator
+
+def throwaway_code(text=None):
+    """
+        Throwaway decorator that when tagged to functions, will print to the log that it needs to be cleaned up.
+        Meant for temporary functions created and not to be forgatten to be removed
+    """
+    def throwaway_decorator(func):
+        def wrapper(*args, **kwargs):
+            print 'dont forget to throwaway ' + func
+            if text:
+                print '--' + text + '--'
+            return func(*args, **kwargs)
+        return wrapper
+    return throwaway_decorator
+
+
+def instance_to_dict(instance, key_format=None):
+    """
+        Returns a dictionary containing field names and values for the given instance.
+        Also traverses foreign and many-to-many fields
+    """
+    if key_format:
+        assert '%s' in key_format, 'key_format must contain a %s'
+                
+    key = lambda key:key_format and key_format % key or key
+    
+    d = {}
+    for field in instance._meta.fields:
+        attr = field.name
+        value = getattr(instance, attr)
+        if value is not None and isinstance(field, ForeignKey):
+            value = value._get_pk_val()
+        d[key(attr)] = value
+    for field in instance._meta.many_to_many:
+        d[key(field.name)] = [obj._get_pk_val() for obj in getattr(instance, field.attname).all()]
+        
+    return d
 
 def get_type(cls):
     parts = cls.split('.')

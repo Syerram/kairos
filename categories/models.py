@@ -132,3 +132,27 @@ class PayCodeType(models.Model):
         return self.name
     
 admin.site.register(PayCodeType)
+
+
+class TimeOffType(models.Model):
+    """    
+        Defines the `TimeOffType` for the system. Admins can create different timeoff types such as PTO, Jury Duty, Holiday etc.
+        `booking_required`, if true, forces time off approval by user supervisor. e.g. PTO. Non approval types include, Lunch, Holiday 
+        `pay_code` basically applies to the payout to be given if any
+    """
+    
+    name = models.CharField(_('Name'), max_length=125)
+    description = models.TextField(_('Description'), null=True, blank=True)
+    booking_required = models.BooleanField(_('Booking Required'), default=True)
+    
+    pay_code = models.ForeignKey(PayCodeType, related_name="paycode", verbose_name=_('Pay Code'))
+    active = models.BooleanField(_('Active'), default=True)
+    
+    class Meta:
+        verbose_name = _("TimeOff Type")
+        verbose_name_plural = _("TimeOff Types")
+    
+    def __unicode__(self):
+        return self.name
+
+admin.site.register(TimeOffType)

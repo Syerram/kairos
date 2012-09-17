@@ -20,7 +20,7 @@ class Dropdown(models.Model):
 admin.site.register(Dropdown)
 
 def dropdown_keygen(*args, **kwargs):
-    return args[1] + args[2] if len(args) > 1 else ''
+    return args[1] + (args[2] if len(args) > 2 else '')
 
 class DropdownValueManager(models.Manager):
         

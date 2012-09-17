@@ -1,10 +1,8 @@
-from categories.models import Project, Taxonomy
+from categories.models import Project, Taxonomy, TimeOffType
 from common.models import DropdownValue, HolidaySet
-from django.contrib import admin
 from django.contrib.auth.models import User
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-from timeoff.models import TimeOffType
 
 class UserProfile(models.Model):
     '''
@@ -21,8 +19,6 @@ class UserProfile(models.Model):
     
     def __unicode__(self):
         return self.user.username 
-
-admin.site.register(UserProfile)
 
 class UserProject(models.Model):
     """Stores projects for each user"""
@@ -48,7 +44,7 @@ class UserTimeOffPolicy(models.Model):
     """Stores user specific policies. It is dup of TimeOffPolicy but specific to a user.
         Admin can create default TimeOffPolicy which then will be applied to user by duplicating it into this object
     """
-    user_profile = models.ForeignKey(UserProfile, editable=False)
+    user_profile = models.ForeignKey(UserProfile)
     
     timeoff_type = models.ForeignKey(TimeOffType)
     
@@ -79,5 +75,3 @@ class UserTimeOffPolicy(models.Model):
     
     def __unicode__(self):
         return 'Timeoff policy for ' + self.user_profile.user.username + ' on [' + self.timeoff_type.name + ']'
-
-admin.site.register(UserTimeOffPolicy)

@@ -3,8 +3,9 @@ from django.contrib.auth.decorators import login_required
 from kairos.util import render_to_html_dict
 from categories.models import Taxonomy, Project
 from configuration.models import UserProject, UserProfile, UserTimeOffPolicy
-from configuration.forms import UserTimeOffPolicyForm
-from django.contrib.auth.models import User
+from timeoff.models import TimeOffPolicy
+from configuration.admin import UserTimeOffPolicyAdmin
+from kairos.django_ext import ModelAdminExt
 
 @login_required
 @render_to_html_dict(
@@ -57,20 +58,14 @@ def user_configure_projects(request):
         return 'home-r', {}
     else:
         return 'taxonomy-r', {'taxonomies': Taxonomy.objects.active()}
-
-@render_to_html_dict(
-                     {
-                      'user_timeoff_policies':'configuration/user_timeoff.html',
-                    })
-def user_configure_timeoff_policies(request, user, timeoff=None):
-    """ 
-        fetches/configures policies for the user.
-    """    
     
-    if request.method == 'POST':
-        user_timeoff_policy_form = UserTimeOffPolicyForm(request.POST)
-        if user_timeoff_policy_form.is_valid():
-            user_timeoff_policy_form.save()
     
-    user_timeoff_policies = UserTimeOffPolicy.objects.policies(User.objects.get(id=user), timeoff)
-    return 'user_timeoff_policies', {'policies': user_timeoff_policies}
+def user_timeoff_policy(request, timeoff_policy):
+    """
+        view simply redirects to the admin add page, with prefilled timeoff_policy in the context.
+        Handles both GET & POST        
+    """
+    timeoff_policy = TimeOffPolicy.objects.get(id=timeoff_policy)
+    return ModelAdminExt.add_view_ext(request, model_class=UserTimeOffPolicy, model_instance=timeoff_policy, admin_class=UserTimeOffPolicyAdmin)
+    
+    
