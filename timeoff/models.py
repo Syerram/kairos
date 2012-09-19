@@ -128,6 +128,26 @@ class BookTimeOfffHistory(models.Model):
         return self.book_timeoff.user.username + ' timeoff between ' + self.start_date + \
             ' and ' + self.end_date + ' with status ' + self.weeksnapshot_status.name
 
+class BookTimeOffManager(models.Manager):
+    
+    def bookings(self, user, timeoff_type=None):
+        user_booked_timeoffs = self.get_query_set().filter(user=user)
+        if timeoff_type:
+            user_booked_timeoffs = user_booked_timeoffs.filter(timeoff_type=timeoff_type)        
+            
+        return user_booked_timeoffs
+    
+    def bookings_sofar(self, user, after_date=None):
+        user_bookings = BookTimeOfffHistory.objects.get_query_set().select_related().filter(Q(book_timeoff__user=user) & Q(book_timeoff_status=DropdownValue.objects.dropdownvalue('TO', 'APPRD')))
+        if after_date:            
+            timed_bookings = BookTimeOfffHistory.objects.get_query_set().select_related().filter(book_timeoff__user=user).exclude(book_timeoff_status=DropdownValue.objects.dropdownvalue('TO', 'APPRD'))
+            timed_bookings = timed_bookings.filter(book_timeoff__start_date__gte=after_date)
+            return user_bookings | timed_bookings
+        else:
+            return user_bookings
+        
+BookTimeOff.objects = BookTimeOffManager()
+
 @monkey_patch(BookTimeOff)
 class PatchBookTimeOff(object):
     
@@ -141,3 +161,4 @@ class PatchBookTimeOff(object):
             return BookTimeOff(book_timeoff=self, book_timeoff_status=draft_dropdownvalue)
     
     last_status = property(__last_status)
+    

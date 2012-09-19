@@ -1,4 +1,4 @@
-
+{% load categories_tags %}
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
 <head>
@@ -11,6 +11,13 @@
 
     $(document).ready(function() {
     
+    	/*
+    	   TODO: if the booking time period is between working days, 
+    	   then exclude weekends in the calculation.
+    	   for e.g. if remaining days is 2 days and selection is friday/monday, user should be allowed to select. 
+    	   [note we aren't showing weekends, so the selection should appear between friday-to-monday]
+    	*/
+    	
         var date = new Date();
         var d = date.getDate();
         var m = date.getMonth();
@@ -20,32 +27,106 @@
             header: {
                 left: 'prev,next today',
                 center: 'title',
-                right: 'month,agendaWeek,agendaDay'
+                right: 'month'                
             },
+            weekends: false,
             selectable: true,
             selectHelper: true,
             select: function(start, end, allDay) {
-                var title = prompt('TimeOff:');
-                if (title) {
-                    calendar.fullCalendar('renderEvent',
-                        {
-                            title: title,
-                            start: start,
-                            end: end,
-                            allDay: allDay
-                        },
-                        true // make the event "stick"
-                    );
-                    $('#start').text(start)
-                    $('#end').text(end)
-                    $('#timeoff').text(title);
+            	var timeoff_sel_elem = $('#id_timeoff_select option:selected');
+                var index = parseInt(timeoff_sel_elem.val());
+                var time_remaining = parseInt(timeoff_sel_elem.parent().data('time_remaining'));
+                if (index) {  
+                	var time_at_hand = ((end - start)/86400000) + 1;
+                	time_remaining = time_remaining - time_at_hand;
+                	console.info(time_remaining);
+                	if(time_remaining >= 0) {
+	                    calendar.fullCalendar('renderEvent',
+	                        {
+	                            title: timeoff_sel_elem.text(),
+	                            start: start,
+	                            end: end,
+	                            allDay: allDay
+	                        },
+	                        true // make the event "stick"
+	                    );
+	                    fmt_st_dt = $.fullCalendar.formatDate(start, 'MM/dd/yyyy');
+	                    fmt_end_dt = $.fullCalendar.formatDate(end, 'MM/dd/yyyy')
+	                    $('#id_start').val(fmt_st_dt);
+	                    $('#id_end').val(fmt_end_dt);
+	                    $('.start').text(fmt_st_dt);
+	                    $('.end').text(fmt_end_dt);
+	                    $('.time-remaining').text('total time remaining: ' + time_remaining);
+	                    $('#id_timeoff_select').data('time_remaining', time_remaining);  
+	                 }
                 }
-                calendar.fullCalendar('unselect');
+                calendar.fullCalendar('unselect');                
+            },
+            eventDrop: function(event, dayDelta, minuteDelta, allDay, revertFunc) {
+            	fmt_st_dt = $.fullCalendar.formatDate(event.start, 'MM/dd/yyyy');
+            	$('#id_start').val(fmt_st_dt);
+            	$('.start').text(fmt_st_dt);
+            	var end = event.end ? event.end : event.start;
+            	fmt_end_dt = $.fullCalendar.formatDate(end, 'MM/dd/yyyy')
+            	$('#id_end').val(fmt_end_dt);
+            	$('.end').text(fmt_end_dt);
+            },
+            eventResize: function(event, dayDelta, minuteDelta, revertFunc) {
+            	var end = event.end ? event.end : event.start;
+                if(end) {
+            		var time_at_hand = Math.floor(((end - event.start)/86400000) + 1);            		
+            	} else {
+            		//its the same day
+                    var time_at_hand = 1;            		
+            	}
+            	var timeoff_sel_elem = $('#id_timeoff_select');
+            	var time_remaining = parseInt(timeoff_sel_elem.data('orig_time_remaining'));
+            	time_remaining = time_remaining - time_at_hand;
+            	if(time_remaining >= 0) {
+            		fmt_st_dt = $.fullCalendar.formatDate(event.start, 'MM/dd/yyyy');
+            		$('#id_start').val(fmt_st_dt);
+            		$('.start').text(fmt_st_dt);
+            		fmt_end_dt = $.fullCalendar.formatDate(end, 'MM/dd/yyyy')
+                    $('#id_end').val(fmt_end_dt);
+            		$('.end').text(fmt_end_dt);
+                    $('.time-remaining').text('total time remaining: ' + time_remaining);
+                    $('#id_timeoff_select').data('time_remaining', time_remaining);              		
+            	} else {
+            		revertFunc();            		
+            	}            	
             },
             editable: true,
             events: [
                 {}
             ]
+        });
+        
+        $('#id_timeoff_select').change(function() {
+        	 that = this;
+        	 calendar.fullCalendar('removeEvents'); 
+        	 $('#id_start').val('');
+             $('#id_end').val('');
+             $('.start').text('');
+             $('.end').text('');
+             var url = '/u/timeoff/left/' + $(this).val() + '/';
+             //do ajax call to get total remaining hours
+             $.getJSON(url, function(data) {
+            	   var time_remaining = parseInt(data.time_remaining) + parseInt(data.overdraw_limit) + parseInt(data.booked_days);            	   
+            	   $(that).data('time_remaining', time_remaining);  
+            	   $(that).data('orig_time_remaining', time_remaining);
+            	   $('.time-remaining').text('total time remaining: ' + time_remaining);
+             });
+        });
+        
+        $('#reset').click(function() {
+        	calendar.fullCalendar('removeEvents');
+        	var timeoff_select = $('#id_timeoff_select');
+        	timeoff_select.data('time_remaining', timeoff_select.data('orig_time_remaining')); 
+        	$('.time-remaining').text('total time remaining: ' + timeoff_select.data('time_remaining'));
+        	$('#id_start').val('');
+            $('#id_end').val('');
+            $('.start').text('');
+            $('.end').text('');
         });
         
     });
@@ -61,18 +142,46 @@
         }
 
     #calendar {
-        width: 900px;
-        margin: 0 auto;
-        }
+        width: 650px;
+        height: 650px;
+        margin: 10px;
+        float:left;
+        display:block;
+       }
+        
+    #sidebar {
+        float:left;
+        margin: 10px;
+        display:block;
+    }
+    
+    #sidebar span {
+        clear:both;
+        display:block;
+    }
 
 </style>
 </head>
 <body>
 <div id='calendar'></div>
 <div id='sidebar'>
-    <span id='start'></span>
-    <span id='end'></span>
-    <span id='timeoff'></span>
+    <form id='book_timeoff' action="/timeoff/book/" method="post">
+        {%csrf_token%}
+        <input type="hidden" id="id_user" name="user" value="{{request.user.id}}"/>
+        <input type="hidden" id="id_start" name="start" value=""/>
+        <input type="hidden" id="id_end" name="end" value=""/>
+        
+	    <span class="header">Time off Booking</span>
+        <select id='id_timeoff_select' name='timeoff_select'>
+            {% timeoff_options %} 
+        </select>
+	    <span class="time-remaining"></span>
+	    <span class='prefix'>Start:&nbsp;</span><span class='start'></span>
+	    <span class='prefix'>End:&nbsp;</span><span class='end'></span>
+	    
+	    <input type="button" title="Reset" value="Reset" id="reset"/>
+	    <input type="submit" title="Book" value="Book" />
+    </form>
 </div>
 </body>
 </html>

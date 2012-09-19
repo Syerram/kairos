@@ -8,6 +8,7 @@ from django.views.generic.simple import direct_to_template
 from tracker.views import timesheet_by_week
 from workflow.views import queue, queue_shift, queue_history, approval_history
 import traceback
+from timeoff.views import timeoff_left, timeoff_book
 
 # Uncomment the next two lines to enable the admin:
 # from django.contrib import admin
@@ -23,12 +24,13 @@ urlpatterns = patterns('',
     url(r'^u/conf(?:/(?P<taxonomy>\d+))?/$', user_configure_taxonomy, name='user_configure_taxonomy'),
     url(r'^u/conf/proj/$', user_configure_projects, name='user_configure_projects'),
     url(r'^u/conf/timeoff/(?P<timeoff_policy>\d+)/$', user_timeoff_policy, name='user_timeoff_policy'),
+    url(r'^u/timeoff/left/(?P<timeoff>\d+)/$', timeoff_left, name='timeoff_left'),
     
     #timesheet
     url(r'^timesheet/(?P<week>\d+)/$', timesheet_by_week, name='timesheet'),
     
     #timeoff booking
-    (r'^timeoff/book/$', 'kairos.urls.to_template', {'page_name': 'timeoff/book_timeoff'}),    
+    url(r'^timeoff/book/$', timeoff_book, name='timeoff_book'),    
     
     #Q management
     url(r'^q/$', queue, name='queue'),

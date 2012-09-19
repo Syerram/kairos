@@ -206,6 +206,7 @@ function Calendar(element, options, eventSources) {
 	t.getView = getView;
 	t.option = option;
 	t.trigger = trigger;
+	t.print = function() { console.info('print'); }
 	
 	
 	// imports
@@ -1096,7 +1097,6 @@ function EventManager(options, _sources) {
 		}
 		reportEvents(cache);
 	}
-	
 	
 	function removeEvents(filter) {
 		if (!filter) { // remove all

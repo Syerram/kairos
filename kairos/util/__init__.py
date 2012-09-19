@@ -10,6 +10,8 @@ import hashlib
 import types
 from django.conf.locale import fa
 from django.db.models.fields.related import ForeignKey
+import json
+from decimal import Decimal
 
 
 class ExternalMessageRequestStorage(SessionStorage):
@@ -202,6 +204,14 @@ def instance_to_dict(instance, key_format=None):
         d[key(field.name)] = [obj._get_pk_val() for obj in getattr(instance, field.attname).all()]
         
     return d
+
+class DecimalEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, Decimal):
+            return float(obj)
+        return json.JSONEncoder.default(self, obj)
+
+json.encoder.FLOAT_REPR = lambda o: format(o, '.1f')
 
 def get_type(cls):
     parts = cls.split('.')

@@ -30,7 +30,7 @@ class DropdownValueManager(models.Manager):
 
     @cacher(key=dropdown_keygen)
     def dropdownvalue(self, category, code):
-        return self.get_query_set().get(Q(dropdown__category=category) & Q(code=code))
+        return self.get_query_set().get(Q(dropdown__category=category) & Q(code=code))        
 
 class DropdownValue(models.Model):
     dropdown = models.ForeignKey(Dropdown)
