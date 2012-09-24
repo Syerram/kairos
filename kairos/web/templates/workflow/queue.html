@@ -1,4 +1,4 @@
-{% load tracker_tags %}
+{% load queue_tags %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -7,7 +7,14 @@
     <link rel="stylesheet" href="/static/css/queue.css" type="text/css" media="screen">
     <link rel="stylesheet" href="/static/css/glyphicon-icons.css" type="text/css" media="screen">    
     <meta charset="ISO-8859-1">
-    <title>Kairos | Queue</title>
+    <title>Kairos | Approval Queue</title>
+    
+    {% block html5shim %}
+         <!-- HTML5 shim, for IE6-8 support of HTML elements -->
+         <!--[if lt IE 9]>
+             <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+         <![endif]-->
+    {% endblock %}
 </head>
 
 <body>
@@ -22,14 +29,9 @@
         </div>
     </div>
     <div class="row" style="margin: 25px 0 0 5%;">
-        {% for queue_item in queue_items %}
-            {% total_hours queue_item.content_object as total_hours %}
+        {% for queue_item in queue_items %}            
             <div class="queue-box">
-	            <span>{{queue_item.content_object.user.username}}</span>
-	            <span>{{total_hours}}</span>
-	            <span>{{queue_item.content_object.week}}</span>
-	            <span>{{queue_item.content_object.start_week}}</span>
-	            <span>{{queue_item.content_object.end_week}}</span>
+                {% content_type_snapshot queue_item %}
 	            <a href="/q/+/{{queue_item.id}}" class="blue-button"><span>Approve</span></a>
 	            <a href="/q/-/{{queue_item.id}}" class="red-button"><span>Reject</span></a>
             </div>

@@ -1,0 +1,6 @@
+<span>{{queue_item.content_object.user.username}}</span>
+<span>{{queue_item.content_object.timeoff_type.name}}</span>
+<span>{{queue_item.content_object.start_date|date:"d.NY"}}</span>
+<span>{{queue_item.content_object.end_date|date:"d.NY"}}</span>
+<span>{{queue_item.content_object.start_date|timesince:queue_item.content_object.end_date}}</span>
+<!-- TODO: include start date as well -->

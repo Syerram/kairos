@@ -1,4 +1,5 @@
 from django.db import models
+from datetime import date, timedelta
 from django.utils.translation import ugettext_lazy as _
 from common.models import DropdownValue
 from kairos.util import cacher
@@ -104,15 +105,38 @@ class TimeOffPolicyAdmin(admin.ModelAdmin):
 admin.site.register(TimeOffPolicy, TimeOffPolicyAdmin)
 
 """Models to store user bookings"""
-
+class BookTimeOffManager(models.Manager):
+    def bookings(self, user, timeoff_type=None):
+        user_booked_timeoffs = self.get_query_set().filter(user=user)
+        if timeoff_type:
+            user_booked_timeoffs = user_booked_timeoffs.filter(timeoff_type=timeoff_type)        
+            
+        return user_booked_timeoffs
+    
+    def bookings_sofar(self, user, start_date=None, end_date=None, timeoff_type=None):
+        if not start_date:
+            start_date = date.today()
+        if not end_date:
+            end_date = date.today()
+         
+        bookings = self.get_query_set().filter(Q(user=user) & Q(start_date__gte=start_date) & Q(start_date__lte=end_date))   
+        if timeoff_type:
+            bookings = bookings.filter(timeoff_type__id=timeoff_type)
+        
+        return bookings
+         
+        
 class BookTimeOff(models.Model):
     """Booked timeoff by the user"""
+    title = models.CharField(_('Title'), max_length=15, null=True, blank=True)
     user = models.ForeignKey(User)
     timeoff_type = models.ForeignKey(TimeOffType, related_name="book_timeoff_type", verbose_name=_('Book TimeOff Type'))
     start_date = models.DateTimeField(_('Start Date'))
     end_date = models.DateTimeField(_('End Date'))
     
     comment = GenericRelation(Comment, object_id_field='object_pk', null=True, blank=True)
+    
+    objects = BookTimeOffManager()
     
     class Meta:
         verbose_name = _("Book TimeOff")
@@ -125,29 +149,8 @@ class BookTimeOfffHistory(models.Model):
     last_updated = models.DateTimeField(auto_now=True)   
     
     def __unicode__(self):
-        return self.book_timeoff.user.username + ' timeoff between ' + self.start_date + \
-            ' and ' + self.end_date + ' with status ' + self.weeksnapshot_status.name
-
-class BookTimeOffManager(models.Manager):
+        return self.book_timeoff.user.username + ' for ' + self.book_timeoff.timeoff_type.name
     
-    def bookings(self, user, timeoff_type=None):
-        user_booked_timeoffs = self.get_query_set().filter(user=user)
-        if timeoff_type:
-            user_booked_timeoffs = user_booked_timeoffs.filter(timeoff_type=timeoff_type)        
-            
-        return user_booked_timeoffs
-    
-    def bookings_sofar(self, user, after_date=None):
-        user_bookings = BookTimeOfffHistory.objects.get_query_set().select_related().filter(Q(book_timeoff__user=user) & Q(book_timeoff_status=DropdownValue.objects.dropdownvalue('TO', 'APPRD')))
-        if after_date:            
-            timed_bookings = BookTimeOfffHistory.objects.get_query_set().select_related().filter(book_timeoff__user=user).exclude(book_timeoff_status=DropdownValue.objects.dropdownvalue('TO', 'APPRD'))
-            timed_bookings = timed_bookings.filter(book_timeoff__start_date__gte=after_date)
-            return user_bookings | timed_bookings
-        else:
-            return user_bookings
-        
-BookTimeOff.objects = BookTimeOffManager()
-
 @monkey_patch(BookTimeOff)
 class PatchBookTimeOff(object):
     
@@ -155,10 +158,10 @@ class PatchBookTimeOff(object):
         """If it doesn't exists, returns by default DRAFT status"""
         #TODO create settings attribute instead of hardcoding to DRAFT    
         try:
-            return BookTimeOff.objects.filter(Q(book_timeoff=self)).latest(field_name='last_updated')
+            return BookTimeOfffHistory.objects.filter(Q(book_timeoff=self)).latest(field_name='last_updated')
         except BookTimeOff.DoesNotExist:
             draft_dropdownvalue = DropdownValue.objects.dropdownvalue('TO', 'DRAFT')
-            return BookTimeOff(book_timeoff=self, book_timeoff_status=draft_dropdownvalue)
+            return BookTimeOfffHistory(book_timeoff=self, book_timeoff_status=draft_dropdownvalue)
     
     last_status = property(__last_status)
     

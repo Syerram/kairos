@@ -8,7 +8,7 @@ from django.views.generic.simple import direct_to_template
 from tracker.views import timesheet_by_week
 from workflow.views import queue, queue_shift, queue_history, approval_history
 import traceback
-from timeoff.views import timeoff_left, timeoff_book
+from timeoff.views import timeoff_left, timeoff_book, timeoff_bookings
 
 # Uncomment the next two lines to enable the admin:
 # from django.contrib import admin
@@ -31,6 +31,7 @@ urlpatterns = patterns('',
     
     #timeoff booking
     url(r'^timeoff/book/$', timeoff_book, name='timeoff_book'),    
+    url(r'^timeoff/bookings/$', timeoff_bookings, name='timeoff_bookings'),
     
     #Q management
     url(r'^q/$', queue, name='queue'),

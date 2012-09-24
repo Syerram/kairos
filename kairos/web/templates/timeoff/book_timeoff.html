@@ -32,46 +32,112 @@
             weekends: false,
             selectable: true,
             selectHelper: true,
-            select: function(start, end, allDay) {
-            	var timeoff_sel_elem = $('#id_timeoff_select option:selected');
-                var index = parseInt(timeoff_sel_elem.val());
-                var time_remaining = parseInt(timeoff_sel_elem.parent().data('time_remaining'));
-                if (index) {  
-                	var time_at_hand = ((end - start)/86400000) + 1;
-                	time_remaining = time_remaining - time_at_hand;
-                	console.info(time_remaining);
-                	if(time_remaining >= 0) {
-	                    calendar.fullCalendar('renderEvent',
-	                        {
-	                            title: timeoff_sel_elem.text(),
-	                            start: start,
-	                            end: end,
-	                            allDay: allDay
-	                        },
-	                        true // make the event "stick"
-	                    );
-	                    fmt_st_dt = $.fullCalendar.formatDate(start, 'MM/dd/yyyy');
-	                    fmt_end_dt = $.fullCalendar.formatDate(end, 'MM/dd/yyyy')
-	                    $('#id_start').val(fmt_st_dt);
-	                    $('#id_end').val(fmt_end_dt);
-	                    $('.start').text(fmt_st_dt);
-	                    $('.end').text(fmt_end_dt);
-	                    $('.time-remaining').text('total time remaining: ' + time_remaining);
-	                    $('#id_timeoff_select').data('time_remaining', time_remaining);  
-	                 }
+            eventSources: [
+                {
+            	   events: [
+                        {% for booking in bookings.INPROC %}
+                            {
+								title: '{{booking.title}}',
+								start: new Date(y, m, {{booking.start}}),
+								end: new Date(y, m, {{booking.end}}),
+								allDay: true,
+								status: 'INPROC',
+								persisted: true,
+                            },
+						{% endfor %}
+                    ],
+                    color: '#F5F591',
+                    textColor: 'black'
+                },
+                {
+                	events: [
+                             {% for booking in bookings.APPRD %}
+                                 {
+                                     title: '{{booking.title}}',
+                                     start: new Date(y, m, {{booking.start}}),
+                                     end: new Date(y, m, {{booking.end}}),
+                                     allDay: true,
+                                     status: 'APPRD',
+                                     persisted: true,
+                                 },
+                             {% endfor %}
+                         ],
+                	
+                },
+                {
+                    events: [
+                             {% for booking in bookings.REJTD %}
+                                 {
+                                     title: '{{booking.title}}',
+                                     start: new Date(y, m, {{booking.start}}),
+                                     end: new Date(y, m, {{booking.end}}),
+                                     allDay: true,
+                                     status: 'REJTD',
+                                     persisted: true,
+                                 },
+                             {% endfor %}
+                         ],
+                    color: '#FF7575',
+                    textColor: 'white'
+                }
+            ],
+            viewDisplay: function(view) {
+                console.info(view);
+            },
+            select: function(start, end, allDay) {            	
+                var today_date = new Date();
+                today_date.setHours(0,0,0,0);
+                var start_date_parsed = new Date(start);
+                start_date_parsed.setHours(0,0,0,0);
+                console.info(start_date_parsed >= today_date);
+                if(start_date_parsed >= today_date) {
+	            	var timeoff_sel_elem = $('#id_timeoff_type option:selected');
+	                var index = parseInt(timeoff_sel_elem.val());
+	                var time_remaining = parseInt(timeoff_sel_elem.parent().data('time_remaining'));
+	                if (index) {  
+	                	var time_at_hand = ((end - start)/86400000) + 1;
+	                	time_remaining = time_remaining - time_at_hand;                	
+	                	if(time_remaining >= 0) {
+		                    calendar.fullCalendar('renderEvent',
+		                        {
+		                            title: timeoff_sel_elem.text(),
+		                            start: start,
+		                            end: end,
+		                            allDay: allDay
+		                        },
+		                        true // make the event "stick"
+		                    );
+		                    fmt_st_dt = $.fullCalendar.formatDate(start, 'MM/dd/yyyy');
+		                    fmt_end_dt = $.fullCalendar.formatDate(end, 'MM/dd/yyyy')
+		                    $('#id_start_date').val(fmt_st_dt);
+		                    $('#id_end_date').val(fmt_end_dt);
+		                    $('.start').text(fmt_st_dt);
+		                    $('.end').text(fmt_end_dt);
+		                    $('.time-remaining').text('total time remaining: ' + time_remaining);
+		                    $('#id_timeoff_type').data('time_remaining', time_remaining);  
+		                 }
+	                }
                 }
                 calendar.fullCalendar('unselect');                
             },
             eventDrop: function(event, dayDelta, minuteDelta, allDay, revertFunc) {
+            	if(event.persisted) {
+            		revertFunc();
+            		return;
+            	}
             	fmt_st_dt = $.fullCalendar.formatDate(event.start, 'MM/dd/yyyy');
-            	$('#id_start').val(fmt_st_dt);
+            	$('#id_start_date').val(fmt_st_dt);
             	$('.start').text(fmt_st_dt);
             	var end = event.end ? event.end : event.start;
             	fmt_end_dt = $.fullCalendar.formatDate(end, 'MM/dd/yyyy')
-            	$('#id_end').val(fmt_end_dt);
+            	$('#id_end_date').val(fmt_end_dt);
             	$('.end').text(fmt_end_dt);
             },
-            eventResize: function(event, dayDelta, minuteDelta, revertFunc) {
+            eventResize: function(event, dayDelta, minuteDelta, revertFunc) { 
+                if(event.persisted) {
+                    revertFunc();
+                    return;
+                }
             	var end = event.end ? event.end : event.start;
                 if(end) {
             		var time_at_hand = Math.floor(((end - event.start)/86400000) + 1);            		
@@ -79,18 +145,18 @@
             		//its the same day
                     var time_at_hand = 1;            		
             	}
-            	var timeoff_sel_elem = $('#id_timeoff_select');
+            	var timeoff_sel_elem = $('#id_timeoff_type');
             	var time_remaining = parseInt(timeoff_sel_elem.data('orig_time_remaining'));
             	time_remaining = time_remaining - time_at_hand;
             	if(time_remaining >= 0) {
             		fmt_st_dt = $.fullCalendar.formatDate(event.start, 'MM/dd/yyyy');
-            		$('#id_start').val(fmt_st_dt);
+            		$('#id_start_date').val(fmt_st_dt);
             		$('.start').text(fmt_st_dt);
             		fmt_end_dt = $.fullCalendar.formatDate(end, 'MM/dd/yyyy')
-                    $('#id_end').val(fmt_end_dt);
+                    $('#id_end_date').val(fmt_end_dt);
             		$('.end').text(fmt_end_dt);
                     $('.time-remaining').text('total time remaining: ' + time_remaining);
-                    $('#id_timeoff_select').data('time_remaining', time_remaining);              		
+                    $('#id_timeoff_type').data('time_remaining', time_remaining);              		
             	} else {
             		revertFunc();            		
             	}            	
@@ -101,17 +167,20 @@
             ]
         });
         
-        $('#id_timeoff_select').change(function() {
+        $('#id_timeoff_type').change(function() {    
         	 that = this;
-        	 calendar.fullCalendar('removeEvents'); 
-        	 $('#id_start').val('');
-             $('#id_end').val('');
+             calendar.fullCalendar('removeEvents', function(e, i) {
+                 var persisted= !e.persisted;
+                 return persisted;               
+             });
+        	 $('#id_start_date').val('');
+             $('#id_end_date').val('');
              $('.start').text('');
              $('.end').text('');
              var url = '/u/timeoff/left/' + $(this).val() + '/';
              //do ajax call to get total remaining hours
              $.getJSON(url, function(data) {
-            	   var time_remaining = parseInt(data.time_remaining) + parseInt(data.overdraw_limit) + parseInt(data.booked_days);            	   
+            	   var time_remaining = parseInt(data.time_remaining) + parseInt(data.overdraw_limit) - parseInt(data.booked_days);            	   
             	   $(that).data('time_remaining', time_remaining);  
             	   $(that).data('orig_time_remaining', time_remaining);
             	   $('.time-remaining').text('total time remaining: ' + time_remaining);
@@ -119,14 +188,21 @@
         });
         
         $('#reset').click(function() {
-        	calendar.fullCalendar('removeEvents');
-        	var timeoff_select = $('#id_timeoff_select');
-        	timeoff_select.data('time_remaining', timeoff_select.data('orig_time_remaining')); 
-        	$('.time-remaining').text('total time remaining: ' + timeoff_select.data('time_remaining'));
-        	$('#id_start').val('');
-            $('#id_end').val('');
-            $('.start').text('');
-            $('.end').text('');
+        	var timeoff_select = $('#id_timeoff_type');
+        	var idx = parseInt(timeoff_select.find('option:selected').val());
+        	if(idx) {
+	        	calendar.fullCalendar('removeEvents', function(e, i) {
+	        		var persisted= !e.persisted;
+	        		return persisted;        		
+	        	});
+	        	
+	        	timeoff_select.data('time_remaining', timeoff_select.data('orig_time_remaining')); 
+	        	$('.time-remaining').text('total time remaining: ' + timeoff_select.data('time_remaining'));        	
+	        	$('#id_start_date').val('');
+	            $('#id_end_date').val('');
+	            $('.start').text('');
+	            $('.end').text('');
+        	}
         });
         
     });
@@ -168,14 +244,15 @@
     <form id='book_timeoff' action="/timeoff/book/" method="post">
         {%csrf_token%}
         <input type="hidden" id="id_user" name="user" value="{{request.user.id}}"/>
-        <input type="hidden" id="id_start" name="start" value=""/>
-        <input type="hidden" id="id_end" name="end" value=""/>
+        <input type="hidden" id="id_start_date" name="start_date" value=""/>
+        <input type="hidden" id="id_end_date" name="end_date" value=""/>
         
 	    <span class="header">Time off Booking</span>
-        <select id='id_timeoff_select' name='timeoff_select'>
+        <select id='id_timeoff_type' name='timeoff_type'>
             {% timeoff_options %} 
         </select>
-	    <span class="time-remaining"></span>
+	    <span class="time-remaining"></span>	    
+	    
 	    <span class='prefix'>Start:&nbsp;</span><span class='start'></span>
 	    <span class='prefix'>End:&nbsp;</span><span class='end'></span>
 	    

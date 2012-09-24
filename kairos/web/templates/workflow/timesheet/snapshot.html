@@ -1,0 +1,8 @@
+{% load tracker_tags %}
+
+{% total_hours queue_item.content_object as total_hours %}
+<span>{{queue_item.content_object.user.username}}</span>
+<span>{{total_hours}}</span>
+<span>{{queue_item.content_object.week}}</span>
+<span>{{queue_item.content_object.start_week}}</span>
+<span>{{queue_item.content_object.end_week}}</span>

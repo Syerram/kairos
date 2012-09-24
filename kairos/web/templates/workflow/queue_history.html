@@ -1,4 +1,4 @@
-{% load tracker_tags %}
+{% load queue_tags %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,14 +9,7 @@
     <p>{{request.user.username}}</p>
     {% for queue_item in queue_items %}            
             <div class="queue-box">                
-                <span>{{queue_item.from_user.username}}</span>
-                <span>on {{queue_item.created_on}}</span>
-                <span>from status {{queue_item.from_status.display}}</span>
-                <span>to</span>
-                <span>{{queue_item.to_user.username}}</span>
-                <span>with status {{queue_item.to_status.display}}</span>
-                <span>for week {{queue_item.approver_queue.content_object.start_week}}</span>
-                <span>to {{queue_item.approver_queue.content_object.end_week}}</span>       
+                {% content_type_history queue_item %}
             </div>
         {% endfor %}
 </body>
