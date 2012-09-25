@@ -36,7 +36,7 @@ def post_attach_queue_save(sender, **kwargs):
             approver_queue_history.save()  
             #TODO: post signal to send email to the next person in queue           
         else:
-            workflow.signals.post_final_status_event.send(sender=ApproverQueue, instance=instance, status=ApproverQueue.approved_status())
+            workflow.signals.post_final_status_event.send(sender=type(instance), instance=instance, status=ApproverQueue.approved_status())
             
         
         
@@ -119,7 +119,7 @@ def queue_shift(request, bit, id):
         approver_queue_history.save()  
         
         if approver_queue.current_status == ApproverQueue.approved_status():
-            workflow.signals.post_final_status_event.send(sender=ApproverQueue, 
+            workflow.signals.post_final_status_event.send(sender=type(approver_queue.content_object), 
                                          instance=approver_queue.content_object, status=ApproverQueue.approved_status())   
         
         #TODO: post signal to send email to the next person in queue if not the last one
@@ -148,7 +148,7 @@ def queue_shift(request, bit, id):
         approver_queue.save()
         
         #update the weeksnapshot status
-        workflow.signals.post_final_status_event.send(sender=ApproverQueue, 
+        workflow.signals.post_final_status_event.send(sender=type(approver_queue.content_object), 
                                      instance=approver_queue.content_object, status=ApproverQueue.rejected_status())
             
         #TODO: post signal to send email to the submitter with the rejection   

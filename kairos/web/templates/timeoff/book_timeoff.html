@@ -38,8 +38,8 @@
                         {% for booking in bookings.INPROC %}
                             {
 								title: '{{booking.title}}',
-								start: new Date(y, m, {{booking.start}}),
-								end: new Date(y, m, {{booking.end}}),
+								start: '{{booking.start}}',
+								end: '{{booking.end}}',
 								allDay: true,
 								status: 'INPROC',
 								persisted: true,
@@ -54,8 +54,8 @@
                              {% for booking in bookings.APPRD %}
                                  {
                                      title: '{{booking.title}}',
-                                     start: new Date(y, m, {{booking.start}}),
-                                     end: new Date(y, m, {{booking.end}}),
+                                     start: '{{booking.start}}',
+                                     end: '{{booking.end}}',
                                      allDay: true,
                                      status: 'APPRD',
                                      persisted: true,
@@ -69,8 +69,8 @@
                              {% for booking in bookings.REJTD %}
                                  {
                                      title: '{{booking.title}}',
-                                     start: new Date(y, m, {{booking.start}}),
-                                     end: new Date(y, m, {{booking.end}}),
+                                     start: '{{booking.start}}',
+                                     end: '{{booking.end}}',
                                      allDay: true,
                                      status: 'REJTD',
                                      persisted: true,
@@ -82,7 +82,27 @@
                 }
             ],
             viewDisplay: function(view) {
-                console.info(view);
+            	//TODO: fetch only if it is less than today's month [i.e. if today is 10/15/2012, pull only if the start is less than 10/01].
+            	//      Also events are cached, so maybe its better to purge or not pull if the month-view has some 'pulled' data flag set. 
+            	//      The original fetch already pulled all bookings from current date month
+            	if(view.ajax) {
+            		start = $.fullCalendar.formatDate(view.visStart, 'yyyyMMdd');            		
+            		//fetch json for the current month
+            		events=[];            		
+            		$.getJSON('/timeoff/bookings/' + start + '/', function(data) {
+            			  for(var idx=0;idx < data.APPRD.length; idx++) {
+            				   event = data.APPRD[idx];
+            		           events.push({
+            		        	   title: event.title,
+                                   start: event.start,
+                                   end: event.end,
+                                   allDay: true,
+                                   status: 'APPRD',
+                                   persisted: true            		        	   
+            		           });
+            			  }            			  
+            		});
+            	}
             },
             select: function(start, end, allDay) {            	
                 var today_date = new Date();
@@ -111,10 +131,11 @@
 		                    fmt_end_dt = $.fullCalendar.formatDate(end, 'MM/dd/yyyy')
 		                    $('#id_start_date').val(fmt_st_dt);
 		                    $('#id_end_date').val(fmt_end_dt);
+		                    $('#id_number_of_days').val(time_at_hand);
 		                    $('.start').text(fmt_st_dt);
 		                    $('.end').text(fmt_end_dt);
 		                    $('.time-remaining').text('total time remaining: ' + time_remaining);
-		                    $('#id_timeoff_type').data('time_remaining', time_remaining);  
+		                    $('#id_timeoff_type').data('time_remaining', time_remaining);  		                    
 		                 }
 	                }
                 }
@@ -155,6 +176,7 @@
             		fmt_end_dt = $.fullCalendar.formatDate(end, 'MM/dd/yyyy')
                     $('#id_end_date').val(fmt_end_dt);
             		$('.end').text(fmt_end_dt);
+            		$('#id_number_of_days').val(time_at_hand);
                     $('.time-remaining').text('total time remaining: ' + time_remaining);
                     $('#id_timeoff_type').data('time_remaining', time_remaining);              		
             	} else {
@@ -169,22 +191,25 @@
         
         $('#id_timeoff_type').change(function() {    
         	 that = this;
-             calendar.fullCalendar('removeEvents', function(e, i) {
-                 var persisted= !e.persisted;
-                 return persisted;               
-             });
-        	 $('#id_start_date').val('');
-             $('#id_end_date').val('');
-             $('.start').text('');
-             $('.end').text('');
-             var url = '/u/timeoff/left/' + $(this).val() + '/';
-             //do ajax call to get total remaining hours
-             $.getJSON(url, function(data) {
-            	   var time_remaining = parseInt(data.time_remaining) + parseInt(data.overdraw_limit) - parseInt(data.booked_days);            	   
-            	   $(that).data('time_remaining', time_remaining);  
-            	   $(that).data('orig_time_remaining', time_remaining);
-            	   $('.time-remaining').text('total time remaining: ' + time_remaining);
-             });
+        	 var index = parseInt($(this).val());
+        	 if(index) {
+	             calendar.fullCalendar('removeEvents', function(e, i) {
+	                 var persisted= !e.persisted;
+	                 return persisted;               
+	             });
+	        	 $('#id_start_date').val('');
+	             $('#id_end_date').val('');
+	             $('.start').text('');
+	             $('.end').text('');
+	             var url = '/u/timeoff/left/' + $(this).val() + '/';
+	             //do ajax call to get total remaining hours
+	             $.getJSON(url, function(data) {
+	            	   var time_remaining = parseInt(data.time_remaining) + parseInt(data.overdraw_limit) - parseInt(data.booked_days);            	   
+	            	   $(that).data('time_remaining', time_remaining);  
+	            	   $(that).data('orig_time_remaining', time_remaining);
+	            	   $('.time-remaining').text('total time remaining: ' + time_remaining);
+	             });
+        	 }
         });
         
         $('#reset').click(function() {
@@ -246,6 +271,7 @@
         <input type="hidden" id="id_user" name="user" value="{{request.user.id}}"/>
         <input type="hidden" id="id_start_date" name="start_date" value=""/>
         <input type="hidden" id="id_end_date" name="end_date" value=""/>
+        <input type="hidden" id="id_number_of_days" name="number_of_days" value="0"/>
         
 	    <span class="header">Time off Booking</span>
         <select id='id_timeoff_type' name='timeoff_type'>

@@ -31,7 +31,7 @@ urlpatterns = patterns('',
     
     #timeoff booking
     url(r'^timeoff/book/$', timeoff_book, name='timeoff_book'),    
-    url(r'^timeoff/bookings/$', timeoff_bookings, name='timeoff_bookings'),
+    url(r'^timeoff/bookings(?:/(?P<start_date>\w+))?/$', timeoff_bookings, name='timeoff_bookings'),
     
     #Q management
     url(r'^q/$', queue, name='queue'),

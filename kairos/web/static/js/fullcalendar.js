@@ -408,6 +408,9 @@ function Calendar(element, options, eventSources) {
 			}
 			
 			ignoreWindowResize--;
+			if(inc) {
+				currentView.ajax = true;
+			}
 			currentView.trigger('viewDisplay', _element);
 		}
 	}

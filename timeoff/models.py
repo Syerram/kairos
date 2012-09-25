@@ -116,10 +116,12 @@ class BookTimeOffManager(models.Manager):
     def bookings_sofar(self, user, start_date=None, end_date=None, timeoff_type=None):
         if not start_date:
             start_date = date.today()
-        if not end_date:
-            end_date = date.today()
-         
-        bookings = self.get_query_set().filter(Q(user=user) & Q(start_date__gte=start_date) & Q(start_date__lte=end_date))   
+        
+        bookings = self.get_query_set().filter(Q(user=user) & Q(start_date__gte=start_date))   
+        
+        if end_date:
+            bookings = bookings.filter(start_date__lte=end_date)
+        
         if timeoff_type:
             bookings = bookings.filter(timeoff_type__id=timeoff_type)
         
@@ -133,6 +135,7 @@ class BookTimeOff(models.Model):
     timeoff_type = models.ForeignKey(TimeOffType, related_name="book_timeoff_type", verbose_name=_('Book TimeOff Type'))
     start_date = models.DateTimeField(_('Start Date'))
     end_date = models.DateTimeField(_('End Date'))
+    number_of_days = models.PositiveIntegerField(_('Number of Days'), default=0)
     
     comment = GenericRelation(Comment, object_id_field='object_pk', null=True, blank=True)
     
@@ -160,7 +163,7 @@ class PatchBookTimeOff(object):
         try:
             return BookTimeOfffHistory.objects.filter(Q(book_timeoff=self)).latest(field_name='last_updated')
         except BookTimeOff.DoesNotExist:
-            draft_dropdownvalue = DropdownValue.objects.dropdownvalue('TO', 'DRAFT')
+            draft_dropdownvalue = DropdownValue.objects.dropdownvalue('WF', 'DRAFT')
             return BookTimeOfffHistory(book_timeoff=self, book_timeoff_status=draft_dropdownvalue)
     
     last_status = property(__last_status)
