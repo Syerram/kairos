@@ -5,14 +5,15 @@ Created on Sep 17, 2012
 '''
 from django import template
 from categories.models import TimeOffType
-from django.db.models import Q
 
 register = template.Library()
 
+#TODO: filter only timeoff bookings the user has access to
+
 @register.inclusion_tag('snippets/dropdown.html')
-def timeoff_options(selected_option=None):
-    options = TimeOffType.objects.filter(Q(active=True) & Q(booking_required=True))
-    if selected_option:
-        options = options.filter(id=selected_option)
+def timeoff_options(booking_required, selected_option=None):
+    options = TimeOffType.objects.filter(active=True)
+    if booking_required == 'True':
+        options = options.filter(booking_required=booking_required)
         
     return {'options': options, 'selected_option': selected_option, 'dropdown_label': 'Time Off'}

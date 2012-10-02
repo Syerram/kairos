@@ -32,7 +32,7 @@
             },
 
             hasChildElements = function(row) {
-                return row.find('input,select,textarea,label,span').length > 0;
+                return row.find('input,textarea,select,label,span').length > 0;
             },
 
             insertDeleteLink = function(row) {
@@ -66,7 +66,7 @@
                         $('#id_' + options.prefix + '-TOTAL_FORMS').val(forms.length);
                         for (var i=0, formCount=forms.length; i<formCount; i++) {
                             applyExtraClasses(forms.eq(i), i);
-                            forms.eq(i).find('input,select,textarea,label,span').each(function() {
+                            forms.eq(i).find('input,textarea,select,label,span,div').each(function() {
                                 updateElementIndex($(this), options.prefix, i);
                             });
                         }
@@ -100,7 +100,7 @@
                 // If a form template was specified, we'll clone it to generate new form instances:
                 template = (options.formTemplate instanceof $) ? options.formTemplate : $(options.formTemplate);
                 template.removeAttr('id').addClass(options.formCssClass).addClass('formset-custom-template');
-                template.find('input,select,textarea,label,span').each(function() {
+                template.find('input,textarea,select,label,span,div').each(function() {
                     updateElementIndex($(this), options.prefix, 2012);
                 });
                 insertDeleteLink(template);
@@ -109,7 +109,7 @@
                 // extra (>= 1) forms (thnaks to justhamade for pointing this out):
                 template = $('.' + options.formCssClass + ':last').clone(true).removeAttr('id');
                 template.find('input:hidden[id $= "-DELETE"]').remove();
-                template.find('input,select,textarea,label,span').each(function() {
+                template.find('input,textarea,select,label,span,div').each(function() {
                     var elem = $(this);
                     // If this is a checkbox or radiobutton, uncheck it.
                     // This fixes Issue 1, reported by Wilson.Andrew.J:
@@ -136,17 +136,24 @@
                 addButton = $$.filter(':last').next();
             }
             addButton.click(function() {
+            	source = $(this).data('source');
                 var formCount = parseInt($('#id_' + options.prefix + '-TOTAL_FORMS').val()),
                     row = options.formTemplate.clone(true).removeClass('formset-custom-template'),
                     buttonRow = $(this).parents('tr.' + options.formCssClass + '-add').get(0) || this;
-                applyExtraClasses(row, formCount);
-                row.insertBefore($(buttonRow)).show();
-                row.find('input,select,textarea,label,span').each(function() {
+                
+                if (options.pre_add && source && options.pre_add[source]) {
+                	options.pre_add[source](row);
+                }
+                row.find('input,textarea,select,label,span,div').each(function() {
                     updateElementIndex($(this), options.prefix, formCount);
                 });
+                applyExtraClasses(row, formCount);
                 $('#id_' + options.prefix + '-TOTAL_FORMS').val(formCount + 1);
+                row.insertBefore($(buttonRow)).show();
                 // If a post-add callback was supplied, call it with the added form:
-                if (options.added) options.added(row);
+                if (options.post_add && source && options.post_add[source]) {
+                	options.post_add[source](row);
+                }
                 return false;
             });
         }
@@ -164,7 +171,8 @@
         deleteCssClass: 'delete-row',    // CSS class applied to the delete link
         formCssClass: 'dynamic-form',    // CSS class applied to each form in a formset
         extraClasses: [],                // Additional CSS classes, which will be applied to each form in turn
-        added: null,                     // Function called each time a new form is added
+        pre_add: null,                   // Function called each time before it will be added to the form 
+        post_add: null,					 // called after its added to the form
         removed: null                    // Function called each time a form is deleted
     };
 })(jQuery)

@@ -46,8 +46,11 @@ class TimeOffPolicy(models.Model):
     
     allow_prorate = models.BooleanField(_('Allow Prorate'), default=False)
     
-    max_balance_limit = models.SmallIntegerField(_('Maximum Balance Limit'))
-    max_overdraw_limit = models.PositiveSmallIntegerField(_('Maximum Overdraw Limit'), default=0)
+    no_max_balance_limit = models.BooleanField(_('No Maximum Balance Limit'), default=False)
+    max_balance_limit = models.SmallIntegerField(_('Maximum Balance Limit'), default=0)
+    
+    no_max_overdraw_limit = models.BooleanField(_('No Overdraw Limit'), default=False)
+    max_overdraw_limit = models.SmallIntegerField(_('Maximum Overdraw Limit'), default=0)
     
     class Meta:
         verbose_name = _("TimeOff Policy")
@@ -66,6 +69,7 @@ class TimeOffPolicy(models.Model):
     @cacher(key='BALANCE_TYPE')
     def balance_carryover_types():
         return DropdownValue.objects.dropdownvalue('BALAT')
+   
 
 """
     TODO: Hack to load admin form. For some reason, this app cannot load Admin form when the Admin class is in admin.py

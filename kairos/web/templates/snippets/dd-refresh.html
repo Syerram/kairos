@@ -1,8 +1,8 @@
-<option class="dropdown-option">Choose Activity</option>
+<option value="0"></option>
 {% for option in options.all %}
        {% if option.id == selected_option %}
-            <option value="{{option.id}}" class="dropdown-option" selected="selected">{{option.name}}</option>
+            <option value="{{option.id}}" selected="selected">{{option.name}}</option>
        {% else %}
-	       <option value="{{option.id}}" class="dropdown-option">{{option.name}}</option>
+	       <option value="{{option.id}}">{{option.name}}</option>
 	   {% endif %}
 {% endfor %}

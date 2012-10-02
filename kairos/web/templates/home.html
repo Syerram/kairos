@@ -1,25 +1,18 @@
+{% extends "includes/content_base.html" %}
 {% load tracker_tags %}
 
-<!DOCTYPE html>
-<html>
-<head>
-<link rel="stylesheet" href="/static/css/common.css" type="text/css" media="screen">
-<meta charset="ISO-8859-1">
-<title>Kairos | Home</title>
-</head>
-<body style="z-index:-999;position:relative;">    
-    {% current_week_number as current_week_number %}
-    <div class="landing-home">
-        <span class="welcome-user">Welcome {{request.user.first_name}}, {{request.user.last_name}}</span>
-        <span class="welcome-question">What would you like to do?</span>
-        <div class="solid-circle"><a href="/timesheet/{{current_week_number}}/"><span>Timesheets</span></a></div>
-        <div class="solid-circle"><a href="#"><span>Time Off</span></a></div>
-        <div class="solid-circle"><a href="#"><span>Profile</span></a></div>
-        <div class="solid-circle"><a href="/q/"><span>Queue</span></a></div>
-        <div id="section" style="clear:both;display:inline-block;margin-top:10px;" class="section">
-             <span class="user-stats">1 pending, 2 review</span>
-             <input type="submit" style="float:right;margin:6px 10px 0 0;width:75px;" class="grey-button" value="Logout"/>
-        </div>
+{% block head_title %}Home{% endblock %}
+
+{% block body_css%}main{% endblock %}
+
+{% block main %}
+    <div class="modal main">
+        <ul>
+            {% current_week_number as current_week_number %}
+            <li class="timesheets"><a href="/timesheet/{{current_week_number}}/"><h3>Timesheets</h3></a></li>
+            <li class="time-off"><a href="/timeoff/book/"><h3>Time Off</h3></a></li>
+            <li class="reports"><a href="#"><h3>Reports</h3></a></li>
+            <li class="approve"><a href="/q/"><h3>Approve</h3></a></li>
+        </ul>
     </div>
-</body>
-</html>
+{% endblock %}

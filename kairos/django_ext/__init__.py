@@ -7,6 +7,8 @@ from inspect import getargspec
 from django.template.base import TagHelperNode, Template, generic_tag_compiler
 from django.utils.itercompat import is_iterable
 from functools import partial
+from django.contrib.auth.backends import ModelBackend
+from django.contrib.auth.models import User
 
 class ModelAdminExt(object):
     
@@ -51,6 +53,14 @@ class ModelAdminExt(object):
     
     
 class LibraryExt(template.Library):
+    """
+        Allows to dynamically return a template page without hardcoding in the inclusion tag.
+        The caller will return a dictionary of context items, one of which will be a template path.
+        The decorator itself will accept the key for that dictionary item containing the path.
+        
+        This allows the view to return template path based on internal logic
+    
+    """
     
     def dyna_inclusion_tag(self, file_name_key, context_class=Context, takes_context=False, name=None):
         def dec(func):
@@ -66,7 +76,13 @@ class LibraryExt(template.Library):
                     else:
                         file_name = _dict[file_name_key]
 
-                    if not getattr(self, 'nodelist', False):
+                    """
+                        The tag caches the nodelist, which is intended for rendering.
+                        We check here whether the file_name matches to the cached one, if not, then we recreate the nodelist
+                    """
+                    cached_file_name = getattr(self, 'file_name', None)
+                                        
+                    if cached_file_name <> file_name:
                         from django.template.loader import get_template, select_template
                         if isinstance(file_name, Template):
                             t = file_name
@@ -75,6 +91,7 @@ class LibraryExt(template.Library):
                         else:
                             t = get_template(file_name)
                         self.nodelist = t.nodelist
+                        self.file_name = file_name
                     new_context = context_class(_dict, **{
                         'autoescape': context.autoescape,
                         'current_app': context.current_app,
@@ -101,3 +118,21 @@ class LibraryExt(template.Library):
             return func
         return dec
     
+class KairosAuthBackend(ModelBackend):
+    '''
+    sindeo auth backend that allows authentication through email
+    '''
+    def authenticate(self, username=None, password=None):
+        if '@' in username:
+            user_args = {'email': username}
+        else:
+            user_args = {'username': username}
+        try:
+            user = User.objects.get(**user_args)
+            if user.check_password(password):
+                return user
+        except:
+            return None
+    
+    def get_user(self, user_id):
+        return super(KairosAuthBackend, self).get_user(user_id)

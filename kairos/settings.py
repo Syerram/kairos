@@ -163,13 +163,14 @@ INSTALLED_APPS = (
     
     #kairos,
     'common',
+    'rules',
+    'overtime',
     'users',    
     'categories',    
     'configuration',
     'timeoff',
     'tracker',
-    'workflow',
-    'rules',    
+    'workflow',        
 )
 
 # A sample logging configuration. The only tangible logging
@@ -210,6 +211,9 @@ HAYSTACK_CONNECTIONS = {
 }
 
 LOGIN_URL = '/login/'
+
+AUTHENTICATION_BACKENDS = ('kairos.django_ext.KairosAuthBackend',
+                           'django.contrib.auth.backends.ModelBackend',)
 
 AUTH_PROFILE_MODULE = 'configuration.UserProfile'
 

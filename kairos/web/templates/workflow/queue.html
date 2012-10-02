@@ -1,33 +1,14 @@
+{% extends "includes/content_base.html" %}
 {% load queue_tags %}
-<!DOCTYPE html>
-<html>
-<head>
-    <script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
-    <script type="text/javascript" src="/static/js/jquery.hoverIntent.minified.js"></script>
-    <link rel="stylesheet" href="/static/css/queue.css" type="text/css" media="screen">
-    <link rel="stylesheet" href="/static/css/glyphicon-icons.css" type="text/css" media="screen">    
-    <meta charset="ISO-8859-1">
-    <title>Kairos | Approval Queue</title>
-    
-    {% block html5shim %}
-         <!-- HTML5 shim, for IE6-8 support of HTML elements -->
-         <!--[if lt IE 9]>
-             <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-         <![endif]-->
-    {% endblock %}
-</head>
+{% block head_title %}Approvals{% endblock %}
 
-<body>
-    <div class="header">
-        <div id="dashboard">
-            <span class="welcome-user">{{request.user.first_name}}, {{request.user.last_name}}</span>
-            <ul id="menu">
-                <li>My Profile</li>
-                <li class="drop">Reports</li>
-                <li class="drop">Logout</li>
-            </ul>
-        </div>
-    </div>
+{% block extra_style %}
+    <link rel="stylesheet" href="/static/css/queue.css" type="text/css" media="screen">
+{% endblock %}
+
+{% block approvals_active %}active{% endblock %}
+
+{% block main %}   
     <div class="row" style="margin: 25px 0 0 5%;">
         {% for queue_item in queue_items %}            
             <div class="queue-box">
@@ -37,5 +18,4 @@
             </div>
         {% endfor %}
     </div>
-</body>
-</html>
+{% endblock %}

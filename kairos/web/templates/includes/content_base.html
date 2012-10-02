@@ -1,0 +1,28 @@
+{% extends "includes/base.html" %}
+{% load tracker_tags %}
+
+{% block content %}
+    {% block header %}  
+        {% current_week_number as current_week_number %}
+	    <header>
+	        <div class="wrapper">
+	            <div class="logo"><a href="/home/"><img alt="" src="/static/img/logo-header.png"> </a></div>
+	            {% block navigation %}
+	                   <ul class="navigation">
+			                <li class="timesheets {% block timesheet_active %}{% endblock %}"><a href="/timesheet/{{current_week_number}}/"><span></span> Log Time</a></li>
+			                <li class="time-off {% block timeoff_active %}{% endblock %}"><a href="/timeoff/book/"><span></span> Time Off</a></li>
+			                <li class="approvals {% block approvals_active %}{% endblock %}"><a href="/q/"><span></span> Approvals</a></li>
+			                <li class="reports {% block reports_active %}{% endblock %}"><a href="#"><span></span> Reports</a></li>
+                        </ul>
+	            {% endblock %}
+	            {% block profile%}
+		            <ul class="profile">
+		                <li><a href="#" class="profile"><span>User</span> {{request.user.username}}</a></li>
+		                <li><a href="/logout/" class="logout"><span>Logout</span></a></li>
+		            </ul>
+		        {% endblock %}
+	        </div>
+	    </header>
+    {% endblock %}
+    {% block main %}{% endblock %}
+{% endblock %}

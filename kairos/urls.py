@@ -3,21 +3,27 @@ from configuration.views import user_configure_taxonomy, user_configure_projects
     user_timeoff_policy
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
-from django.http import Http404
+from django.http import Http404, HttpResponseRedirect
 from django.views.generic.simple import direct_to_template
 from tracker.views import timesheet_by_week
 from workflow.views import queue, queue_shift, queue_history, approval_history
 import traceback
 from timeoff.views import timeoff_left, timeoff_book, timeoff_bookings
+from django.contrib.auth import views
 
-# Uncomment the next two lines to enable the admin:
-# from django.contrib import admin
-# admin.autodiscover()
+def logout(request):
+    views.logout(request)
+    next = '/login/'
+    if 'next' in request.GET:
+        next = request.GET['next']
+    
+    return HttpResponseRedirect(next)
 
 urlpatterns = patterns('',
     (r'^grappelli/', include('grappelli.urls')),
     url(r'^admin/', include(admin.site.urls)),
-    (r'^login/$', 'django.contrib.auth.views.login', {'template_name': 'auth/login.html'}),    
+    (r'^login/$', 'django.contrib.auth.views.login', {'template_name': 'auth/login.html'}),
+    url(r'^logout/$', logout, name='logout'),
     url(r'^home/$', user_configure_taxonomy, name='home'),
     
     #configuration
@@ -30,7 +36,7 @@ urlpatterns = patterns('',
     url(r'^timesheet/(?P<week>\d+)/$', timesheet_by_week, name='timesheet'),
     
     #timeoff booking
-    url(r'^timeoff/book/$', timeoff_book, name='timeoff_book'),    
+    url(r'^timeoff/book/$', timeoff_book, name='timeoff_book'),
     url(r'^timeoff/bookings(?:/(?P<start_date>\w+))?/$', timeoff_bookings, name='timeoff_bookings'),
     
     #Q management
@@ -41,10 +47,9 @@ urlpatterns = patterns('',
     url(r'^q/(?P<id>\d+)/history/$', approval_history, name="approval_history"),
     
     #auxillary urls
-    url(r'^activities/(?P<project_id>\d+)/$', activities, name="activities"),   
+    url(r'^activities/(?P<project_id>\d+)/$', activities, name="activities"),
     
 )
-
 
 
 def to_template(request, page_name):

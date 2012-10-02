@@ -3,6 +3,7 @@ from common.models import DropdownValue, HolidaySet
 from django.contrib.auth.models import User
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from overtime.models import OvertimePolicy
 
 class UserProfile(models.Model):
     '''
@@ -75,3 +76,21 @@ class UserTimeOffPolicy(models.Model):
     
     def __unicode__(self):
         return 'Timeoff policy for ' + self.user_profile.user.username + ' on [' + self.timeoff_type.name + ']'
+    
+    
+class UserOverTimePolicy(models.Model):
+    """
+    Maps to user overtime policies
+    """
+    user_profile = models.ForeignKey(UserProfile, verbose_name=_('User'), related_name='user_overtime')
+    overtime_policy = models.ForeignKey(OvertimePolicy, verbose_name=_('Overtime Policy'), related_name='user_overtime_policies')
+    
+    banked_hours = models.DecimalField(_('Banked Hours'), max_digits=4, decimal_places=2, default=0)
+    
+    class Meta:
+        verbose_name = _("User Overtime Policy")
+        verbose_name_plural = _("User Ovretime Policies")
+        
+    def __unicode__(self):
+        return 'User Overtime policy for ' + self.user_profile.user.username + ' on [' + self.overtime_policy.name + ']'
+        

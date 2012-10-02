@@ -21,6 +21,7 @@ class TimesheetForm(ModelForm):
             instance = kwargs['instance']
             if instance.pk:
                 self.initial['total_hours'] = instance.total_hours
+                self.initial['is_timeoff'] = instance.is_timeoff
                 
 
 class WeekSnapshotForm(ModelForm):

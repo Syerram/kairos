@@ -98,7 +98,7 @@ def approval_history(request, id):
     return 'approval_history', {'history_items': ApproverQueueHistory.objects.history(approver_queue=approver_queue, user=request.user)}
     
 @login_required
-@render_to_html_dict({'queue':'workflow/queue.html'})
+@render_to_html_dict({'queue-r':'workflow/queue.html'})
 def queue_shift(request, bit, id):
     """Shifts the queue according to the bit operator"""
     approver_queue = ApproverQueue.objects.get(id=id)
@@ -153,4 +153,4 @@ def queue_shift(request, bit, id):
             
         #TODO: post signal to send email to the submitter with the rejection   
     
-    return 'queue', {'items': ApproverQueue.objects.user_queue(request.user, ApproverQueue.in_queue_status())}
+    return 'queue-r', {'items': ApproverQueue.objects.user_queue(request.user, ApproverQueue.in_queue_status())}

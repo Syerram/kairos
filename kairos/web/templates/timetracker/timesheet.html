@@ -1,20 +1,42 @@
+{% extends "includes/content_base.html" %}
 {% load tracker_tags %}
-<!DOCTYPE html>
-<html>
-<head>
-	<script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
-	<script type="text/javascript" src="/static/js/jquery.hoverIntent.minified.js"></script>
-	<script type="text/javascript" src="/static/js/jquery.formset.js"></script>
-	<script type="text/javascript" src="/static/js/jquery.numeric.js"></script>	
-	 
-	<link rel="stylesheet" href="/static/css/timesheet.css" type="text/css" media="screen">
-	<link rel="stylesheet" href="/static/css/glyphicon-icons.css" type="text/css" media="screen">
-	<link href="/static/css/bootstrap.css" rel="stylesheet" />
-	<meta charset="ISO-8859-1">
-    <title>Kairos | Timesheet</title>
+{% load categories_tags %}
+
+{% block extra_style %}
+   <link rel="stylesheet" href="/static/css/chosen.css" media="screen" />
+{% endblock %}
+
+{% block head_title %}Timesheet{% endblock %}
+   
+{% block script %}
+    <script type="text/javascript" src="/static/js/jquery.formset.js"></script>
+    <script type="text/javascript" src="/static/js/jquery.numeric.js"></script>
+    <script type="text/javascript" src="/static/js/chosen.jquery.min.js"></script>
+    <script type="text/javascript" src="/static/js/tabs.js"></script>
+    
     <script type="text/javascript">
-		
-		function update_totals() {
+    
+       {% comment %}
+          unfortunately due to cloning, the cloned 'chosen' selects misbehave.
+          hence, we remove all of the 'chosen' behavior [by removing, the class 'chzn-done', its divs etc]. 
+          The goal is to make it a plain 'select' as if it never actually was applied 'chosen'.
+          It sucks that we are doing for the entire form but without doing this, it seems to fix few selects
+          and few are completely broken          
+       {% endcomment %}
+    
+        function reset_selects() {
+        	selects = $(".log-time .project select, .log-time .task select");
+            selects.removeClass('chzn-done').css({'display':'block'}).next().remove();
+            selects.chosen();
+        }
+    
+        {% comment %}
+           Update the total on a event. We need to store the orig hour in order to calculate the new delta.
+           Note once the delta is calculate, we can then set the new hours to orig for the next edit.
+           We leverage the new html 'data' attributes, which can be accessed by jquery .data method on the element
+           
+        {% endcomment %}
+        function update_totals() {
             var orig_hours = parseFloat($(this).data('hours'));
             var new_hours = parseFloat(this.value);
             if(orig_hours!=this.value) {
@@ -23,7 +45,7 @@
                 day_total_hours = day_total_hours - orig_hours + new_hours;
                 $(day_total_hours_class).text(day_total_hours.toFixed(2));
                 
-                var row_totals_elem = $(this).parent().parent().find('span');
+                var row_totals_elem = $(this).parent().parent().find('.row_total_hours');
                 var row_totals = parseFloat(row_totals_elem.text());
                 row_totals = row_totals - orig_hours + new_hours;
                 row_totals_elem.text(row_totals.toFixed(2));
@@ -36,9 +58,10 @@
             }        
 		}
 
-		function added_row(row) {			
-			row.find('select').val('0');
-			row.find('span').text('0.00');
+		function log_added_row(row) {
+			reset_selects();
+			row.find('.row_total_hours').text('0.00');
+			//used to focus on the first hour input
 			var idx = 0;
 			row.find('.hour-input').each(function() {
 				$(this).data('hours', '0.00');
@@ -49,7 +72,34 @@
 			});
 		}
 		
+		{% comment %}
+		   the pre-timeoff add removes the project/task dropdown and then clones the select timeoff from the loner select.
+		   It then colspans the project to 2 cols and then adds the above clone.
+		   Its done in pre-timeoff-add because we want the newly added timeoff select to get the appropriate id for django form processing.
+		   Other wise it will not be picked by django-formset
+		{% endcomment %}
+		
+		function pre_timeoff_added_row(row) {
+			timeoff_select = $('.lone_timeoff_select').clone();
+			project_cell=row.find('td.project');
+			project_cell.empty();			
+			task_cell=row.find('td.task');
+			task_cell.remove();
+			project_cell.attr('colspan', '2');
+			project_cell.append(timeoff_select);
+		}
+		
+		function post_timeoff_added_row(row) {
+			reset_selects();
+		}
+		
+		{% comment %}
+		   We need to update the totals again, both column, row and the total hours		
+		{% endcomment %}
+		   
 		function removed_row(deleted_row, last_row) {
+			 reset_selects();
+            
               //reset the hours
               var del_total_hours = 0;
               deleted_row.find('.hour-input').each(function() {
@@ -75,182 +125,251 @@
 		}
 		
 		$(document).ready(function() {
-	       {% if week_snapshot.last_status.weeksnapshot_status|is_editable %}		    
-			    $('.reset').click(function(e) {
+		   {% if week_snapshot.last_status.weeksnapshot_status|is_editable %}
+	       
+			    $('#id_reset').click(function(e) {
 			    	e.preventDefault();
-			    	$('#time-table .hour-input').val('');
+			    	$('#id_log_hours .hour-input').val('');
+			    	$('#id_log_hours .hour-input').data('hours', '0');
+			    	$('.row_total_hours').text('0.00');
+			    	$('.total_hours').text('0.00');
+			    	$('.day_total_hours').text('0.00');
+			    	$(".log-time .project select, .log-time .task select").val('').trigger("liszt:updated");
 			    });
 			    
 			    $('.hour-input').numeric({decimal: ".", negative: false}, null, update_totals);
 			    
-			    $('.project-dropdown').change(function() {
-			    	that = this;
+			    $('.project-dd').chosen().change(function() {
+			    	var that = this;
 			    	if($(this).val()) {
-				    	$.get('/activities/'+ $(this).val(), function(data) {				    		
-				    		$(that).parent().closest('tr').find('.activity-dropdown').empty().append($(data));
+			    		
+				    	$.get('/activities/'+ $(this).val(), function(data) {				    
+				    		var task = $(that).parent().closest('tr').find('.task-dd');
+				    		task.empty().append($(data));
+				    		task.trigger("liszt:updated");
 				    	});
 			    	}
 			    });
 			    
-			    $('#id_submit').click(function(e) {
+			    {% comment %}
+			        The following two buttons call the hidden 'add' anchor link posted by @jquery-formset.
+			        In order to know which button was clicked, we use the 'source' as a data attribute.
+			        The 'source' is mapped during formset creation to the matching function. 
+			        This allows to call different 'pre' or 'post' add functions without modifying a whole lot of @jquery-formset
+			    {% endcomment %}
+			    
+			    $('#id_add_log').click(function(e) {
+			    	add_row = $('.add-row');
+			    	if(add_row) {
+			    		add_row.data('source', 'log_time');
+			    		add_row.click();
+			    	}
+			    })
+			    
+			    $('#id_add_timeoff').click(function(e) {
+                    add_row = $('.add-row');                    
+                    if(add_row) {
+                    	add_row.data('source', 'off_time');
+                        add_row.click();
+                    }
+                })
+			    
+			    $('#id_save').click(function(e) {
 			    	$('#id_is_draft').val('false');
-			    	return true;
+			    	$('#id_timesheet').submit();			    	
 			    });
 			    
-			    $('#id_timesheet tbody tr').formset({
+			    {% comment %}
+			        @jquery-formset was modified to take in 'pre' and 'post' add, instead of 'added'.
+			        The reasoning behind is that we need a detached row to be manipulated before we add that to the DOM.
+			        Plus, the 'pre' add is called before all of the ids are updated by the @jquery-formset, 
+			        And this is important bcoz in timeoff, we are actually removning projects/tasks and adding timeoff [cloned] select.
+			        We would then need to have a proper id matching to the current form.
+			    
+			    {% endcomment %}
+			    
+			    $('#id_log_hours tbody tr').formset({
 			    	addText: '',
-			        addCssClass:'sprite-glyphicons_190_circle_plus',
+			        addButton:'sprite-glyphicons_190_circle_plus',
 			        deleteText:'',
 			        deleteCssClass:'sprite-glyphicons_016_bin',
-			        added: added_row,
+			        pre_add: {'off_time': pre_timeoff_added_row},
+			        post_add: {'log_time': log_added_row, 'off_time': post_timeoff_added_row },			     
 			        removed: removed_row,
 			    });
 		    {% else %}
 		        $('.hour-input').prop('disabled', true);
-		        $('.hour-input').css('background-color', 'silver');
-		        $('#id_submit').prop('value', 'Print');
+		        $('.hour-input').css('background-color', '#CAC7C2');
+		        $('#id_save').text('Print');
 		        $('#id_draft').hide();
-		        $('.reset').hide();
-		        $('.project-dropdown').prop('disabled', true);
-		        $('.activity-dropdown').prop('disabled', true);
+		        $('#id_reset').hide();
+		        $('#id_add_log').hide();
+		        $('#id_add_timeoff').hide();		        
+		        $('.project-dd').prop('disabled', true);
+		        $('.task-dd').prop('disabled', true);
+		        $(".log-time .project select, .log-time .task select").prop('disabled', true);
 		        //rest of disabling goes here		        
 		    {% endif %}
+		    $(".log-time .project select, .log-time .task select").chosen();
 		});
 	</script>
-</head>
-<body>
-	<div class="header">
-		<div id="dashboard">
-			<span class="welcome-user">Welcome
-				{{request.user.first_name}}, {{request.user.last_name}}</span>
-			<ul id="menu">
-				<li>My Profile</li>
-				<li class="drop">Reports</li>
-				<li class="drop">Logout</li>
-			</ul>
-		</div>
-	</div>
-    <div class="row" style="margin: 25px 0 0 20%;">
-			<div class="span12 timesheet-header" style="width:820px !important;">
-			    <div class="title" style="float:left;">
-			         <span>Week {{week}} - {{week_snapshot.last_status.weeksnapshot_status.display}}</span>
-			    </div>     
-				<div class="week-spanner" style="float: right;">				    
-			        <a href='/timesheet/{{week|add:"-1"}}' class="grey-button week-backward"><i class="sprite-glyphicons_224_thin_arrow_left" style="margin:5px 1px 0 0;"></i></a>
-					<span class="week-display" >{{week_snapshot.start_week|date:"d.NY"}} -
-						{{week_snapshot.end_week|date:"d.NY"}}</span>
-					{% if week_snapshot.end_week|is_in_future %}
-					   <a href='#' class="grey-button week-forward disable-link"><i class="sprite-glyphicons_223_thin_right_arrow" style="margin:5px 1px 0 0;"></i></a>
-					{% else %}
-					   <a href='/timesheet/{{week|add:"1"}}' class="grey-button week-forward"><i class="sprite-glyphicons_223_thin_right_arrow" style="margin:5px 1px 0 0;"></i></a>
-					{% endif %}
-				</div>
-			</div>
-			<form id="id_timesheet" name="timesheet" action="/timesheet/{{week}}/" method="POST">
-			     {% csrf_token %}
-				<div class="span12 time-logging" style="clear: both;width:820px !important;">
-					<div class="time-logging-header">
-					    
-						<table id="time-table" cellspacing="0" summary="Time sheet">
-							<thead>
-								<tr id="header">
-									<th scope="col" abbr="Project"><span style="display: block">Projects</span>
-									<th scope="col" abbr="Project"><span style="display: block">Activity</span>
-									<th scope="col" abbr="Monday">
-									    <span style="display: block; margin-left: 5px;">Mon</span>
-									    <span style="display: block; font-weight: normal; font-size: 10px;">{{week_snapshot.start_week|date:"d"}}</span></th>
-									<th scope="col" abbr="Tuesday">
-									    <span style="display: block; margin-left: 5px;">Tue</span>
-                                        <span style="display: block; font-weight: normal; font-size: 10px;">{{week_snapshot.start_week|day_plus:"1"|date:"d"}}</span></th>
-									<th scope="col" abbr="Wednesday">
-									   <span style="display: block; margin-left: 5px;">Wed</span>
-                                        <span style="display: block; font-weight: normal; font-size: 10px;">{{week_snapshot.start_week|day_plus:"2"|date:"d"}}</span></th>
-									<th scope="col" abbr="Thursday">
-									   <span style="display: block; margin-left: 5px;">Thu</span>
-                                        <span style="display: block; font-weight: normal; font-size: 10px;">{{week_snapshot.start_week|day_plus:"3"|date:"d"}}</span></th>
-									<th scope="col" abbr="Friday">
-									   <span style="display: block; margin-left: 5px;">Fri</span>
-                                        <span style="display: block; font-weight: normal; font-size: 10px;">{{week_snapshot.start_week|day_plus:"4"|date:"d"}}</span></th>
-									<th scope="col" abbr="Saturday">
-									   <span style="display: block; margin-left: 5px;">Sat</span>
-                                        <span style="display: block; font-weight: normal; font-size: 10px;">{{week_snapshot.start_week|day_plus:"5"|date:"d"}}</span></th>
-									<th scope="col" abbr="Sunday">
-									   <span style="display: block; margin-left: 5px;">Sun</span>
-                                        <span style="display: block; font-weight: normal; font-size: 10px;">{{week_snapshot.start_week|day_plus:"6"|date:"d"}}</span></th>
-                                    <th scope="col"><span>Total</span></th>
-									<th scope="col" abbr="action"></th>
-								</tr>
-							</thead>
-							<tbody>
-							    {% for timesheet_form in timesheet_form_set.forms %}							        						       
-									    <tr>								    
-	                                        <td>	                                            
-	                                            {{timesheet_form.id}}                                                                                            
-	                                            <div id="project-dropdown">										    
-													<select name="{{timesheet_form.project.html_name}}" data-activity-element="{{timesheet_form.project.auto_id}}" 
-													       class="dropdown-select project-dropdown" id="{{timesheet_form.project.auto_id}}">
-														<option value="0" class="dropdown-option">Choose Project</option>
-														{% for project in projects.all %}
-														      {% if project.id == timesheet_form.initial.project %}
-														          <option value="{{project.id}}" class="dropdown-option" selected="selected">{{project.name}}</option>
-														      {% else %}
-														          <option value="{{project.id}}" class="dropdown-option">{{project.name}}</option>														          
-														      {% endif %}														        
-														{% endfor %}
-													</select>
-													<input type="hidden" value="{{timesheet_form.project_id}}"/>
-												</div>
-											</td>
-											<td>
-											     <div id="activity-dropdown">
-				                                    <select name="{{timesheet_form.activity.html_name}}" class="dropdown-select activity-dropdown" id="{{timesheet_form.activity.auto_id}}">				                                        
-				                                        {% activity_dropdown timesheet_form.initial.project timesheet_form.initial.activity %}                                 
-				                                    </select>
-				                                </div>
-				                            </td>
-											<td><input class="hour-input" type="text" value="{% if timesheet_form.day_1_hours.value %}{{timesheet_form.day_1_hours.value}}{% endif %}" data-hours="{{timesheet_form.day_1_hours.value}}" data-ptr-total-hours="day_total_1_hours" placeholder="0.00" id="{{timesheet_form.day_1_hours.auto_id}}" name="{{timesheet_form.day_1_hours.html_name}}" /></td>
-											<td><input class="hour-input" type="text" value="{% if timesheet_form.day_2_hours.value %}{{timesheet_form.day_2_hours.value}}{% endif %}" data-hours="{{timesheet_form.day_2_hours.value}}" data-ptr-total-hours="day_total_2_hours"  placeholder="0.00" id="{{timesheet_form.day_2_hours.auto_id}}" name="{{timesheet_form.day_2_hours.html_name}}" /></td>
-											<td><input class="hour-input" type="text" value="{% if timesheet_form.day_3_hours.value %}{{timesheet_form.day_3_hours.value}}{% endif %}" data-hours="{{timesheet_form.day_3_hours.value}}" data-ptr-total-hours="day_total_3_hours"  placeholder="0.00" id="{{timesheet_form.day_3_hours.auto_id}}" name="{{timesheet_form.day_3_hours.html_name}}" /></td>
-											<td><input class="hour-input" type="text" value="{% if timesheet_form.day_4_hours.value %}{{timesheet_form.day_4_hours.value}}{% endif %}" data-hours="{{timesheet_form.day_4_hours.value}}" data-ptr-total-hours="day_total_4_hours"  placeholder="0.00" id="{{timesheet_form.day_4_hours.auto_id}}" name="{{timesheet_form.day_4_hours.html_name}}" /></td>
-											<td><input class="hour-input" type="text" value="{% if timesheet_form.day_5_hours.value %}{{timesheet_form.day_5_hours.value}}{% endif %}" data-hours="{{timesheet_form.day_5_hours.value}}" data-ptr-total-hours="day_total_5_hours"  placeholder="0.00" id="{{timesheet_form.day_5_hours.auto_id}}" name="{{timesheet_form.day_5_hours.html_name}}" /></td>
-											<td><input class="hour-input" type="text" value="{% if timesheet_form.day_6_hours.value %}{{timesheet_form.day_6_hours.value}}{% endif %}" data-hours="{{timesheet_form.day_6_hours.value}}" data-ptr-total-hours="day_total_6_hours"  placeholder="0.00" id="{{timesheet_form.day_6_hours.auto_id}}" name="{{timesheet_form.day_6_hours.html_name}}" /></td>
-											<td><input class="hour-input" type="text" value="{% if timesheet_form.day_7_hours.value %}{{timesheet_form.day_7_hours.value}}{% endif %}" data-hours="{{timesheet_form.day_7_hours.value}}" data-ptr-total-hours="day_total_7_hours"  placeholder="0.00" id="{{timesheet_form.day_7_hours.auto_id}}" name="{{timesheet_form.day_7_hours.html_name}}" /></td>
-											<td><span id="{{timesheet_form.total_hours.auto_id}}">{{timesheet_form.initial.total_hours}}</span></td>
-											<td></td>																										
-									    </tr>									    
-								 {% endfor %}
-							</tbody>	
-							<tfoot>
-							     <tr>
-							         <td></td>
-							         <td></td>
-							         <td><span  class="day_total_1_hours" style="display: block; margin-left: 15px;">{% total_hours_day week_snapshot 1 %}</span></td>
-							         <td><span  class="day_total_2_hours" style="display: block; margin-left: 15px;">{% total_hours_day week_snapshot 2 %}</span></td>
-							         <td><span  class="day_total_3_hours" style="display: block; margin-left: 15px;">{% total_hours_day week_snapshot 3 %}</span></td>
-							         <td><span  class="day_total_4_hours" style="display: block; margin-left: 15px;">{% total_hours_day week_snapshot 4 %}</span></td>
-							         <td><span  class="day_total_5_hours" style="display: block; margin-left: 15px;">{% total_hours_day week_snapshot 5 %}</span></td>
-							         <td><span  class="day_total_6_hours" style="display: block; margin-left: 15px;">{% total_hours_day week_snapshot 6 %}</span></td>
-							         <td><span  class="day_total_7_hours" style="display: block; margin-left: 15px;">{% total_hours_day week_snapshot 7 %}</span></td>
-							         <td><span  class="total_hours" style="display: block; margin-left: 0;">{{week_snapshot_form.initial.total_hours}}</span></td>
-							         <td></td>
-							     </tr>
-							     
-							</tfoot>						
-						</table>
-					</div>
-				</div>
-				<div class="span12 papier section" style="width:820px !important;">				   
-					<input id="id_submit" type="submit" class="blue-button"
-						style="float: right; margin-right: -5px;padding-right:20px;padding-left:20px;" value="Submit" /> 
-					<input id="id_draft" type="submit" class="grey-button" style="float: right; margin-right: 10px;padding-right:25px;padding-left:25px;" value="Save" /> 
-					<a href="#" class="reset">Reset</a>
-				</div>
-				<input type="hidden" name="is_draft" id="id_is_draft" value="true"/>	
-				{{ timesheet_form_set.management_form }}
-				<div style="display:none">				    
-                    {{week_snapshot_form.as_p}}                                          
-				</div>
-			</form>
-	</div>
-</body>
-</html>
+{% endblock %}
+
+{% block timesheet_active %}active{% endblock %}
+
+{% block main %}      
+    <div class="hanging-box-wrapper">
+        <div class="content">
+            <header>
+                <h1>Log Time</h1>
+                <a href="javascript:$('body').toggleClass('hanging-box-active');" class="button gray">Options</a>
+                <h2>Week {{week}} - {{week_snapshot.last_status.weeksnapshot_status.display}}</h2>                
+            </header>
+            <section class="log-time main-content">
+                <form id="id_timesheet" name="timesheet" action="/timesheet/{{week}}/" method="POST">
+                    {% csrf_token %}
+                    <table id="id_log_hours">
+	                    <thead>
+	                        <tr>
+	                            <th class="project">&nbsp;</th>
+	                            <th class="task">&nbsp;</th>
+	                            <th class="day"><span>M</span>{{week_snapshot.start_week|date:"M"}} {{week_snapshot.start_week|date:"d"}}</th>
+	                            <th class="day"><span>T</span>{{week_snapshot.start_week|day_plus:"1"|date:"M"}} {{week_snapshot.start_week|day_plus:"1"|date:"d"}}</th>
+	                            <th class="day"><span>W</span>{{week_snapshot.start_week|day_plus:"2"|date:"M"}} {{week_snapshot.start_week|day_plus:"2"|date:"d"}}</th>
+	                            <th class="day"><span>T</span>{{week_snapshot.start_week|day_plus:"3"|date:"M"}} {{week_snapshot.start_week|day_plus:"3"|date:"d"}}</th>
+	                            <th class="day"><span>F</span>{{week_snapshot.start_week|day_plus:"4"|date:"M"}} {{week_snapshot.start_week|day_plus:"4"|date:"d"}}</th>
+	                            <th class="day"><span>S</span>{{week_snapshot.start_week|day_plus:"5"|date:"M"}} {{week_snapshot.start_week|day_plus:"5"|date:"d"}}</th>
+	                            <th class="day"><span>S</span>{{week_snapshot.start_week|day_plus:"6"|date:"M"}} {{week_snapshot.start_week|day_plus:"6"|date:"d"}}</th>
+	                            <th class="total"></th>
+	                            <th class="tool"></th>
+	                        </tr>
+	                    </thead>
+	                    <tbody>
+	                        {% for timesheet_form in timesheet_form_set.forms %}
+		                        {% if not timesheet_form.initial.is_timeoff %}
+			                        <tr>
+			                            <td class="project">
+			                                {{timesheet_form.id}} 
+			                                <select class="project-dd" name="{{timesheet_form.project.html_name}}" id="{{timesheet_form.project.auto_id}}" 
+			                                       data-placeholder="Choose project" >
+			                                    <option value="0"></option>
+			                                    {% for project in projects.all %}
+		                                              {% if project.id == timesheet_form.initial.project %}
+		                                                  <option value="{{project.id}}" selected="selected">{{project.name}}</option>
+		                                              {% else %}
+		                                                  <option value="{{project.id}}">{{project.name}}</option>                                                                
+		                                              {% endif %}                                                               
+		                                        {% endfor %}
+			                                </select>			                                
+			                            </td>
+			                            <td class="task">
+			                                <select class="task-dd" name="{{timesheet_form.activity.html_name}}" id="{{timesheet_form.activity.auto_id}}" data-placeholder="Choose task">
+			                                    <option value="0"></option>
+			                                    {% activity_dropdown timesheet_form.initial.project timesheet_form.initial.activity %} 
+			                                </select>
+			                            </td>
+			                            <td>
+			                               <input class="hour-input" type="text" value="{% if timesheet_form.day_1_hours.value %}{{timesheet_form.day_1_hours.value}}{% endif %}" data-hours="{{timesheet_form.day_1_hours.value}}" data-ptr-total-hours="day_total_1_hours" placeholder="0.00" id="{{timesheet_form.day_1_hours.auto_id}}" name="{{timesheet_form.day_1_hours.html_name}}" />
+			                            </td>
+			                            <td>
+			                               <input class="hour-input" type="text" value="{% if timesheet_form.day_2_hours.value %}{{timesheet_form.day_2_hours.value}}{% endif %}" data-hours="{{timesheet_form.day_2_hours.value}}" data-ptr-total-hours="day_total_2_hours"  placeholder="0.00" id="{{timesheet_form.day_2_hours.auto_id}}" name="{{timesheet_form.day_2_hours.html_name}}" />
+			                            </td>
+			                            <td>
+			                               <input class="hour-input" type="text" value="{% if timesheet_form.day_3_hours.value %}{{timesheet_form.day_3_hours.value}}{% endif %}" data-hours="{{timesheet_form.day_3_hours.value}}" data-ptr-total-hours="day_total_3_hours"  placeholder="0.00" id="{{timesheet_form.day_3_hours.auto_id}}" name="{{timesheet_form.day_3_hours.html_name}}" />
+		                                </td>
+			                            <td>
+			                               <input class="hour-input" type="text" value="{% if timesheet_form.day_4_hours.value %}{{timesheet_form.day_4_hours.value}}{% endif %}" data-hours="{{timesheet_form.day_4_hours.value}}" data-ptr-total-hours="day_total_4_hours"  placeholder="0.00" id="{{timesheet_form.day_4_hours.auto_id}}" name="{{timesheet_form.day_4_hours.html_name}}" />
+			                            </td>
+			                            <td>
+			                               <input class="hour-input" type="text" value="{% if timesheet_form.day_5_hours.value %}{{timesheet_form.day_5_hours.value}}{% endif %}" data-hours="{{timesheet_form.day_5_hours.value}}" data-ptr-total-hours="day_total_5_hours"  placeholder="0.00" id="{{timesheet_form.day_5_hours.auto_id}}" name="{{timesheet_form.day_5_hours.html_name}}" />
+			                            </td>
+			                            <td>
+			                               <input class="hour-input" type="text" value="{% if timesheet_form.day_6_hours.value %}{{timesheet_form.day_6_hours.value}}{% endif %}" data-hours="{{timesheet_form.day_6_hours.value}}" data-ptr-total-hours="day_total_6_hours"  placeholder="0.00" id="{{timesheet_form.day_6_hours.auto_id}}" name="{{timesheet_form.day_6_hours.html_name}}" />
+			                            </td>
+			                            <td>
+			                               <input class="hour-input" type="text" value="{% if timesheet_form.day_7_hours.value %}{{timesheet_form.day_7_hours.value}}{% endif %}" data-hours="{{timesheet_form.day_7_hours.value}}" data-ptr-total-hours="day_total_7_hours"  placeholder="0.00" id="{{timesheet_form.day_7_hours.auto_id}}" name="{{timesheet_form.day_7_hours.html_name}}" />
+			                            </td>
+			                            <td class="total"><span class="row_total_hours" id="{{timesheet_form.total_hours.auto_id}}">{{timesheet_form.initial.total_hours}}</span></td>
+			                            <td class="tool"></td>
+			                        </tr>	 
+			                    {% else %}                       
+			                        <tr>
+			                            <td class="project" colspan="2">
+			                                {{timesheet_form.id}} 
+			                                <select name="{{timesheet_form.timeoff_type.html_name}}" id="{{timesheet_form.timeoff_type.auto_id}}" data-placeholder="Choose timeoff">
+			                                    {% timeoff_options 'False' selected_option=timesheet_form.initial.timeoff_type %} 
+			                                </select>
+			                            </td>
+			                            <td>
+                                           <input class="hour-input" type="text" value="{% if timesheet_form.day_1_hours.value %}{{timesheet_form.day_1_hours.value}}{% endif %}" data-hours="{{timesheet_form.day_1_hours.value}}" data-ptr-total-hours="day_total_1_hours" placeholder="0.00" id="{{timesheet_form.day_1_hours.auto_id}}" name="{{timesheet_form.day_1_hours.html_name}}" />
+                                        </td>
+                                        <td>
+                                           <input class="hour-input" type="text" value="{% if timesheet_form.day_2_hours.value %}{{timesheet_form.day_2_hours.value}}{% endif %}" data-hours="{{timesheet_form.day_2_hours.value}}" data-ptr-total-hours="day_total_2_hours"  placeholder="0.00" id="{{timesheet_form.day_2_hours.auto_id}}" name="{{timesheet_form.day_2_hours.html_name}}" />
+                                        </td>
+                                        <td>
+                                           <input class="hour-input" type="text" value="{% if timesheet_form.day_3_hours.value %}{{timesheet_form.day_3_hours.value}}{% endif %}" data-hours="{{timesheet_form.day_3_hours.value}}" data-ptr-total-hours="day_total_3_hours"  placeholder="0.00" id="{{timesheet_form.day_3_hours.auto_id}}" name="{{timesheet_form.day_3_hours.html_name}}" />
+                                        </td>
+                                        <td>
+                                           <input class="hour-input" type="text" value="{% if timesheet_form.day_4_hours.value %}{{timesheet_form.day_4_hours.value}}{% endif %}" data-hours="{{timesheet_form.day_4_hours.value}}" data-ptr-total-hours="day_total_4_hours"  placeholder="0.00" id="{{timesheet_form.day_4_hours.auto_id}}" name="{{timesheet_form.day_4_hours.html_name}}" />
+                                        </td>
+                                        <td>
+                                           <input class="hour-input" type="text" value="{% if timesheet_form.day_5_hours.value %}{{timesheet_form.day_5_hours.value}}{% endif %}" data-hours="{{timesheet_form.day_5_hours.value}}" data-ptr-total-hours="day_total_5_hours"  placeholder="0.00" id="{{timesheet_form.day_5_hours.auto_id}}" name="{{timesheet_form.day_5_hours.html_name}}" />
+                                        </td>
+                                        <td>
+                                           <input class="hour-input" type="text" value="{% if timesheet_form.day_6_hours.value %}{{timesheet_form.day_6_hours.value}}{% endif %}" data-hours="{{timesheet_form.day_6_hours.value}}" data-ptr-total-hours="day_total_6_hours"  placeholder="0.00" id="{{timesheet_form.day_6_hours.auto_id}}" name="{{timesheet_form.day_6_hours.html_name}}" />
+                                        </td>
+                                        <td>
+                                           <input class="hour-input" type="text" value="{% if timesheet_form.day_7_hours.value %}{{timesheet_form.day_7_hours.value}}{% endif %}" data-hours="{{timesheet_form.day_7_hours.value}}" data-ptr-total-hours="day_total_7_hours"  placeholder="0.00" id="{{timesheet_form.day_7_hours.auto_id}}" name="{{timesheet_form.day_7_hours.html_name}}" />
+                                        </td>
+			                            <td class="total"><span class="row_total_hours" id="{{timesheet_form.total_hours.auto_id}}">{{timesheet_form.initial.total_hours}}</span></td>
+			                            <td class="tool"></td>
+			                        </tr>
+			                     {% endif %}
+	                        {% endfor %}	                             
+	                    </tbody>
+	                    <tfoot>
+	                        <tr>
+	                            <td class="project"></td>
+	                            <td class="task"></td>
+	                            <td><span  class="day_total_1_hours day_total_hours">{% total_hours_day week_snapshot 1 %}</span></td>
+	                            <td><span  class="day_total_2_hours day_total_hours">{% total_hours_day week_snapshot 2 %}</span></td>
+	                            <td><span  class="day_total_3_hours day_total_hours">{% total_hours_day week_snapshot 3 %}</span></td>
+	                            <td><span  class="day_total_4_hours day_total_hours">{% total_hours_day week_snapshot 4 %}</span></td>
+	                            <td><span  class="day_total_5_hours day_total_hours">{% total_hours_day week_snapshot 5 %}</span></td>
+	                            <td><span  class="day_total_6_hours day_total_hours">{% total_hours_day week_snapshot 6 %}</span></td>
+	                            <td><span  class="day_total_7_hours day_total_hours">{% total_hours_day week_snapshot 7 %}</span></td>
+	                            <td><span  class="total_hours">{{week_snapshot_form.initial.total_hours}}</span></td>
+	                            <td>&nbsp;</td>
+	                        </tr>
+	                    
+	                    </tfoot>
+                    </table>
+                     <input type="hidden" name="is_draft" id="id_is_draft" value="true"/>
+                        {{ timesheet_form_set.management_form }}
+                        <div style="display:none">
+                            {{week_snapshot_form.as_p}}
+                        </div>                    
+                </form>
+            </section>
+            <footer>
+                <a href="#" class="button gray left" id="id_reset">Reset</a>
+                <a href="#" class="button default right" id="id_save">Submit</a>
+                <a href="#" class="button default right" id="id_draft">Save</a>
+                <a href="#" class="button gray right" id="id_add_log">Add Log Entry</a>
+                <a href="#" class="button gray right" id="id_add_timeoff">Add Timeoff</a>
+            </footer>
+            {% comment %}
+                We are placing the timeoff here because it is a possibility that we might not have any timeoff entry.
+                We need to then clone from something. In this case, we use the lone timeoff select to clone from.
+                See @jquery-formset setup above
+            {% endcomment %}
+            <div style="display:none">
+                <select class="lone_timeoff_select" data-placeholder="Choose timeoff" id="id_timeoff_type" name="timeoff_type">
+                        {% timeoff_options 'False' %} 
+                </select>
+            </div>            
+        </div>
+    </div>
+    
+    
+{% endblock %}

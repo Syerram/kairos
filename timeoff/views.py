@@ -1,18 +1,17 @@
 # Create your views here.
+from common.models import DropdownValue
 from configuration.models import UserTimeOffPolicy
-from datetime import date, timedelta
+from datetime import date
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.utils import simplejson
-from kairos.util import DecimalEncoder, render_to_html_dict, cacher
-from timeoff.forms import BookTimeOffForm
-from timeoff.models import BookTimeOff, BookTimeOfffHistory
-import workflow
+from kairos.util import DecimalEncoder, render_to_html_dict
 from rules.models import RuleSet
 from rules.validators import GenericAspect
-from common.models import DropdownValue
+from timeoff.forms import BookTimeOffForm
+from timeoff.models import BookTimeOff, BookTimeOfffHistory
 import datetime
-import calendar
+import workflow
 
 #TODO: cache user/timeoff combination
 
@@ -66,7 +65,6 @@ def timeoff_left(request, timeoff, start_date=None):
 def timeoff_book(request, start_date=None):
     """
         Books timeoff for the individual. It creates a entry in BookTimeOff and starts the Queue for approval.
-        It wont deduct time-remaining till the individual has taken the time off and entered the time-off taken in the timesheet.        
         
         Coding Notes:
         1. Create BookTimeOffForm and give it all the POST details
@@ -77,6 +75,7 @@ def timeoff_book(request, start_date=None):
     if request.method == 'GET':
         return 'book-timeoff', timeoff_bookings(request, start_date)
     else:
+        
         booktimeoff_form = BookTimeOffForm(request.POST)
         if booktimeoff_form.is_valid():
             booktimeoff = booktimeoff_form.save()
@@ -95,6 +94,11 @@ def timeoff_book(request, start_date=None):
 
 @login_required
 def timeoff_bookings(request, start_date=None):
+    """
+        Returns booked timeoffs for the logged in user.
+        It creates a dictionary of Status to its list of corresponding bookings.
+        e.g. 'APPRD': ['timeoff btw 09/10-09/12', 'timeoff btw 10/10-10/12']..
+    """
     bookings_data = {'REJTD': [], 'APPRD': [], 'INPROC': []}
     
     #TODO: Consolidate

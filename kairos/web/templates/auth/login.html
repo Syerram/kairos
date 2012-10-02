@@ -1,43 +1,17 @@
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<title>Kairos | Login</title>
-<meta name="description" content="Kairos Login">
-<link rel="stylesheet" href="/static/css/common.css" type="text/css" media="screen">
-<link rel="stylesheet" href="/static/css/bootstrap.css" type="text/css" media="screen">
-<style type="text/css">
-a:link {
-	text-decoration: none
-}
-</style>
-</head>
+{% extends "includes/base.html" %}
+{% block head_title %}Login{% endblock %}
 
-<body>
-	<div class="center-form">
-		<img id="user" src="/static/img/blank-user.png" />
-		<div class="papier">
-		    <form name="connexionForm" id="connexionForm" action="{% url django.contrib.auth.views.login %}" method="post">
-		            {% csrf_token %}		            
-		            <span id="logo" style="float:right;">Karios</span>
-                    <span id="welcome" style="clear:both: float: left;">Welcome. Please login.</span>      
-            
-					<div class="username">						
-						<input type="text" name="{{form.username.name}}" placeholder="Username" id="{{form.username.auto_id}}">
-					</div>
-					<div class="pass">
-					   {% if form.errors %}					        
-                            <input class="error" type="password" name="{{form.password.name}}" placeholder="Password" id="{{form.password.auto_id}}">
-                       {% else %}
-						  <input type="password" name="{{form.password.name}}" placeholder="Password" id="{{form.password.auto_id}}">
-					   {% endif %}
-					</div>	
-					<div class="section">
-					   <a href="#">Forgot password?</a>				
-					   <input type="submit" class="blue-button" value="Login"/>
-					</div>
-					<input type="hidden" name="next" value="/home/" />
-			</form>			
-		</div>
-	</div>
-</body>
-</html>
+{% block content %}  
+    <div class="modal login">
+        <form action="{% url django.contrib.auth.views.login %}" class="login" method="post" autocomplete="off">
+            {% csrf_token %}
+            <div class="logo">Work +</div>
+            <input type="email" id="{{form.username.auto_id}}" name="{{form.username.name}}" placeholder="user@email.com" />
+            <input type="password" id="{{form.password.auto_id}}" name="{{form.password.name}}" placeholder="password" />
+            <input type="submit" name="btnsubmit" value="Login"  />
+            <input type="hidden" name="next" value="/home/" />
+            <label><input type="checkbox" name="rememberme" value="Y" />Remember me</label>
+            <a href="#">Forgot password?</a>
+        </form>
+    </div>
+{% endblock %}

@@ -41,7 +41,8 @@ class Timesheet(models.Model):
     
     notes = property(__notes)
     
-    def __is_timeoff(self):        
+    def __is_timeoff(self):     
+        print self.timeoff_type   
         return self.timeoff_type is not None
     
     is_timeoff = property(__is_timeoff)
