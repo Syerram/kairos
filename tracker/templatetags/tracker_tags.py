@@ -68,6 +68,9 @@ def total_hours_day(weeksnapshot, day):
 def activity_dropdown(project_id, selected_activity=None):
     return activities_fetch(project_id, selected_activity)
 
+def is_approved(weeksnapshot):
+    return weeksnapshot.last_status == ApproverQueue.approved_status()
+
 register.filter("day_plus", day_plus)
 register.filter("is_editable", is_editable)
 register.simple_tag(week_number)
@@ -76,3 +79,4 @@ register.simple_tag(total_hours_day)
 register.filter("is_in_future", is_in_future)
 register.assignment_tag(current_week_number)
 register.filter("monday_of_week", monday_of_week)
+register.filter("is_approved", is_approved)
