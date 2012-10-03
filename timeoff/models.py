@@ -53,8 +53,8 @@ class TimeOffPolicy(models.Model):
     max_overdraw_limit = models.SmallIntegerField(_('Maximum Overdraw Limit'), default=0)
     
     class Meta:
-        verbose_name = _("TimeOff Policy")
-        verbose_name_plural = _("TimeOff Policies")
+        verbose_name = _("Time-Off Policy")
+        verbose_name_plural = _("Time-Off Policies")
     
     def __unicode__(self):
         return 'System level setup for ' + self.name + ' on timeoff [' + self.timeoff_type.name + ']'

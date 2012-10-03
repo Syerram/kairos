@@ -1,0 +1,6049 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 9.0.6
+-- Dumped by pg_dump version 9.1.2
+-- Started on 2012-10-02 15:03:44 EDT
+
+SET statement_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = off;
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+SET escape_string_warning = off;
+
+--
+-- TOC entry 6 (class 2615 OID 288436)
+-- Name: timetracker; Type: SCHEMA; Schema: -; Owner: kairos
+--
+
+CREATE SCHEMA timetracker;
+
+
+ALTER SCHEMA timetracker OWNER TO kairos;
+
+SET search_path = timetracker, pg_catalog;
+
+SET default_tablespace = '';
+
+SET default_with_oids = false;
+
+--
+-- TOC entry 148 (class 1259 OID 331462)
+-- Dependencies: 6
+-- Name: auth_group; Type: TABLE; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE TABLE auth_group (
+    id integer NOT NULL,
+    name character varying(80) NOT NULL
+);
+
+
+ALTER TABLE timetracker.auth_group OWNER TO kairos;
+
+--
+-- TOC entry 147 (class 1259 OID 331460)
+-- Dependencies: 6 148
+-- Name: auth_group_id_seq; Type: SEQUENCE; Schema: timetracker; Owner: kairos
+--
+
+CREATE SEQUENCE auth_group_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE timetracker.auth_group_id_seq OWNER TO kairos;
+
+--
+-- TOC entry 2521 (class 0 OID 0)
+-- Dependencies: 147
+-- Name: auth_group_id_seq; Type: SEQUENCE OWNED BY; Schema: timetracker; Owner: kairos
+--
+
+ALTER SEQUENCE auth_group_id_seq OWNED BY auth_group.id;
+
+
+--
+-- TOC entry 2522 (class 0 OID 0)
+-- Dependencies: 147
+-- Name: auth_group_id_seq; Type: SEQUENCE SET; Schema: timetracker; Owner: kairos
+--
+
+SELECT pg_catalog.setval('auth_group_id_seq', 1, false);
+
+
+--
+-- TOC entry 146 (class 1259 OID 331447)
+-- Dependencies: 6
+-- Name: auth_group_permissions; Type: TABLE; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE TABLE auth_group_permissions (
+    id integer NOT NULL,
+    group_id integer NOT NULL,
+    permission_id integer NOT NULL
+);
+
+
+ALTER TABLE timetracker.auth_group_permissions OWNER TO kairos;
+
+--
+-- TOC entry 145 (class 1259 OID 331445)
+-- Dependencies: 146 6
+-- Name: auth_group_permissions_id_seq; Type: SEQUENCE; Schema: timetracker; Owner: kairos
+--
+
+CREATE SEQUENCE auth_group_permissions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE timetracker.auth_group_permissions_id_seq OWNER TO kairos;
+
+--
+-- TOC entry 2523 (class 0 OID 0)
+-- Dependencies: 145
+-- Name: auth_group_permissions_id_seq; Type: SEQUENCE OWNED BY; Schema: timetracker; Owner: kairos
+--
+
+ALTER SEQUENCE auth_group_permissions_id_seq OWNED BY auth_group_permissions.id;
+
+
+--
+-- TOC entry 2524 (class 0 OID 0)
+-- Dependencies: 145
+-- Name: auth_group_permissions_id_seq; Type: SEQUENCE SET; Schema: timetracker; Owner: kairos
+--
+
+SELECT pg_catalog.setval('auth_group_permissions_id_seq', 1, false);
+
+
+--
+-- TOC entry 144 (class 1259 OID 331437)
+-- Dependencies: 6
+-- Name: auth_permission; Type: TABLE; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE TABLE auth_permission (
+    id integer NOT NULL,
+    name character varying(50) NOT NULL,
+    content_type_id integer NOT NULL,
+    codename character varying(100) NOT NULL
+);
+
+
+ALTER TABLE timetracker.auth_permission OWNER TO kairos;
+
+--
+-- TOC entry 143 (class 1259 OID 331435)
+-- Dependencies: 144 6
+-- Name: auth_permission_id_seq; Type: SEQUENCE; Schema: timetracker; Owner: kairos
+--
+
+CREATE SEQUENCE auth_permission_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE timetracker.auth_permission_id_seq OWNER TO kairos;
+
+--
+-- TOC entry 2525 (class 0 OID 0)
+-- Dependencies: 143
+-- Name: auth_permission_id_seq; Type: SEQUENCE OWNED BY; Schema: timetracker; Owner: kairos
+--
+
+ALTER SEQUENCE auth_permission_id_seq OWNED BY auth_permission.id;
+
+
+--
+-- TOC entry 2526 (class 0 OID 0)
+-- Dependencies: 143
+-- Name: auth_permission_id_seq; Type: SEQUENCE SET; Schema: timetracker; Owner: kairos
+--
+
+SELECT pg_catalog.setval('auth_permission_id_seq', 136, true);
+
+
+--
+-- TOC entry 154 (class 1259 OID 331507)
+-- Dependencies: 6
+-- Name: auth_user; Type: TABLE; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE TABLE auth_user (
+    id integer NOT NULL,
+    username character varying(30) NOT NULL,
+    first_name character varying(30) NOT NULL,
+    last_name character varying(30) NOT NULL,
+    email character varying(75) NOT NULL,
+    password character varying(128) NOT NULL,
+    is_staff boolean NOT NULL,
+    is_active boolean NOT NULL,
+    is_superuser boolean NOT NULL,
+    last_login timestamp with time zone NOT NULL,
+    date_joined timestamp with time zone NOT NULL
+);
+
+
+ALTER TABLE timetracker.auth_user OWNER TO kairos;
+
+--
+-- TOC entry 152 (class 1259 OID 331492)
+-- Dependencies: 6
+-- Name: auth_user_groups; Type: TABLE; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE TABLE auth_user_groups (
+    id integer NOT NULL,
+    user_id integer NOT NULL,
+    group_id integer NOT NULL
+);
+
+
+ALTER TABLE timetracker.auth_user_groups OWNER TO kairos;
+
+--
+-- TOC entry 151 (class 1259 OID 331490)
+-- Dependencies: 6 152
+-- Name: auth_user_groups_id_seq; Type: SEQUENCE; Schema: timetracker; Owner: kairos
+--
+
+CREATE SEQUENCE auth_user_groups_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE timetracker.auth_user_groups_id_seq OWNER TO kairos;
+
+--
+-- TOC entry 2527 (class 0 OID 0)
+-- Dependencies: 151
+-- Name: auth_user_groups_id_seq; Type: SEQUENCE OWNED BY; Schema: timetracker; Owner: kairos
+--
+
+ALTER SEQUENCE auth_user_groups_id_seq OWNED BY auth_user_groups.id;
+
+
+--
+-- TOC entry 2528 (class 0 OID 0)
+-- Dependencies: 151
+-- Name: auth_user_groups_id_seq; Type: SEQUENCE SET; Schema: timetracker; Owner: kairos
+--
+
+SELECT pg_catalog.setval('auth_user_groups_id_seq', 1, false);
+
+
+--
+-- TOC entry 153 (class 1259 OID 331505)
+-- Dependencies: 154 6
+-- Name: auth_user_id_seq; Type: SEQUENCE; Schema: timetracker; Owner: kairos
+--
+
+CREATE SEQUENCE auth_user_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE timetracker.auth_user_id_seq OWNER TO kairos;
+
+--
+-- TOC entry 2529 (class 0 OID 0)
+-- Dependencies: 153
+-- Name: auth_user_id_seq; Type: SEQUENCE OWNED BY; Schema: timetracker; Owner: kairos
+--
+
+ALTER SEQUENCE auth_user_id_seq OWNED BY auth_user.id;
+
+
+--
+-- TOC entry 2530 (class 0 OID 0)
+-- Dependencies: 153
+-- Name: auth_user_id_seq; Type: SEQUENCE SET; Schema: timetracker; Owner: kairos
+--
+
+SELECT pg_catalog.setval('auth_user_id_seq', 1, true);
+
+
+--
+-- TOC entry 150 (class 1259 OID 331477)
+-- Dependencies: 6
+-- Name: auth_user_user_permissions; Type: TABLE; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE TABLE auth_user_user_permissions (
+    id integer NOT NULL,
+    user_id integer NOT NULL,
+    permission_id integer NOT NULL
+);
+
+
+ALTER TABLE timetracker.auth_user_user_permissions OWNER TO kairos;
+
+--
+-- TOC entry 149 (class 1259 OID 331475)
+-- Dependencies: 150 6
+-- Name: auth_user_user_permissions_id_seq; Type: SEQUENCE; Schema: timetracker; Owner: kairos
+--
+
+CREATE SEQUENCE auth_user_user_permissions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE timetracker.auth_user_user_permissions_id_seq OWNER TO kairos;
+
+--
+-- TOC entry 2531 (class 0 OID 0)
+-- Dependencies: 149
+-- Name: auth_user_user_permissions_id_seq; Type: SEQUENCE OWNED BY; Schema: timetracker; Owner: kairos
+--
+
+ALTER SEQUENCE auth_user_user_permissions_id_seq OWNED BY auth_user_user_permissions.id;
+
+
+--
+-- TOC entry 2532 (class 0 OID 0)
+-- Dependencies: 149
+-- Name: auth_user_user_permissions_id_seq; Type: SEQUENCE SET; Schema: timetracker; Owner: kairos
+--
+
+SELECT pg_catalog.setval('auth_user_user_permissions_id_seq', 1, false);
+
+
+--
+-- TOC entry 235 (class 1259 OID 333310)
+-- Dependencies: 6
+-- Name: categories_activity; Type: TABLE; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE TABLE categories_activity (
+    id integer NOT NULL,
+    code character varying(5) NOT NULL,
+    name character varying(50) NOT NULL
+);
+
+
+ALTER TABLE timetracker.categories_activity OWNER TO kairos;
+
+--
+-- TOC entry 234 (class 1259 OID 333308)
+-- Dependencies: 235 6
+-- Name: categories_activity_id_seq; Type: SEQUENCE; Schema: timetracker; Owner: kairos
+--
+
+CREATE SEQUENCE categories_activity_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE timetracker.categories_activity_id_seq OWNER TO kairos;
+
+--
+-- TOC entry 2533 (class 0 OID 0)
+-- Dependencies: 234
+-- Name: categories_activity_id_seq; Type: SEQUENCE OWNED BY; Schema: timetracker; Owner: kairos
+--
+
+ALTER SEQUENCE categories_activity_id_seq OWNED BY categories_activity.id;
+
+
+--
+-- TOC entry 2534 (class 0 OID 0)
+-- Dependencies: 234
+-- Name: categories_activity_id_seq; Type: SEQUENCE SET; Schema: timetracker; Owner: kairos
+--
+
+SELECT pg_catalog.setval('categories_activity_id_seq', 2, true);
+
+
+--
+-- TOC entry 229 (class 1259 OID 333278)
+-- Dependencies: 2175 6
+-- Name: categories_client; Type: TABLE; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE TABLE categories_client (
+    id integer NOT NULL,
+    name character varying(255) NOT NULL,
+    address_1 character varying(100) NOT NULL,
+    address_2 character varying(100),
+    city character varying(100) NOT NULL,
+    state character varying(3) NOT NULL,
+    phone_1 integer,
+    phone_2 integer,
+    fax integer,
+    email character varying(75),
+    active boolean DEFAULT true NOT NULL
+);
+
+
+ALTER TABLE timetracker.categories_client OWNER TO kairos;
+
+--
+-- TOC entry 228 (class 1259 OID 333276)
+-- Dependencies: 6 229
+-- Name: categories_client_id_seq; Type: SEQUENCE; Schema: timetracker; Owner: kairos
+--
+
+CREATE SEQUENCE categories_client_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE timetracker.categories_client_id_seq OWNER TO kairos;
+
+--
+-- TOC entry 2535 (class 0 OID 0)
+-- Dependencies: 228
+-- Name: categories_client_id_seq; Type: SEQUENCE OWNED BY; Schema: timetracker; Owner: kairos
+--
+
+ALTER SEQUENCE categories_client_id_seq OWNED BY categories_client.id;
+
+
+--
+-- TOC entry 2536 (class 0 OID 0)
+-- Dependencies: 228
+-- Name: categories_client_id_seq; Type: SEQUENCE SET; Schema: timetracker; Owner: kairos
+--
+
+SELECT pg_catalog.setval('categories_client_id_seq', 1, true);
+
+
+--
+-- TOC entry 241 (class 1259 OID 333340)
+-- Dependencies: 2184 2185 2186 6
+-- Name: categories_paycodetype; Type: TABLE; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE TABLE categories_paycodetype (
+    id integer NOT NULL,
+    name character varying(125) NOT NULL,
+    description text,
+    code character varying(3) NOT NULL,
+    multiplier smallint DEFAULT 1 NOT NULL,
+    active boolean DEFAULT true NOT NULL,
+    CONSTRAINT categories_paycodetype_multiplier_check CHECK ((multiplier >= 0))
+);
+
+
+ALTER TABLE timetracker.categories_paycodetype OWNER TO kairos;
+
+--
+-- TOC entry 240 (class 1259 OID 333338)
+-- Dependencies: 6 241
+-- Name: categories_paycodetype_id_seq; Type: SEQUENCE; Schema: timetracker; Owner: kairos
+--
+
+CREATE SEQUENCE categories_paycodetype_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE timetracker.categories_paycodetype_id_seq OWNER TO kairos;
+
+--
+-- TOC entry 2537 (class 0 OID 0)
+-- Dependencies: 240
+-- Name: categories_paycodetype_id_seq; Type: SEQUENCE OWNED BY; Schema: timetracker; Owner: kairos
+--
+
+ALTER SEQUENCE categories_paycodetype_id_seq OWNED BY categories_paycodetype.id;
+
+
+--
+-- TOC entry 2538 (class 0 OID 0)
+-- Dependencies: 240
+-- Name: categories_paycodetype_id_seq; Type: SEQUENCE SET; Schema: timetracker; Owner: kairos
+--
+
+SELECT pg_catalog.setval('categories_paycodetype_id_seq', 4, true);
+
+
+--
+-- TOC entry 237 (class 1259 OID 333320)
+-- Dependencies: 2181 6
+-- Name: categories_project; Type: TABLE; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE TABLE categories_project (
+    id integer NOT NULL,
+    taxonomy_id integer NOT NULL,
+    name character varying(10) NOT NULL,
+    description text,
+    project_code character varying(5) NOT NULL,
+    project_url character varying(200),
+    data_added timestamp with time zone NOT NULL,
+    date_updated timestamp with time zone NOT NULL,
+    active boolean DEFAULT true NOT NULL
+);
+
+
+ALTER TABLE timetracker.categories_project OWNER TO kairos;
+
+--
+-- TOC entry 236 (class 1259 OID 333318)
+-- Dependencies: 237 6
+-- Name: categories_project_id_seq; Type: SEQUENCE; Schema: timetracker; Owner: kairos
+--
+
+CREATE SEQUENCE categories_project_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE timetracker.categories_project_id_seq OWNER TO kairos;
+
+--
+-- TOC entry 2539 (class 0 OID 0)
+-- Dependencies: 236
+-- Name: categories_project_id_seq; Type: SEQUENCE OWNED BY; Schema: timetracker; Owner: kairos
+--
+
+ALTER SEQUENCE categories_project_id_seq OWNED BY categories_project.id;
+
+
+--
+-- TOC entry 2540 (class 0 OID 0)
+-- Dependencies: 236
+-- Name: categories_project_id_seq; Type: SEQUENCE SET; Schema: timetracker; Owner: kairos
+--
+
+SELECT pg_catalog.setval('categories_project_id_seq', 2, true);
+
+
+--
+-- TOC entry 239 (class 1259 OID 333332)
+-- Dependencies: 6
+-- Name: categories_projectactivity; Type: TABLE; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE TABLE categories_projectactivity (
+    id integer NOT NULL,
+    project_id integer NOT NULL,
+    activity_id integer NOT NULL
+);
+
+
+ALTER TABLE timetracker.categories_projectactivity OWNER TO kairos;
+
+--
+-- TOC entry 238 (class 1259 OID 333330)
+-- Dependencies: 6 239
+-- Name: categories_projectactivity_id_seq; Type: SEQUENCE; Schema: timetracker; Owner: kairos
+--
+
+CREATE SEQUENCE categories_projectactivity_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE timetracker.categories_projectactivity_id_seq OWNER TO kairos;
+
+--
+-- TOC entry 2541 (class 0 OID 0)
+-- Dependencies: 238
+-- Name: categories_projectactivity_id_seq; Type: SEQUENCE OWNED BY; Schema: timetracker; Owner: kairos
+--
+
+ALTER SEQUENCE categories_projectactivity_id_seq OWNED BY categories_projectactivity.id;
+
+
+--
+-- TOC entry 2542 (class 0 OID 0)
+-- Dependencies: 238
+-- Name: categories_projectactivity_id_seq; Type: SEQUENCE SET; Schema: timetracker; Owner: kairos
+--
+
+SELECT pg_catalog.setval('categories_projectactivity_id_seq', 2, true);
+
+
+--
+-- TOC entry 231 (class 1259 OID 333290)
+-- Dependencies: 2177 6
+-- Name: categories_taxonomy; Type: TABLE; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE TABLE categories_taxonomy (
+    id integer NOT NULL,
+    name character varying(255) NOT NULL,
+    description text,
+    active boolean DEFAULT true NOT NULL,
+    client_id integer NOT NULL
+);
+
+
+ALTER TABLE timetracker.categories_taxonomy OWNER TO kairos;
+
+--
+-- TOC entry 230 (class 1259 OID 333288)
+-- Dependencies: 6 231
+-- Name: categories_taxonomy_id_seq; Type: SEQUENCE; Schema: timetracker; Owner: kairos
+--
+
+CREATE SEQUENCE categories_taxonomy_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE timetracker.categories_taxonomy_id_seq OWNER TO kairos;
+
+--
+-- TOC entry 2543 (class 0 OID 0)
+-- Dependencies: 230
+-- Name: categories_taxonomy_id_seq; Type: SEQUENCE OWNED BY; Schema: timetracker; Owner: kairos
+--
+
+ALTER SEQUENCE categories_taxonomy_id_seq OWNED BY categories_taxonomy.id;
+
+
+--
+-- TOC entry 2544 (class 0 OID 0)
+-- Dependencies: 230
+-- Name: categories_taxonomy_id_seq; Type: SEQUENCE SET; Schema: timetracker; Owner: kairos
+--
+
+SELECT pg_catalog.setval('categories_taxonomy_id_seq', 3, true);
+
+
+--
+-- TOC entry 233 (class 1259 OID 333302)
+-- Dependencies: 6
+-- Name: categories_taxonomyrole; Type: TABLE; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE TABLE categories_taxonomyrole (
+    id integer NOT NULL,
+    role_id integer NOT NULL,
+    user_id integer NOT NULL,
+    taxonomy_id integer NOT NULL
+);
+
+
+ALTER TABLE timetracker.categories_taxonomyrole OWNER TO kairos;
+
+--
+-- TOC entry 232 (class 1259 OID 333300)
+-- Dependencies: 6 233
+-- Name: categories_taxonomyrole_id_seq; Type: SEQUENCE; Schema: timetracker; Owner: kairos
+--
+
+CREATE SEQUENCE categories_taxonomyrole_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE timetracker.categories_taxonomyrole_id_seq OWNER TO kairos;
+
+--
+-- TOC entry 2545 (class 0 OID 0)
+-- Dependencies: 232
+-- Name: categories_taxonomyrole_id_seq; Type: SEQUENCE OWNED BY; Schema: timetracker; Owner: kairos
+--
+
+ALTER SEQUENCE categories_taxonomyrole_id_seq OWNED BY categories_taxonomyrole.id;
+
+
+--
+-- TOC entry 2546 (class 0 OID 0)
+-- Dependencies: 232
+-- Name: categories_taxonomyrole_id_seq; Type: SEQUENCE SET; Schema: timetracker; Owner: kairos
+--
+
+SELECT pg_catalog.setval('categories_taxonomyrole_id_seq', 1, true);
+
+
+--
+-- TOC entry 243 (class 1259 OID 333354)
+-- Dependencies: 2188 2189 6
+-- Name: categories_timeofftype; Type: TABLE; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE TABLE categories_timeofftype (
+    id integer NOT NULL,
+    name character varying(125) NOT NULL,
+    description text,
+    booking_required boolean DEFAULT true NOT NULL,
+    pay_code_id integer NOT NULL,
+    active boolean DEFAULT true NOT NULL
+);
+
+
+ALTER TABLE timetracker.categories_timeofftype OWNER TO kairos;
+
+--
+-- TOC entry 242 (class 1259 OID 333352)
+-- Dependencies: 6 243
+-- Name: categories_timeofftype_id_seq; Type: SEQUENCE; Schema: timetracker; Owner: kairos
+--
+
+CREATE SEQUENCE categories_timeofftype_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE timetracker.categories_timeofftype_id_seq OWNER TO kairos;
+
+--
+-- TOC entry 2547 (class 0 OID 0)
+-- Dependencies: 242
+-- Name: categories_timeofftype_id_seq; Type: SEQUENCE OWNED BY; Schema: timetracker; Owner: kairos
+--
+
+ALTER SEQUENCE categories_timeofftype_id_seq OWNED BY categories_timeofftype.id;
+
+
+--
+-- TOC entry 2548 (class 0 OID 0)
+-- Dependencies: 242
+-- Name: categories_timeofftype_id_seq; Type: SEQUENCE SET; Schema: timetracker; Owner: kairos
+--
+
+SELECT pg_catalog.setval('categories_timeofftype_id_seq', 5, true);
+
+
+--
+-- TOC entry 173 (class 1259 OID 331772)
+-- Dependencies: 2116 6
+-- Name: common_dropdown; Type: TABLE; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE TABLE common_dropdown (
+    id integer NOT NULL,
+    name character varying(20) NOT NULL,
+    category character varying(5) NOT NULL,
+    description character varying(1000),
+    active boolean DEFAULT true NOT NULL,
+    system boolean NOT NULL
+);
+
+
+ALTER TABLE timetracker.common_dropdown OWNER TO kairos;
+
+--
+-- TOC entry 172 (class 1259 OID 331770)
+-- Dependencies: 173 6
+-- Name: common_dropdown_id_seq; Type: SEQUENCE; Schema: timetracker; Owner: kairos
+--
+
+CREATE SEQUENCE common_dropdown_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE timetracker.common_dropdown_id_seq OWNER TO kairos;
+
+--
+-- TOC entry 2549 (class 0 OID 0)
+-- Dependencies: 172
+-- Name: common_dropdown_id_seq; Type: SEQUENCE OWNED BY; Schema: timetracker; Owner: kairos
+--
+
+ALTER SEQUENCE common_dropdown_id_seq OWNED BY common_dropdown.id;
+
+
+--
+-- TOC entry 2550 (class 0 OID 0)
+-- Dependencies: 172
+-- Name: common_dropdown_id_seq; Type: SEQUENCE SET; Schema: timetracker; Owner: kairos
+--
+
+SELECT pg_catalog.setval('common_dropdown_id_seq', 6, true);
+
+
+--
+-- TOC entry 175 (class 1259 OID 331798)
+-- Dependencies: 6
+-- Name: common_dropdownvalue; Type: TABLE; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE TABLE common_dropdownvalue (
+    id integer NOT NULL,
+    dropdown_id integer NOT NULL,
+    display character varying(25) NOT NULL,
+    code character varying(5) NOT NULL
+);
+
+
+ALTER TABLE timetracker.common_dropdownvalue OWNER TO kairos;
+
+--
+-- TOC entry 174 (class 1259 OID 331796)
+-- Dependencies: 175 6
+-- Name: common_dropdownvalue_id_seq; Type: SEQUENCE; Schema: timetracker; Owner: kairos
+--
+
+CREATE SEQUENCE common_dropdownvalue_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE timetracker.common_dropdownvalue_id_seq OWNER TO kairos;
+
+--
+-- TOC entry 2551 (class 0 OID 0)
+-- Dependencies: 174
+-- Name: common_dropdownvalue_id_seq; Type: SEQUENCE OWNED BY; Schema: timetracker; Owner: kairos
+--
+
+ALTER SEQUENCE common_dropdownvalue_id_seq OWNED BY common_dropdownvalue.id;
+
+
+--
+-- TOC entry 2552 (class 0 OID 0)
+-- Dependencies: 174
+-- Name: common_dropdownvalue_id_seq; Type: SEQUENCE SET; Schema: timetracker; Owner: kairos
+--
+
+SELECT pg_catalog.setval('common_dropdownvalue_id_seq', 21, true);
+
+
+--
+-- TOC entry 181 (class 1259 OID 331834)
+-- Dependencies: 6
+-- Name: common_holiday; Type: TABLE; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE TABLE common_holiday (
+    id integer NOT NULL,
+    name character varying(125) NOT NULL,
+    description character varying(1000),
+    day date NOT NULL
+);
+
+
+ALTER TABLE timetracker.common_holiday OWNER TO kairos;
+
+--
+-- TOC entry 180 (class 1259 OID 331832)
+-- Dependencies: 6 181
+-- Name: common_holiday_id_seq; Type: SEQUENCE; Schema: timetracker; Owner: kairos
+--
+
+CREATE SEQUENCE common_holiday_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE timetracker.common_holiday_id_seq OWNER TO kairos;
+
+--
+-- TOC entry 2553 (class 0 OID 0)
+-- Dependencies: 180
+-- Name: common_holiday_id_seq; Type: SEQUENCE OWNED BY; Schema: timetracker; Owner: kairos
+--
+
+ALTER SEQUENCE common_holiday_id_seq OWNED BY common_holiday.id;
+
+
+--
+-- TOC entry 2554 (class 0 OID 0)
+-- Dependencies: 180
+-- Name: common_holiday_id_seq; Type: SEQUENCE SET; Schema: timetracker; Owner: kairos
+--
+
+SELECT pg_catalog.setval('common_holiday_id_seq', 3, true);
+
+
+--
+-- TOC entry 177 (class 1259 OID 331812)
+-- Dependencies: 2119 6
+-- Name: common_holidayset; Type: TABLE; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE TABLE common_holidayset (
+    id integer NOT NULL,
+    name character varying(125) NOT NULL,
+    description text,
+    regional_code character varying(4) NOT NULL,
+    active boolean DEFAULT true NOT NULL
+);
+
+
+ALTER TABLE timetracker.common_holidayset OWNER TO kairos;
+
+--
+-- TOC entry 179 (class 1259 OID 331824)
+-- Dependencies: 6
+-- Name: common_holidayset_holidays; Type: TABLE; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE TABLE common_holidayset_holidays (
+    id integer NOT NULL,
+    holidayset_id integer NOT NULL,
+    holiday_id integer NOT NULL
+);
+
+
+ALTER TABLE timetracker.common_holidayset_holidays OWNER TO kairos;
+
+--
+-- TOC entry 178 (class 1259 OID 331822)
+-- Dependencies: 6 179
+-- Name: common_holidayset_holidays_id_seq; Type: SEQUENCE; Schema: timetracker; Owner: kairos
+--
+
+CREATE SEQUENCE common_holidayset_holidays_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE timetracker.common_holidayset_holidays_id_seq OWNER TO kairos;
+
+--
+-- TOC entry 2555 (class 0 OID 0)
+-- Dependencies: 178
+-- Name: common_holidayset_holidays_id_seq; Type: SEQUENCE OWNED BY; Schema: timetracker; Owner: kairos
+--
+
+ALTER SEQUENCE common_holidayset_holidays_id_seq OWNED BY common_holidayset_holidays.id;
+
+
+--
+-- TOC entry 2556 (class 0 OID 0)
+-- Dependencies: 178
+-- Name: common_holidayset_holidays_id_seq; Type: SEQUENCE SET; Schema: timetracker; Owner: kairos
+--
+
+SELECT pg_catalog.setval('common_holidayset_holidays_id_seq', 3, true);
+
+
+--
+-- TOC entry 176 (class 1259 OID 331810)
+-- Dependencies: 177 6
+-- Name: common_holidayset_id_seq; Type: SEQUENCE; Schema: timetracker; Owner: kairos
+--
+
+CREATE SEQUENCE common_holidayset_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE timetracker.common_holidayset_id_seq OWNER TO kairos;
+
+--
+-- TOC entry 2557 (class 0 OID 0)
+-- Dependencies: 176
+-- Name: common_holidayset_id_seq; Type: SEQUENCE OWNED BY; Schema: timetracker; Owner: kairos
+--
+
+ALTER SEQUENCE common_holidayset_id_seq OWNED BY common_holidayset.id;
+
+
+--
+-- TOC entry 2558 (class 0 OID 0)
+-- Dependencies: 176
+-- Name: common_holidayset_id_seq; Type: SEQUENCE SET; Schema: timetracker; Owner: kairos
+--
+
+SELECT pg_catalog.setval('common_holidayset_id_seq', 1, true);
+
+
+--
+-- TOC entry 227 (class 1259 OID 333176)
+-- Dependencies: 2173 6
+-- Name: configuration_userovertimepolicy; Type: TABLE; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE TABLE configuration_userovertimepolicy (
+    id integer NOT NULL,
+    user_profile_id integer NOT NULL,
+    overtime_policy_id integer NOT NULL,
+    banked_hours numeric(4,2) DEFAULT 0.00 NOT NULL
+);
+
+
+ALTER TABLE timetracker.configuration_userovertimepolicy OWNER TO kairos;
+
+--
+-- TOC entry 226 (class 1259 OID 333174)
+-- Dependencies: 6 227
+-- Name: configuration_userovertimepolicy_id_seq; Type: SEQUENCE; Schema: timetracker; Owner: kairos
+--
+
+CREATE SEQUENCE configuration_userovertimepolicy_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE timetracker.configuration_userovertimepolicy_id_seq OWNER TO kairos;
+
+--
+-- TOC entry 2559 (class 0 OID 0)
+-- Dependencies: 226
+-- Name: configuration_userovertimepolicy_id_seq; Type: SEQUENCE OWNED BY; Schema: timetracker; Owner: kairos
+--
+
+ALTER SEQUENCE configuration_userovertimepolicy_id_seq OWNED BY configuration_userovertimepolicy.id;
+
+
+--
+-- TOC entry 2560 (class 0 OID 0)
+-- Dependencies: 226
+-- Name: configuration_userovertimepolicy_id_seq; Type: SEQUENCE SET; Schema: timetracker; Owner: kairos
+--
+
+SELECT pg_catalog.setval('configuration_userovertimepolicy_id_seq', 1, false);
+
+
+--
+-- TOC entry 221 (class 1259 OID 333137)
+-- Dependencies: 2159 2160 6
+-- Name: configuration_userprofile; Type: TABLE; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE TABLE configuration_userprofile (
+    id integer NOT NULL,
+    user_id integer NOT NULL,
+    taxonomy_id integer NOT NULL,
+    configured boolean DEFAULT false NOT NULL,
+    holiday_set_id integer DEFAULT 1 NOT NULL
+);
+
+
+ALTER TABLE timetracker.configuration_userprofile OWNER TO kairos;
+
+--
+-- TOC entry 220 (class 1259 OID 333135)
+-- Dependencies: 6 221
+-- Name: configuration_userprofile_id_seq; Type: SEQUENCE; Schema: timetracker; Owner: kairos
+--
+
+CREATE SEQUENCE configuration_userprofile_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE timetracker.configuration_userprofile_id_seq OWNER TO kairos;
+
+--
+-- TOC entry 2561 (class 0 OID 0)
+-- Dependencies: 220
+-- Name: configuration_userprofile_id_seq; Type: SEQUENCE OWNED BY; Schema: timetracker; Owner: kairos
+--
+
+ALTER SEQUENCE configuration_userprofile_id_seq OWNED BY configuration_userprofile.id;
+
+
+--
+-- TOC entry 2562 (class 0 OID 0)
+-- Dependencies: 220
+-- Name: configuration_userprofile_id_seq; Type: SEQUENCE SET; Schema: timetracker; Owner: kairos
+--
+
+SELECT pg_catalog.setval('configuration_userprofile_id_seq', 1, false);
+
+
+--
+-- TOC entry 223 (class 1259 OID 333149)
+-- Dependencies: 6
+-- Name: configuration_userproject; Type: TABLE; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE TABLE configuration_userproject (
+    id integer NOT NULL,
+    user_profile_id integer NOT NULL,
+    project_id integer NOT NULL,
+    last_updated timestamp with time zone NOT NULL
+);
+
+
+ALTER TABLE timetracker.configuration_userproject OWNER TO kairos;
+
+--
+-- TOC entry 222 (class 1259 OID 333147)
+-- Dependencies: 223 6
+-- Name: configuration_userproject_id_seq; Type: SEQUENCE; Schema: timetracker; Owner: kairos
+--
+
+CREATE SEQUENCE configuration_userproject_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE timetracker.configuration_userproject_id_seq OWNER TO kairos;
+
+--
+-- TOC entry 2563 (class 0 OID 0)
+-- Dependencies: 222
+-- Name: configuration_userproject_id_seq; Type: SEQUENCE OWNED BY; Schema: timetracker; Owner: kairos
+--
+
+ALTER SEQUENCE configuration_userproject_id_seq OWNED BY configuration_userproject.id;
+
+
+--
+-- TOC entry 2564 (class 0 OID 0)
+-- Dependencies: 222
+-- Name: configuration_userproject_id_seq; Type: SEQUENCE SET; Schema: timetracker; Owner: kairos
+--
+
+SELECT pg_catalog.setval('configuration_userproject_id_seq', 1, false);
+
+
+--
+-- TOC entry 225 (class 1259 OID 333159)
+-- Dependencies: 2163 2164 2165 2166 2167 2168 2169 2170 2171 6
+-- Name: configuration_usertimeoffpolicy; Type: TABLE; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE TABLE configuration_usertimeoffpolicy (
+    id integer NOT NULL,
+    user_profile_id integer NOT NULL,
+    timeoff_type_id integer NOT NULL,
+    effective_date timestamp with time zone NOT NULL,
+    starting_balance numeric(4,2) DEFAULT 0.00 NOT NULL,
+    starting_balance_type_id integer NOT NULL,
+    accrue numeric(4,2) DEFAULT 0.00 NOT NULL,
+    accrue_frequency_id integer NOT NULL,
+    reset_with numeric(4,2) DEFAULT 0.00 NOT NULL,
+    reset_frequency_id integer NOT NULL,
+    allow_prorate boolean DEFAULT false NOT NULL,
+    tracked boolean DEFAULT true NOT NULL,
+    max_balance_limit smallint DEFAULT 0 NOT NULL,
+    max_overdraw_limit smallint DEFAULT 0 NOT NULL,
+    time_remaining numeric(4,2) DEFAULT 0.00 NOT NULL,
+    CONSTRAINT configuration_usertimeoffpolicy_max_overdraw_limit_check CHECK ((max_overdraw_limit >= 0))
+);
+
+
+ALTER TABLE timetracker.configuration_usertimeoffpolicy OWNER TO kairos;
+
+--
+-- TOC entry 224 (class 1259 OID 333157)
+-- Dependencies: 225 6
+-- Name: configuration_usertimeoffpolicy_id_seq; Type: SEQUENCE; Schema: timetracker; Owner: kairos
+--
+
+CREATE SEQUENCE configuration_usertimeoffpolicy_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE timetracker.configuration_usertimeoffpolicy_id_seq OWNER TO kairos;
+
+--
+-- TOC entry 2565 (class 0 OID 0)
+-- Dependencies: 224
+-- Name: configuration_usertimeoffpolicy_id_seq; Type: SEQUENCE OWNED BY; Schema: timetracker; Owner: kairos
+--
+
+ALTER SEQUENCE configuration_usertimeoffpolicy_id_seq OWNED BY configuration_usertimeoffpolicy.id;
+
+
+--
+-- TOC entry 2566 (class 0 OID 0)
+-- Dependencies: 224
+-- Name: configuration_usertimeoffpolicy_id_seq; Type: SEQUENCE SET; Schema: timetracker; Owner: kairos
+--
+
+SELECT pg_catalog.setval('configuration_usertimeoffpolicy_id_seq', 1, false);
+
+
+--
+-- TOC entry 165 (class 1259 OID 331604)
+-- Dependencies: 2109 6
+-- Name: django_admin_log; Type: TABLE; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE TABLE django_admin_log (
+    id integer NOT NULL,
+    action_time timestamp with time zone NOT NULL,
+    user_id integer NOT NULL,
+    content_type_id integer,
+    object_id text,
+    object_repr character varying(200) NOT NULL,
+    action_flag smallint NOT NULL,
+    change_message text NOT NULL,
+    CONSTRAINT django_admin_log_action_flag_check CHECK ((action_flag >= 0))
+);
+
+
+ALTER TABLE timetracker.django_admin_log OWNER TO kairos;
+
+--
+-- TOC entry 164 (class 1259 OID 331602)
+-- Dependencies: 6 165
+-- Name: django_admin_log_id_seq; Type: SEQUENCE; Schema: timetracker; Owner: kairos
+--
+
+CREATE SEQUENCE django_admin_log_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE timetracker.django_admin_log_id_seq OWNER TO kairos;
+
+--
+-- TOC entry 2567 (class 0 OID 0)
+-- Dependencies: 164
+-- Name: django_admin_log_id_seq; Type: SEQUENCE OWNED BY; Schema: timetracker; Owner: kairos
+--
+
+ALTER SEQUENCE django_admin_log_id_seq OWNED BY django_admin_log.id;
+
+
+--
+-- TOC entry 2568 (class 0 OID 0)
+-- Dependencies: 164
+-- Name: django_admin_log_id_seq; Type: SEQUENCE SET; Schema: timetracker; Owner: kairos
+--
+
+SELECT pg_catalog.setval('django_admin_log_id_seq', 99, true);
+
+
+--
+-- TOC entry 163 (class 1259 OID 331584)
+-- Dependencies: 6
+-- Name: django_comment_flags; Type: TABLE; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE TABLE django_comment_flags (
+    id integer NOT NULL,
+    user_id integer NOT NULL,
+    comment_id integer NOT NULL,
+    flag character varying(30) NOT NULL,
+    flag_date timestamp with time zone NOT NULL
+);
+
+
+ALTER TABLE timetracker.django_comment_flags OWNER TO kairos;
+
+--
+-- TOC entry 162 (class 1259 OID 331582)
+-- Dependencies: 6 163
+-- Name: django_comment_flags_id_seq; Type: SEQUENCE; Schema: timetracker; Owner: kairos
+--
+
+CREATE SEQUENCE django_comment_flags_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE timetracker.django_comment_flags_id_seq OWNER TO kairos;
+
+--
+-- TOC entry 2569 (class 0 OID 0)
+-- Dependencies: 162
+-- Name: django_comment_flags_id_seq; Type: SEQUENCE OWNED BY; Schema: timetracker; Owner: kairos
+--
+
+ALTER SEQUENCE django_comment_flags_id_seq OWNED BY django_comment_flags.id;
+
+
+--
+-- TOC entry 2570 (class 0 OID 0)
+-- Dependencies: 162
+-- Name: django_comment_flags_id_seq; Type: SEQUENCE SET; Schema: timetracker; Owner: kairos
+--
+
+SELECT pg_catalog.setval('django_comment_flags_id_seq', 1, false);
+
+
+--
+-- TOC entry 161 (class 1259 OID 331558)
+-- Dependencies: 6
+-- Name: django_comments; Type: TABLE; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE TABLE django_comments (
+    id integer NOT NULL,
+    content_type_id integer NOT NULL,
+    object_pk text NOT NULL,
+    site_id integer NOT NULL,
+    user_id integer,
+    user_name character varying(50) NOT NULL,
+    user_email character varying(75) NOT NULL,
+    user_url character varying(200) NOT NULL,
+    comment text NOT NULL,
+    submit_date timestamp with time zone NOT NULL,
+    ip_address inet,
+    is_public boolean NOT NULL,
+    is_removed boolean NOT NULL
+);
+
+
+ALTER TABLE timetracker.django_comments OWNER TO kairos;
+
+--
+-- TOC entry 160 (class 1259 OID 331556)
+-- Dependencies: 161 6
+-- Name: django_comments_id_seq; Type: SEQUENCE; Schema: timetracker; Owner: kairos
+--
+
+CREATE SEQUENCE django_comments_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE timetracker.django_comments_id_seq OWNER TO kairos;
+
+--
+-- TOC entry 2571 (class 0 OID 0)
+-- Dependencies: 160
+-- Name: django_comments_id_seq; Type: SEQUENCE OWNED BY; Schema: timetracker; Owner: kairos
+--
+
+ALTER SEQUENCE django_comments_id_seq OWNED BY django_comments.id;
+
+
+--
+-- TOC entry 2572 (class 0 OID 0)
+-- Dependencies: 160
+-- Name: django_comments_id_seq; Type: SEQUENCE SET; Schema: timetracker; Owner: kairos
+--
+
+SELECT pg_catalog.setval('django_comments_id_seq', 1, false);
+
+
+--
+-- TOC entry 156 (class 1259 OID 331527)
+-- Dependencies: 6
+-- Name: django_content_type; Type: TABLE; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE TABLE django_content_type (
+    id integer NOT NULL,
+    name character varying(100) NOT NULL,
+    app_label character varying(100) NOT NULL,
+    model character varying(100) NOT NULL
+);
+
+
+ALTER TABLE timetracker.django_content_type OWNER TO kairos;
+
+--
+-- TOC entry 155 (class 1259 OID 331525)
+-- Dependencies: 6 156
+-- Name: django_content_type_id_seq; Type: SEQUENCE; Schema: timetracker; Owner: kairos
+--
+
+CREATE SEQUENCE django_content_type_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE timetracker.django_content_type_id_seq OWNER TO kairos;
+
+--
+-- TOC entry 2573 (class 0 OID 0)
+-- Dependencies: 155
+-- Name: django_content_type_id_seq; Type: SEQUENCE OWNED BY; Schema: timetracker; Owner: kairos
+--
+
+ALTER SEQUENCE django_content_type_id_seq OWNED BY django_content_type.id;
+
+
+--
+-- TOC entry 2574 (class 0 OID 0)
+-- Dependencies: 155
+-- Name: django_content_type_id_seq; Type: SEQUENCE SET; Schema: timetracker; Owner: kairos
+--
+
+SELECT pg_catalog.setval('django_content_type_id_seq', 45, true);
+
+
+--
+-- TOC entry 157 (class 1259 OID 331540)
+-- Dependencies: 6
+-- Name: django_session; Type: TABLE; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE TABLE django_session (
+    session_key character varying(40) NOT NULL,
+    session_data text NOT NULL,
+    expire_date timestamp with time zone NOT NULL
+);
+
+
+ALTER TABLE timetracker.django_session OWNER TO kairos;
+
+--
+-- TOC entry 159 (class 1259 OID 331550)
+-- Dependencies: 6
+-- Name: django_site; Type: TABLE; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE TABLE django_site (
+    id integer NOT NULL,
+    domain character varying(100) NOT NULL,
+    name character varying(50) NOT NULL
+);
+
+
+ALTER TABLE timetracker.django_site OWNER TO kairos;
+
+--
+-- TOC entry 158 (class 1259 OID 331548)
+-- Dependencies: 159 6
+-- Name: django_site_id_seq; Type: SEQUENCE; Schema: timetracker; Owner: kairos
+--
+
+CREATE SEQUENCE django_site_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE timetracker.django_site_id_seq OWNER TO kairos;
+
+--
+-- TOC entry 2575 (class 0 OID 0)
+-- Dependencies: 158
+-- Name: django_site_id_seq; Type: SEQUENCE OWNED BY; Schema: timetracker; Owner: kairos
+--
+
+ALTER SEQUENCE django_site_id_seq OWNED BY django_site.id;
+
+
+--
+-- TOC entry 2576 (class 0 OID 0)
+-- Dependencies: 158
+-- Name: django_site_id_seq; Type: SEQUENCE SET; Schema: timetracker; Owner: kairos
+--
+
+SELECT pg_catalog.setval('django_site_id_seq', 1, true);
+
+
+--
+-- TOC entry 219 (class 1259 OID 333003)
+-- Dependencies: 6
+-- Name: overtime_overtimecondition; Type: TABLE; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE TABLE overtime_overtimecondition (
+    id integer NOT NULL,
+    overtime_policy_id integer NOT NULL,
+    ruleset_id integer NOT NULL
+);
+
+
+ALTER TABLE timetracker.overtime_overtimecondition OWNER TO kairos;
+
+--
+-- TOC entry 218 (class 1259 OID 333001)
+-- Dependencies: 219 6
+-- Name: overtime_overtimecondition_id_seq; Type: SEQUENCE; Schema: timetracker; Owner: kairos
+--
+
+CREATE SEQUENCE overtime_overtimecondition_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE timetracker.overtime_overtimecondition_id_seq OWNER TO kairos;
+
+--
+-- TOC entry 2577 (class 0 OID 0)
+-- Dependencies: 218
+-- Name: overtime_overtimecondition_id_seq; Type: SEQUENCE OWNED BY; Schema: timetracker; Owner: kairos
+--
+
+ALTER SEQUENCE overtime_overtimecondition_id_seq OWNED BY overtime_overtimecondition.id;
+
+
+--
+-- TOC entry 2578 (class 0 OID 0)
+-- Dependencies: 218
+-- Name: overtime_overtimecondition_id_seq; Type: SEQUENCE SET; Schema: timetracker; Owner: kairos
+--
+
+SELECT pg_catalog.setval('overtime_overtimecondition_id_seq', 1, false);
+
+
+--
+-- TOC entry 217 (class 1259 OID 332990)
+-- Dependencies: 2155 2156 6
+-- Name: overtime_overtimepolicy; Type: TABLE; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE TABLE overtime_overtimepolicy (
+    id integer NOT NULL,
+    name character varying(125) NOT NULL,
+    description text,
+    active boolean DEFAULT true NOT NULL,
+    pay_or_bank boolean DEFAULT false NOT NULL
+);
+
+
+ALTER TABLE timetracker.overtime_overtimepolicy OWNER TO kairos;
+
+--
+-- TOC entry 216 (class 1259 OID 332988)
+-- Dependencies: 217 6
+-- Name: overtime_overtimepolicy_id_seq; Type: SEQUENCE; Schema: timetracker; Owner: kairos
+--
+
+CREATE SEQUENCE overtime_overtimepolicy_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE timetracker.overtime_overtimepolicy_id_seq OWNER TO kairos;
+
+--
+-- TOC entry 2579 (class 0 OID 0)
+-- Dependencies: 216
+-- Name: overtime_overtimepolicy_id_seq; Type: SEQUENCE OWNED BY; Schema: timetracker; Owner: kairos
+--
+
+ALTER SEQUENCE overtime_overtimepolicy_id_seq OWNED BY overtime_overtimepolicy.id;
+
+
+--
+-- TOC entry 2580 (class 0 OID 0)
+-- Dependencies: 216
+-- Name: overtime_overtimepolicy_id_seq; Type: SEQUENCE SET; Schema: timetracker; Owner: kairos
+--
+
+SELECT pg_catalog.setval('overtime_overtimepolicy_id_seq', 1, false);
+
+
+--
+-- TOC entry 183 (class 1259 OID 331888)
+-- Dependencies: 6
+-- Name: rules_jointpoint; Type: TABLE; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE TABLE rules_jointpoint (
+    id integer NOT NULL,
+    name character varying(125) NOT NULL,
+    property_name character varying(255) NOT NULL,
+    property_type_id integer NOT NULL,
+    content_type_id integer NOT NULL
+);
+
+
+ALTER TABLE timetracker.rules_jointpoint OWNER TO kairos;
+
+--
+-- TOC entry 182 (class 1259 OID 331886)
+-- Dependencies: 6 183
+-- Name: rules_jointpoint_id_seq; Type: SEQUENCE; Schema: timetracker; Owner: kairos
+--
+
+CREATE SEQUENCE rules_jointpoint_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE timetracker.rules_jointpoint_id_seq OWNER TO kairos;
+
+--
+-- TOC entry 2581 (class 0 OID 0)
+-- Dependencies: 182
+-- Name: rules_jointpoint_id_seq; Type: SEQUENCE OWNED BY; Schema: timetracker; Owner: kairos
+--
+
+ALTER SEQUENCE rules_jointpoint_id_seq OWNED BY rules_jointpoint.id;
+
+
+--
+-- TOC entry 2582 (class 0 OID 0)
+-- Dependencies: 182
+-- Name: rules_jointpoint_id_seq; Type: SEQUENCE SET; Schema: timetracker; Owner: kairos
+--
+
+SELECT pg_catalog.setval('rules_jointpoint_id_seq', 8, true);
+
+
+--
+-- TOC entry 187 (class 1259 OID 331907)
+-- Dependencies: 6
+-- Name: rules_pointcut; Type: TABLE; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE TABLE rules_pointcut (
+    id integer NOT NULL,
+    description text,
+    rule_id integer NOT NULL,
+    jointpoint_id integer NOT NULL,
+    aggregate_id integer
+);
+
+
+ALTER TABLE timetracker.rules_pointcut OWNER TO kairos;
+
+--
+-- TOC entry 186 (class 1259 OID 331905)
+-- Dependencies: 6 187
+-- Name: rules_pointcut_id_seq; Type: SEQUENCE; Schema: timetracker; Owner: kairos
+--
+
+CREATE SEQUENCE rules_pointcut_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE timetracker.rules_pointcut_id_seq OWNER TO kairos;
+
+--
+-- TOC entry 2583 (class 0 OID 0)
+-- Dependencies: 186
+-- Name: rules_pointcut_id_seq; Type: SEQUENCE OWNED BY; Schema: timetracker; Owner: kairos
+--
+
+ALTER SEQUENCE rules_pointcut_id_seq OWNED BY rules_pointcut.id;
+
+
+--
+-- TOC entry 2584 (class 0 OID 0)
+-- Dependencies: 186
+-- Name: rules_pointcut_id_seq; Type: SEQUENCE SET; Schema: timetracker; Owner: kairos
+--
+
+SELECT pg_catalog.setval('rules_pointcut_id_seq', 8, true);
+
+
+--
+-- TOC entry 185 (class 1259 OID 331896)
+-- Dependencies: 6
+-- Name: rules_rule; Type: TABLE; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE TABLE rules_rule (
+    id integer NOT NULL,
+    name character varying(255) NOT NULL,
+    description text,
+    required_value text,
+    operator_type_id integer NOT NULL
+);
+
+
+ALTER TABLE timetracker.rules_rule OWNER TO kairos;
+
+--
+-- TOC entry 184 (class 1259 OID 331894)
+-- Dependencies: 185 6
+-- Name: rules_rule_id_seq; Type: SEQUENCE; Schema: timetracker; Owner: kairos
+--
+
+CREATE SEQUENCE rules_rule_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE timetracker.rules_rule_id_seq OWNER TO kairos;
+
+--
+-- TOC entry 2585 (class 0 OID 0)
+-- Dependencies: 184
+-- Name: rules_rule_id_seq; Type: SEQUENCE OWNED BY; Schema: timetracker; Owner: kairos
+--
+
+ALTER SEQUENCE rules_rule_id_seq OWNED BY rules_rule.id;
+
+
+--
+-- TOC entry 2586 (class 0 OID 0)
+-- Dependencies: 184
+-- Name: rules_rule_id_seq; Type: SEQUENCE SET; Schema: timetracker; Owner: kairos
+--
+
+SELECT pg_catalog.setval('rules_rule_id_seq', 2, true);
+
+
+--
+-- TOC entry 189 (class 1259 OID 331918)
+-- Dependencies: 2126 6
+-- Name: rules_ruleset; Type: TABLE; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE TABLE rules_ruleset (
+    id integer NOT NULL,
+    name text NOT NULL,
+    description text,
+    validator_module character varying(255),
+    active boolean DEFAULT false NOT NULL
+);
+
+
+ALTER TABLE timetracker.rules_ruleset OWNER TO kairos;
+
+--
+-- TOC entry 188 (class 1259 OID 331916)
+-- Dependencies: 189 6
+-- Name: rules_ruleset_id_seq; Type: SEQUENCE; Schema: timetracker; Owner: kairos
+--
+
+CREATE SEQUENCE rules_ruleset_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE timetracker.rules_ruleset_id_seq OWNER TO kairos;
+
+--
+-- TOC entry 2587 (class 0 OID 0)
+-- Dependencies: 188
+-- Name: rules_ruleset_id_seq; Type: SEQUENCE OWNED BY; Schema: timetracker; Owner: kairos
+--
+
+ALTER SEQUENCE rules_ruleset_id_seq OWNED BY rules_ruleset.id;
+
+
+--
+-- TOC entry 2588 (class 0 OID 0)
+-- Dependencies: 188
+-- Name: rules_ruleset_id_seq; Type: SEQUENCE SET; Schema: timetracker; Owner: kairos
+--
+
+SELECT pg_catalog.setval('rules_ruleset_id_seq', 2, true);
+
+
+--
+-- TOC entry 191 (class 1259 OID 331930)
+-- Dependencies: 6
+-- Name: rules_ruleset_pointcuts; Type: TABLE; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE TABLE rules_ruleset_pointcuts (
+    id integer NOT NULL,
+    ruleset_id integer NOT NULL,
+    pointcut_id integer NOT NULL
+);
+
+
+ALTER TABLE timetracker.rules_ruleset_pointcuts OWNER TO kairos;
+
+--
+-- TOC entry 190 (class 1259 OID 331928)
+-- Dependencies: 191 6
+-- Name: rules_ruleset_pointcuts_id_seq; Type: SEQUENCE; Schema: timetracker; Owner: kairos
+--
+
+CREATE SEQUENCE rules_ruleset_pointcuts_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE timetracker.rules_ruleset_pointcuts_id_seq OWNER TO kairos;
+
+--
+-- TOC entry 2589 (class 0 OID 0)
+-- Dependencies: 190
+-- Name: rules_ruleset_pointcuts_id_seq; Type: SEQUENCE OWNED BY; Schema: timetracker; Owner: kairos
+--
+
+ALTER SEQUENCE rules_ruleset_pointcuts_id_seq OWNED BY rules_ruleset_pointcuts.id;
+
+
+--
+-- TOC entry 2590 (class 0 OID 0)
+-- Dependencies: 190
+-- Name: rules_ruleset_pointcuts_id_seq; Type: SEQUENCE SET; Schema: timetracker; Owner: kairos
+--
+
+SELECT pg_catalog.setval('rules_ruleset_pointcuts_id_seq', 8, true);
+
+
+--
+-- TOC entry 167 (class 1259 OID 331626)
+-- Dependencies: 2111 6
+-- Name: secretballot_vote; Type: TABLE; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE TABLE secretballot_vote (
+    id integer NOT NULL,
+    token character varying(50) NOT NULL,
+    vote smallint NOT NULL,
+    content_type_id integer NOT NULL,
+    object_id integer NOT NULL,
+    CONSTRAINT secretballot_vote_object_id_check CHECK ((object_id >= 0))
+);
+
+
+ALTER TABLE timetracker.secretballot_vote OWNER TO kairos;
+
+--
+-- TOC entry 166 (class 1259 OID 331624)
+-- Dependencies: 167 6
+-- Name: secretballot_vote_id_seq; Type: SEQUENCE; Schema: timetracker; Owner: kairos
+--
+
+CREATE SEQUENCE secretballot_vote_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE timetracker.secretballot_vote_id_seq OWNER TO kairos;
+
+--
+-- TOC entry 2591 (class 0 OID 0)
+-- Dependencies: 166
+-- Name: secretballot_vote_id_seq; Type: SEQUENCE OWNED BY; Schema: timetracker; Owner: kairos
+--
+
+ALTER SEQUENCE secretballot_vote_id_seq OWNED BY secretballot_vote.id;
+
+
+--
+-- TOC entry 2592 (class 0 OID 0)
+-- Dependencies: 166
+-- Name: secretballot_vote_id_seq; Type: SEQUENCE SET; Schema: timetracker; Owner: kairos
+--
+
+SELECT pg_catalog.setval('secretballot_vote_id_seq', 1, false);
+
+
+--
+-- TOC entry 169 (class 1259 OID 331642)
+-- Dependencies: 6
+-- Name: south_migrationhistory; Type: TABLE; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE TABLE south_migrationhistory (
+    id integer NOT NULL,
+    app_name character varying(255) NOT NULL,
+    migration character varying(255) NOT NULL,
+    applied timestamp with time zone NOT NULL
+);
+
+
+ALTER TABLE timetracker.south_migrationhistory OWNER TO kairos;
+
+--
+-- TOC entry 168 (class 1259 OID 331640)
+-- Dependencies: 169 6
+-- Name: south_migrationhistory_id_seq; Type: SEQUENCE; Schema: timetracker; Owner: kairos
+--
+
+CREATE SEQUENCE south_migrationhistory_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE timetracker.south_migrationhistory_id_seq OWNER TO kairos;
+
+--
+-- TOC entry 2593 (class 0 OID 0)
+-- Dependencies: 168
+-- Name: south_migrationhistory_id_seq; Type: SEQUENCE OWNED BY; Schema: timetracker; Owner: kairos
+--
+
+ALTER SEQUENCE south_migrationhistory_id_seq OWNED BY south_migrationhistory.id;
+
+
+--
+-- TOC entry 2594 (class 0 OID 0)
+-- Dependencies: 168
+-- Name: south_migrationhistory_id_seq; Type: SEQUENCE SET; Schema: timetracker; Owner: kairos
+--
+
+SELECT pg_catalog.setval('south_migrationhistory_id_seq', 39, true);
+
+
+--
+-- TOC entry 195 (class 1259 OID 332529)
+-- Dependencies: 2134 2135 6
+-- Name: timeoff_booktimeoff; Type: TABLE; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE TABLE timeoff_booktimeoff (
+    id integer NOT NULL,
+    user_id integer NOT NULL,
+    timeoff_type_id integer NOT NULL,
+    start_date timestamp with time zone NOT NULL,
+    end_date timestamp with time zone NOT NULL,
+    title character varying(15),
+    number_of_days integer NOT NULL,
+    CONSTRAINT ck_number_of_days_pstv_5d923175bea07efe CHECK ((number_of_days >= 0)),
+    CONSTRAINT timeoff_booktimeoff_number_of_days_check CHECK ((number_of_days >= 0))
+);
+
+
+ALTER TABLE timetracker.timeoff_booktimeoff OWNER TO kairos;
+
+--
+-- TOC entry 194 (class 1259 OID 332527)
+-- Dependencies: 6 195
+-- Name: timeoff_booktimeoff_id_seq; Type: SEQUENCE; Schema: timetracker; Owner: kairos
+--
+
+CREATE SEQUENCE timeoff_booktimeoff_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE timetracker.timeoff_booktimeoff_id_seq OWNER TO kairos;
+
+--
+-- TOC entry 2595 (class 0 OID 0)
+-- Dependencies: 194
+-- Name: timeoff_booktimeoff_id_seq; Type: SEQUENCE OWNED BY; Schema: timetracker; Owner: kairos
+--
+
+ALTER SEQUENCE timeoff_booktimeoff_id_seq OWNED BY timeoff_booktimeoff.id;
+
+
+--
+-- TOC entry 2596 (class 0 OID 0)
+-- Dependencies: 194
+-- Name: timeoff_booktimeoff_id_seq; Type: SEQUENCE SET; Schema: timetracker; Owner: kairos
+--
+
+SELECT pg_catalog.setval('timeoff_booktimeoff_id_seq', 1, false);
+
+
+--
+-- TOC entry 197 (class 1259 OID 332537)
+-- Dependencies: 6
+-- Name: timeoff_booktimeofffhistory; Type: TABLE; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE TABLE timeoff_booktimeofffhistory (
+    id integer NOT NULL,
+    book_timeoff_id integer NOT NULL,
+    book_timeoff_status_id integer NOT NULL,
+    last_updated timestamp with time zone NOT NULL
+);
+
+
+ALTER TABLE timetracker.timeoff_booktimeofffhistory OWNER TO kairos;
+
+--
+-- TOC entry 196 (class 1259 OID 332535)
+-- Dependencies: 6 197
+-- Name: timeoff_booktimeofffhistory_id_seq; Type: SEQUENCE; Schema: timetracker; Owner: kairos
+--
+
+CREATE SEQUENCE timeoff_booktimeofffhistory_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE timetracker.timeoff_booktimeofffhistory_id_seq OWNER TO kairos;
+
+--
+-- TOC entry 2597 (class 0 OID 0)
+-- Dependencies: 196
+-- Name: timeoff_booktimeofffhistory_id_seq; Type: SEQUENCE OWNED BY; Schema: timetracker; Owner: kairos
+--
+
+ALTER SEQUENCE timeoff_booktimeofffhistory_id_seq OWNED BY timeoff_booktimeofffhistory.id;
+
+
+--
+-- TOC entry 2598 (class 0 OID 0)
+-- Dependencies: 196
+-- Name: timeoff_booktimeofffhistory_id_seq; Type: SEQUENCE SET; Schema: timetracker; Owner: kairos
+--
+
+SELECT pg_catalog.setval('timeoff_booktimeofffhistory_id_seq', 1, false);
+
+
+--
+-- TOC entry 193 (class 1259 OID 332421)
+-- Dependencies: 2129 2130 2131 2132 6
+-- Name: timeoff_timeoffpolicy; Type: TABLE; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE TABLE timeoff_timeoffpolicy (
+    id integer NOT NULL,
+    timeoff_type_id integer NOT NULL,
+    starting_balance_type_id integer NOT NULL,
+    accrue numeric(4,2) DEFAULT 0.00 NOT NULL,
+    accrue_frequency_id integer NOT NULL,
+    reset_with numeric(4,2) DEFAULT 0.00 NOT NULL,
+    reset_frequency_id integer NOT NULL,
+    allow_prorate boolean DEFAULT false NOT NULL,
+    max_balance_limit smallint NOT NULL,
+    max_overdraw_limit smallint NOT NULL,
+    name character varying(125) NOT NULL,
+    tracked boolean NOT NULL,
+    starting_balance numeric(4,2) NOT NULL,
+    no_max_balance_limit boolean NOT NULL,
+    no_max_overdraw_limit boolean NOT NULL,
+    CONSTRAINT timeoff_timeoffpolicy_max_overdraw_limit_check CHECK ((max_overdraw_limit >= 0))
+);
+
+
+ALTER TABLE timetracker.timeoff_timeoffpolicy OWNER TO kairos;
+
+--
+-- TOC entry 192 (class 1259 OID 332419)
+-- Dependencies: 193 6
+-- Name: timeoff_timeoffpolicy_id_seq; Type: SEQUENCE; Schema: timetracker; Owner: kairos
+--
+
+CREATE SEQUENCE timeoff_timeoffpolicy_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE timetracker.timeoff_timeoffpolicy_id_seq OWNER TO kairos;
+
+--
+-- TOC entry 2599 (class 0 OID 0)
+-- Dependencies: 192
+-- Name: timeoff_timeoffpolicy_id_seq; Type: SEQUENCE OWNED BY; Schema: timetracker; Owner: kairos
+--
+
+ALTER SEQUENCE timeoff_timeoffpolicy_id_seq OWNED BY timeoff_timeoffpolicy.id;
+
+
+--
+-- TOC entry 2600 (class 0 OID 0)
+-- Dependencies: 192
+-- Name: timeoff_timeoffpolicy_id_seq; Type: SEQUENCE SET; Schema: timetracker; Owner: kairos
+--
+
+SELECT pg_catalog.setval('timeoff_timeoffpolicy_id_seq', 2, true);
+
+
+--
+-- TOC entry 199 (class 1259 OID 332713)
+-- Dependencies: 6
+-- Name: tracker_timesheet; Type: TABLE; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE TABLE tracker_timesheet (
+    id integer NOT NULL,
+    project_id integer NOT NULL,
+    activity_id integer NOT NULL,
+    day timestamp with time zone NOT NULL,
+    day_1_hours numeric(4,2),
+    day_2_hours numeric(4,2),
+    day_3_hours numeric(4,2),
+    day_4_hours numeric(4,2),
+    day_5_hours numeric(4,2),
+    day_6_hours numeric(4,2),
+    day_7_hours numeric(4,2)
+);
+
+
+ALTER TABLE timetracker.tracker_timesheet OWNER TO kairos;
+
+--
+-- TOC entry 198 (class 1259 OID 332711)
+-- Dependencies: 6 199
+-- Name: tracker_timesheet_id_seq; Type: SEQUENCE; Schema: timetracker; Owner: kairos
+--
+
+CREATE SEQUENCE tracker_timesheet_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE timetracker.tracker_timesheet_id_seq OWNER TO kairos;
+
+--
+-- TOC entry 2601 (class 0 OID 0)
+-- Dependencies: 198
+-- Name: tracker_timesheet_id_seq; Type: SEQUENCE OWNED BY; Schema: timetracker; Owner: kairos
+--
+
+ALTER SEQUENCE tracker_timesheet_id_seq OWNED BY tracker_timesheet.id;
+
+
+--
+-- TOC entry 2602 (class 0 OID 0)
+-- Dependencies: 198
+-- Name: tracker_timesheet_id_seq; Type: SEQUENCE SET; Schema: timetracker; Owner: kairos
+--
+
+SELECT pg_catalog.setval('tracker_timesheet_id_seq', 1, false);
+
+
+--
+-- TOC entry 201 (class 1259 OID 332721)
+-- Dependencies: 6
+-- Name: tracker_timesheetnote; Type: TABLE; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE TABLE tracker_timesheetnote (
+    id integer NOT NULL,
+    timesheet_id integer NOT NULL,
+    day_1_note character varying(1000),
+    day_2_note character varying(1000),
+    day_3_note character varying(1000),
+    day_4_note character varying(1000),
+    day_5_note character varying(1000),
+    day_6_note character varying(1000),
+    day_7_note character varying(1000)
+);
+
+
+ALTER TABLE timetracker.tracker_timesheetnote OWNER TO kairos;
+
+--
+-- TOC entry 200 (class 1259 OID 332719)
+-- Dependencies: 6 201
+-- Name: tracker_timesheetnote_id_seq; Type: SEQUENCE; Schema: timetracker; Owner: kairos
+--
+
+CREATE SEQUENCE tracker_timesheetnote_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE timetracker.tracker_timesheetnote_id_seq OWNER TO kairos;
+
+--
+-- TOC entry 2603 (class 0 OID 0)
+-- Dependencies: 200
+-- Name: tracker_timesheetnote_id_seq; Type: SEQUENCE OWNED BY; Schema: timetracker; Owner: kairos
+--
+
+ALTER SEQUENCE tracker_timesheetnote_id_seq OWNED BY tracker_timesheetnote.id;
+
+
+--
+-- TOC entry 2604 (class 0 OID 0)
+-- Dependencies: 200
+-- Name: tracker_timesheetnote_id_seq; Type: SEQUENCE SET; Schema: timetracker; Owner: kairos
+--
+
+SELECT pg_catalog.setval('tracker_timesheetnote_id_seq', 1, false);
+
+
+--
+-- TOC entry 203 (class 1259 OID 332732)
+-- Dependencies: 2140 6
+-- Name: tracker_weeksnapshot; Type: TABLE; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE TABLE tracker_weeksnapshot (
+    id integer NOT NULL,
+    start_week timestamp with time zone NOT NULL,
+    end_week timestamp with time zone NOT NULL,
+    week integer NOT NULL,
+    user_id integer NOT NULL,
+    CONSTRAINT tracker_weeksnapshot_week_check CHECK ((week >= 0))
+);
+
+
+ALTER TABLE timetracker.tracker_weeksnapshot OWNER TO kairos;
+
+--
+-- TOC entry 202 (class 1259 OID 332730)
+-- Dependencies: 6 203
+-- Name: tracker_weeksnapshot_id_seq; Type: SEQUENCE; Schema: timetracker; Owner: kairos
+--
+
+CREATE SEQUENCE tracker_weeksnapshot_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE timetracker.tracker_weeksnapshot_id_seq OWNER TO kairos;
+
+--
+-- TOC entry 2605 (class 0 OID 0)
+-- Dependencies: 202
+-- Name: tracker_weeksnapshot_id_seq; Type: SEQUENCE OWNED BY; Schema: timetracker; Owner: kairos
+--
+
+ALTER SEQUENCE tracker_weeksnapshot_id_seq OWNED BY tracker_weeksnapshot.id;
+
+
+--
+-- TOC entry 2606 (class 0 OID 0)
+-- Dependencies: 202
+-- Name: tracker_weeksnapshot_id_seq; Type: SEQUENCE SET; Schema: timetracker; Owner: kairos
+--
+
+SELECT pg_catalog.setval('tracker_weeksnapshot_id_seq', 1, false);
+
+
+--
+-- TOC entry 205 (class 1259 OID 332741)
+-- Dependencies: 6
+-- Name: tracker_weeksnapshot_timesheets; Type: TABLE; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE TABLE tracker_weeksnapshot_timesheets (
+    id integer NOT NULL,
+    weeksnapshot_id integer NOT NULL,
+    timesheet_id integer NOT NULL
+);
+
+
+ALTER TABLE timetracker.tracker_weeksnapshot_timesheets OWNER TO kairos;
+
+--
+-- TOC entry 204 (class 1259 OID 332739)
+-- Dependencies: 205 6
+-- Name: tracker_weeksnapshot_timesheets_id_seq; Type: SEQUENCE; Schema: timetracker; Owner: kairos
+--
+
+CREATE SEQUENCE tracker_weeksnapshot_timesheets_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE timetracker.tracker_weeksnapshot_timesheets_id_seq OWNER TO kairos;
+
+--
+-- TOC entry 2607 (class 0 OID 0)
+-- Dependencies: 204
+-- Name: tracker_weeksnapshot_timesheets_id_seq; Type: SEQUENCE OWNED BY; Schema: timetracker; Owner: kairos
+--
+
+ALTER SEQUENCE tracker_weeksnapshot_timesheets_id_seq OWNED BY tracker_weeksnapshot_timesheets.id;
+
+
+--
+-- TOC entry 2608 (class 0 OID 0)
+-- Dependencies: 204
+-- Name: tracker_weeksnapshot_timesheets_id_seq; Type: SEQUENCE SET; Schema: timetracker; Owner: kairos
+--
+
+SELECT pg_catalog.setval('tracker_weeksnapshot_timesheets_id_seq', 1, false);
+
+
+--
+-- TOC entry 207 (class 1259 OID 332751)
+-- Dependencies: 6
+-- Name: tracker_weeksnapshothistory; Type: TABLE; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE TABLE tracker_weeksnapshothistory (
+    id integer NOT NULL,
+    weeksnapshot_id integer NOT NULL,
+    weeksnapshot_status_id integer NOT NULL,
+    last_updated timestamp with time zone NOT NULL
+);
+
+
+ALTER TABLE timetracker.tracker_weeksnapshothistory OWNER TO kairos;
+
+--
+-- TOC entry 206 (class 1259 OID 332749)
+-- Dependencies: 6 207
+-- Name: tracker_weeksnapshothistory_id_seq; Type: SEQUENCE; Schema: timetracker; Owner: kairos
+--
+
+CREATE SEQUENCE tracker_weeksnapshothistory_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE timetracker.tracker_weeksnapshothistory_id_seq OWNER TO kairos;
+
+--
+-- TOC entry 2609 (class 0 OID 0)
+-- Dependencies: 206
+-- Name: tracker_weeksnapshothistory_id_seq; Type: SEQUENCE OWNED BY; Schema: timetracker; Owner: kairos
+--
+
+ALTER SEQUENCE tracker_weeksnapshothistory_id_seq OWNED BY tracker_weeksnapshothistory.id;
+
+
+--
+-- TOC entry 2610 (class 0 OID 0)
+-- Dependencies: 206
+-- Name: tracker_weeksnapshothistory_id_seq; Type: SEQUENCE SET; Schema: timetracker; Owner: kairos
+--
+
+SELECT pg_catalog.setval('tracker_weeksnapshothistory_id_seq', 1, false);
+
+
+--
+-- TOC entry 171 (class 1259 OID 331681)
+-- Dependencies: 2114 6
+-- Name: users_role; Type: TABLE; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE TABLE users_role (
+    id integer NOT NULL,
+    name character varying(50) NOT NULL,
+    description text,
+    active boolean DEFAULT true NOT NULL
+);
+
+
+ALTER TABLE timetracker.users_role OWNER TO kairos;
+
+--
+-- TOC entry 170 (class 1259 OID 331679)
+-- Dependencies: 6 171
+-- Name: users_role_id_seq; Type: SEQUENCE; Schema: timetracker; Owner: kairos
+--
+
+CREATE SEQUENCE users_role_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE timetracker.users_role_id_seq OWNER TO kairos;
+
+--
+-- TOC entry 2611 (class 0 OID 0)
+-- Dependencies: 170
+-- Name: users_role_id_seq; Type: SEQUENCE OWNED BY; Schema: timetracker; Owner: kairos
+--
+
+ALTER SEQUENCE users_role_id_seq OWNED BY users_role.id;
+
+
+--
+-- TOC entry 2612 (class 0 OID 0)
+-- Dependencies: 170
+-- Name: users_role_id_seq; Type: SEQUENCE SET; Schema: timetracker; Owner: kairos
+--
+
+SELECT pg_catalog.setval('users_role_id_seq', 2, true);
+
+
+--
+-- TOC entry 211 (class 1259 OID 332841)
+-- Dependencies: 2146 2147 6
+-- Name: workflow_approver; Type: TABLE; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE TABLE workflow_approver (
+    id integer NOT NULL,
+    role_id integer NOT NULL,
+    sequence smallint DEFAULT 0 NOT NULL,
+    queue_id integer NOT NULL,
+    final boolean NOT NULL,
+    CONSTRAINT workflow_approver_sequence_check CHECK ((sequence >= 0))
+);
+
+
+ALTER TABLE timetracker.workflow_approver OWNER TO kairos;
+
+--
+-- TOC entry 210 (class 1259 OID 332839)
+-- Dependencies: 211 6
+-- Name: workflow_approver_id_seq; Type: SEQUENCE; Schema: timetracker; Owner: kairos
+--
+
+CREATE SEQUENCE workflow_approver_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE timetracker.workflow_approver_id_seq OWNER TO kairos;
+
+--
+-- TOC entry 2613 (class 0 OID 0)
+-- Dependencies: 210
+-- Name: workflow_approver_id_seq; Type: SEQUENCE OWNED BY; Schema: timetracker; Owner: kairos
+--
+
+ALTER SEQUENCE workflow_approver_id_seq OWNED BY workflow_approver.id;
+
+
+--
+-- TOC entry 2614 (class 0 OID 0)
+-- Dependencies: 210
+-- Name: workflow_approver_id_seq; Type: SEQUENCE SET; Schema: timetracker; Owner: kairos
+--
+
+SELECT pg_catalog.setval('workflow_approver_id_seq', 2, true);
+
+
+--
+-- TOC entry 213 (class 1259 OID 332851)
+-- Dependencies: 2149 2150 6
+-- Name: workflow_approverqueue; Type: TABLE; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE TABLE workflow_approverqueue (
+    id integer NOT NULL,
+    content_type_id integer NOT NULL,
+    object_id integer NOT NULL,
+    current_sequence smallint NOT NULL,
+    current_user_id integer NOT NULL,
+    created_on timestamp with time zone NOT NULL,
+    last_updated timestamp with time zone NOT NULL,
+    current_status_id integer NOT NULL,
+    CONSTRAINT workflow_approverqueue_current_sequence_check CHECK ((current_sequence >= 0)),
+    CONSTRAINT workflow_approverqueue_object_id_check CHECK ((object_id >= 0))
+);
+
+
+ALTER TABLE timetracker.workflow_approverqueue OWNER TO kairos;
+
+--
+-- TOC entry 212 (class 1259 OID 332849)
+-- Dependencies: 6 213
+-- Name: workflow_approverqueue_id_seq; Type: SEQUENCE; Schema: timetracker; Owner: kairos
+--
+
+CREATE SEQUENCE workflow_approverqueue_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE timetracker.workflow_approverqueue_id_seq OWNER TO kairos;
+
+--
+-- TOC entry 2615 (class 0 OID 0)
+-- Dependencies: 212
+-- Name: workflow_approverqueue_id_seq; Type: SEQUENCE OWNED BY; Schema: timetracker; Owner: kairos
+--
+
+ALTER SEQUENCE workflow_approverqueue_id_seq OWNED BY workflow_approverqueue.id;
+
+
+--
+-- TOC entry 2616 (class 0 OID 0)
+-- Dependencies: 212
+-- Name: workflow_approverqueue_id_seq; Type: SEQUENCE SET; Schema: timetracker; Owner: kairos
+--
+
+SELECT pg_catalog.setval('workflow_approverqueue_id_seq', 1, false);
+
+
+--
+-- TOC entry 215 (class 1259 OID 332918)
+-- Dependencies: 2152 2153 6
+-- Name: workflow_approverqueuehistory; Type: TABLE; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE TABLE workflow_approverqueuehistory (
+    id integer NOT NULL,
+    approver_queue_id integer NOT NULL,
+    created_on timestamp with time zone NOT NULL,
+    from_user_id integer NOT NULL,
+    from_status_id integer NOT NULL,
+    from_sequence smallint NOT NULL,
+    to_user_id integer NOT NULL,
+    to_status_id integer NOT NULL,
+    to_sequence smallint NOT NULL,
+    CONSTRAINT workflow_approverqueuehistory_from_sequence_check CHECK ((from_sequence >= 0)),
+    CONSTRAINT workflow_approverqueuehistory_to_sequence_check CHECK ((to_sequence >= 0))
+);
+
+
+ALTER TABLE timetracker.workflow_approverqueuehistory OWNER TO kairos;
+
+--
+-- TOC entry 214 (class 1259 OID 332916)
+-- Dependencies: 6 215
+-- Name: workflow_approverqueuehistory_id_seq; Type: SEQUENCE; Schema: timetracker; Owner: kairos
+--
+
+CREATE SEQUENCE workflow_approverqueuehistory_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE timetracker.workflow_approverqueuehistory_id_seq OWNER TO kairos;
+
+--
+-- TOC entry 2617 (class 0 OID 0)
+-- Dependencies: 214
+-- Name: workflow_approverqueuehistory_id_seq; Type: SEQUENCE OWNED BY; Schema: timetracker; Owner: kairos
+--
+
+ALTER SEQUENCE workflow_approverqueuehistory_id_seq OWNED BY workflow_approverqueuehistory.id;
+
+
+--
+-- TOC entry 2618 (class 0 OID 0)
+-- Dependencies: 214
+-- Name: workflow_approverqueuehistory_id_seq; Type: SEQUENCE SET; Schema: timetracker; Owner: kairos
+--
+
+SELECT pg_catalog.setval('workflow_approverqueuehistory_id_seq', 1, false);
+
+
+--
+-- TOC entry 209 (class 1259 OID 332832)
+-- Dependencies: 2144 6
+-- Name: workflow_queue; Type: TABLE; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE TABLE workflow_queue (
+    id integer NOT NULL,
+    content_type_id integer NOT NULL,
+    active boolean DEFAULT false NOT NULL,
+    name character varying(255) NOT NULL,
+    description text
+);
+
+
+ALTER TABLE timetracker.workflow_queue OWNER TO kairos;
+
+--
+-- TOC entry 208 (class 1259 OID 332830)
+-- Dependencies: 6 209
+-- Name: workflow_queue_id_seq; Type: SEQUENCE; Schema: timetracker; Owner: kairos
+--
+
+CREATE SEQUENCE workflow_queue_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE timetracker.workflow_queue_id_seq OWNER TO kairos;
+
+--
+-- TOC entry 2619 (class 0 OID 0)
+-- Dependencies: 208
+-- Name: workflow_queue_id_seq; Type: SEQUENCE OWNED BY; Schema: timetracker; Owner: kairos
+--
+
+ALTER SEQUENCE workflow_queue_id_seq OWNED BY workflow_queue.id;
+
+
+--
+-- TOC entry 2620 (class 0 OID 0)
+-- Dependencies: 208
+-- Name: workflow_queue_id_seq; Type: SEQUENCE SET; Schema: timetracker; Owner: kairos
+--
+
+SELECT pg_catalog.setval('workflow_queue_id_seq', 2, true);
+
+
+--
+-- TOC entry 2100 (class 2604 OID 331465)
+-- Dependencies: 147 148 148
+-- Name: id; Type: DEFAULT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE auth_group ALTER COLUMN id SET DEFAULT nextval('auth_group_id_seq'::regclass);
+
+
+--
+-- TOC entry 2099 (class 2604 OID 331450)
+-- Dependencies: 146 145 146
+-- Name: id; Type: DEFAULT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE auth_group_permissions ALTER COLUMN id SET DEFAULT nextval('auth_group_permissions_id_seq'::regclass);
+
+
+--
+-- TOC entry 2098 (class 2604 OID 331440)
+-- Dependencies: 143 144 144
+-- Name: id; Type: DEFAULT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE auth_permission ALTER COLUMN id SET DEFAULT nextval('auth_permission_id_seq'::regclass);
+
+
+--
+-- TOC entry 2103 (class 2604 OID 331510)
+-- Dependencies: 154 153 154
+-- Name: id; Type: DEFAULT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE auth_user ALTER COLUMN id SET DEFAULT nextval('auth_user_id_seq'::regclass);
+
+
+--
+-- TOC entry 2102 (class 2604 OID 331495)
+-- Dependencies: 151 152 152
+-- Name: id; Type: DEFAULT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE auth_user_groups ALTER COLUMN id SET DEFAULT nextval('auth_user_groups_id_seq'::regclass);
+
+
+--
+-- TOC entry 2101 (class 2604 OID 331480)
+-- Dependencies: 150 149 150
+-- Name: id; Type: DEFAULT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE auth_user_user_permissions ALTER COLUMN id SET DEFAULT nextval('auth_user_user_permissions_id_seq'::regclass);
+
+
+--
+-- TOC entry 2179 (class 2604 OID 333313)
+-- Dependencies: 235 234 235
+-- Name: id; Type: DEFAULT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE categories_activity ALTER COLUMN id SET DEFAULT nextval('categories_activity_id_seq'::regclass);
+
+
+--
+-- TOC entry 2174 (class 2604 OID 333281)
+-- Dependencies: 228 229 229
+-- Name: id; Type: DEFAULT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE categories_client ALTER COLUMN id SET DEFAULT nextval('categories_client_id_seq'::regclass);
+
+
+--
+-- TOC entry 2183 (class 2604 OID 333343)
+-- Dependencies: 241 240 241
+-- Name: id; Type: DEFAULT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE categories_paycodetype ALTER COLUMN id SET DEFAULT nextval('categories_paycodetype_id_seq'::regclass);
+
+
+--
+-- TOC entry 2180 (class 2604 OID 333323)
+-- Dependencies: 237 236 237
+-- Name: id; Type: DEFAULT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE categories_project ALTER COLUMN id SET DEFAULT nextval('categories_project_id_seq'::regclass);
+
+
+--
+-- TOC entry 2182 (class 2604 OID 333335)
+-- Dependencies: 239 238 239
+-- Name: id; Type: DEFAULT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE categories_projectactivity ALTER COLUMN id SET DEFAULT nextval('categories_projectactivity_id_seq'::regclass);
+
+
+--
+-- TOC entry 2176 (class 2604 OID 333293)
+-- Dependencies: 230 231 231
+-- Name: id; Type: DEFAULT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE categories_taxonomy ALTER COLUMN id SET DEFAULT nextval('categories_taxonomy_id_seq'::regclass);
+
+
+--
+-- TOC entry 2178 (class 2604 OID 333305)
+-- Dependencies: 233 232 233
+-- Name: id; Type: DEFAULT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE categories_taxonomyrole ALTER COLUMN id SET DEFAULT nextval('categories_taxonomyrole_id_seq'::regclass);
+
+
+--
+-- TOC entry 2187 (class 2604 OID 333357)
+-- Dependencies: 242 243 243
+-- Name: id; Type: DEFAULT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE categories_timeofftype ALTER COLUMN id SET DEFAULT nextval('categories_timeofftype_id_seq'::regclass);
+
+
+--
+-- TOC entry 2115 (class 2604 OID 331775)
+-- Dependencies: 172 173 173
+-- Name: id; Type: DEFAULT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE common_dropdown ALTER COLUMN id SET DEFAULT nextval('common_dropdown_id_seq'::regclass);
+
+
+--
+-- TOC entry 2117 (class 2604 OID 331801)
+-- Dependencies: 175 174 175
+-- Name: id; Type: DEFAULT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE common_dropdownvalue ALTER COLUMN id SET DEFAULT nextval('common_dropdownvalue_id_seq'::regclass);
+
+
+--
+-- TOC entry 2121 (class 2604 OID 331837)
+-- Dependencies: 180 181 181
+-- Name: id; Type: DEFAULT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE common_holiday ALTER COLUMN id SET DEFAULT nextval('common_holiday_id_seq'::regclass);
+
+
+--
+-- TOC entry 2118 (class 2604 OID 331815)
+-- Dependencies: 177 176 177
+-- Name: id; Type: DEFAULT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE common_holidayset ALTER COLUMN id SET DEFAULT nextval('common_holidayset_id_seq'::regclass);
+
+
+--
+-- TOC entry 2120 (class 2604 OID 331827)
+-- Dependencies: 178 179 179
+-- Name: id; Type: DEFAULT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE common_holidayset_holidays ALTER COLUMN id SET DEFAULT nextval('common_holidayset_holidays_id_seq'::regclass);
+
+
+--
+-- TOC entry 2172 (class 2604 OID 333179)
+-- Dependencies: 226 227 227
+-- Name: id; Type: DEFAULT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE configuration_userovertimepolicy ALTER COLUMN id SET DEFAULT nextval('configuration_userovertimepolicy_id_seq'::regclass);
+
+
+--
+-- TOC entry 2158 (class 2604 OID 333140)
+-- Dependencies: 220 221 221
+-- Name: id; Type: DEFAULT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE configuration_userprofile ALTER COLUMN id SET DEFAULT nextval('configuration_userprofile_id_seq'::regclass);
+
+
+--
+-- TOC entry 2161 (class 2604 OID 333152)
+-- Dependencies: 222 223 223
+-- Name: id; Type: DEFAULT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE configuration_userproject ALTER COLUMN id SET DEFAULT nextval('configuration_userproject_id_seq'::regclass);
+
+
+--
+-- TOC entry 2162 (class 2604 OID 333162)
+-- Dependencies: 224 225 225
+-- Name: id; Type: DEFAULT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE configuration_usertimeoffpolicy ALTER COLUMN id SET DEFAULT nextval('configuration_usertimeoffpolicy_id_seq'::regclass);
+
+
+--
+-- TOC entry 2108 (class 2604 OID 331607)
+-- Dependencies: 164 165 165
+-- Name: id; Type: DEFAULT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE django_admin_log ALTER COLUMN id SET DEFAULT nextval('django_admin_log_id_seq'::regclass);
+
+
+--
+-- TOC entry 2107 (class 2604 OID 331587)
+-- Dependencies: 162 163 163
+-- Name: id; Type: DEFAULT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE django_comment_flags ALTER COLUMN id SET DEFAULT nextval('django_comment_flags_id_seq'::regclass);
+
+
+--
+-- TOC entry 2106 (class 2604 OID 331561)
+-- Dependencies: 161 160 161
+-- Name: id; Type: DEFAULT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE django_comments ALTER COLUMN id SET DEFAULT nextval('django_comments_id_seq'::regclass);
+
+
+--
+-- TOC entry 2104 (class 2604 OID 331530)
+-- Dependencies: 156 155 156
+-- Name: id; Type: DEFAULT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE django_content_type ALTER COLUMN id SET DEFAULT nextval('django_content_type_id_seq'::regclass);
+
+
+--
+-- TOC entry 2105 (class 2604 OID 331553)
+-- Dependencies: 159 158 159
+-- Name: id; Type: DEFAULT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE django_site ALTER COLUMN id SET DEFAULT nextval('django_site_id_seq'::regclass);
+
+
+--
+-- TOC entry 2157 (class 2604 OID 333006)
+-- Dependencies: 219 218 219
+-- Name: id; Type: DEFAULT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE overtime_overtimecondition ALTER COLUMN id SET DEFAULT nextval('overtime_overtimecondition_id_seq'::regclass);
+
+
+--
+-- TOC entry 2154 (class 2604 OID 332993)
+-- Dependencies: 216 217 217
+-- Name: id; Type: DEFAULT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE overtime_overtimepolicy ALTER COLUMN id SET DEFAULT nextval('overtime_overtimepolicy_id_seq'::regclass);
+
+
+--
+-- TOC entry 2122 (class 2604 OID 331891)
+-- Dependencies: 182 183 183
+-- Name: id; Type: DEFAULT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE rules_jointpoint ALTER COLUMN id SET DEFAULT nextval('rules_jointpoint_id_seq'::regclass);
+
+
+--
+-- TOC entry 2124 (class 2604 OID 331910)
+-- Dependencies: 186 187 187
+-- Name: id; Type: DEFAULT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE rules_pointcut ALTER COLUMN id SET DEFAULT nextval('rules_pointcut_id_seq'::regclass);
+
+
+--
+-- TOC entry 2123 (class 2604 OID 331899)
+-- Dependencies: 184 185 185
+-- Name: id; Type: DEFAULT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE rules_rule ALTER COLUMN id SET DEFAULT nextval('rules_rule_id_seq'::regclass);
+
+
+--
+-- TOC entry 2125 (class 2604 OID 331921)
+-- Dependencies: 188 189 189
+-- Name: id; Type: DEFAULT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE rules_ruleset ALTER COLUMN id SET DEFAULT nextval('rules_ruleset_id_seq'::regclass);
+
+
+--
+-- TOC entry 2127 (class 2604 OID 331933)
+-- Dependencies: 191 190 191
+-- Name: id; Type: DEFAULT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE rules_ruleset_pointcuts ALTER COLUMN id SET DEFAULT nextval('rules_ruleset_pointcuts_id_seq'::regclass);
+
+
+--
+-- TOC entry 2110 (class 2604 OID 331629)
+-- Dependencies: 166 167 167
+-- Name: id; Type: DEFAULT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE secretballot_vote ALTER COLUMN id SET DEFAULT nextval('secretballot_vote_id_seq'::regclass);
+
+
+--
+-- TOC entry 2112 (class 2604 OID 331645)
+-- Dependencies: 168 169 169
+-- Name: id; Type: DEFAULT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE south_migrationhistory ALTER COLUMN id SET DEFAULT nextval('south_migrationhistory_id_seq'::regclass);
+
+
+--
+-- TOC entry 2133 (class 2604 OID 332532)
+-- Dependencies: 195 194 195
+-- Name: id; Type: DEFAULT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE timeoff_booktimeoff ALTER COLUMN id SET DEFAULT nextval('timeoff_booktimeoff_id_seq'::regclass);
+
+
+--
+-- TOC entry 2136 (class 2604 OID 332540)
+-- Dependencies: 196 197 197
+-- Name: id; Type: DEFAULT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE timeoff_booktimeofffhistory ALTER COLUMN id SET DEFAULT nextval('timeoff_booktimeofffhistory_id_seq'::regclass);
+
+
+--
+-- TOC entry 2128 (class 2604 OID 332424)
+-- Dependencies: 193 192 193
+-- Name: id; Type: DEFAULT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE timeoff_timeoffpolicy ALTER COLUMN id SET DEFAULT nextval('timeoff_timeoffpolicy_id_seq'::regclass);
+
+
+--
+-- TOC entry 2137 (class 2604 OID 332716)
+-- Dependencies: 199 198 199
+-- Name: id; Type: DEFAULT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE tracker_timesheet ALTER COLUMN id SET DEFAULT nextval('tracker_timesheet_id_seq'::regclass);
+
+
+--
+-- TOC entry 2138 (class 2604 OID 332724)
+-- Dependencies: 201 200 201
+-- Name: id; Type: DEFAULT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE tracker_timesheetnote ALTER COLUMN id SET DEFAULT nextval('tracker_timesheetnote_id_seq'::regclass);
+
+
+--
+-- TOC entry 2139 (class 2604 OID 332735)
+-- Dependencies: 203 202 203
+-- Name: id; Type: DEFAULT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE tracker_weeksnapshot ALTER COLUMN id SET DEFAULT nextval('tracker_weeksnapshot_id_seq'::regclass);
+
+
+--
+-- TOC entry 2141 (class 2604 OID 332744)
+-- Dependencies: 205 204 205
+-- Name: id; Type: DEFAULT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE tracker_weeksnapshot_timesheets ALTER COLUMN id SET DEFAULT nextval('tracker_weeksnapshot_timesheets_id_seq'::regclass);
+
+
+--
+-- TOC entry 2142 (class 2604 OID 332754)
+-- Dependencies: 207 206 207
+-- Name: id; Type: DEFAULT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE tracker_weeksnapshothistory ALTER COLUMN id SET DEFAULT nextval('tracker_weeksnapshothistory_id_seq'::regclass);
+
+
+--
+-- TOC entry 2113 (class 2604 OID 331684)
+-- Dependencies: 171 170 171
+-- Name: id; Type: DEFAULT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE users_role ALTER COLUMN id SET DEFAULT nextval('users_role_id_seq'::regclass);
+
+
+--
+-- TOC entry 2145 (class 2604 OID 332844)
+-- Dependencies: 210 211 211
+-- Name: id; Type: DEFAULT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE workflow_approver ALTER COLUMN id SET DEFAULT nextval('workflow_approver_id_seq'::regclass);
+
+
+--
+-- TOC entry 2148 (class 2604 OID 332854)
+-- Dependencies: 213 212 213
+-- Name: id; Type: DEFAULT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE workflow_approverqueue ALTER COLUMN id SET DEFAULT nextval('workflow_approverqueue_id_seq'::regclass);
+
+
+--
+-- TOC entry 2151 (class 2604 OID 332921)
+-- Dependencies: 214 215 215
+-- Name: id; Type: DEFAULT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE workflow_approverqueuehistory ALTER COLUMN id SET DEFAULT nextval('workflow_approverqueuehistory_id_seq'::regclass);
+
+
+--
+-- TOC entry 2143 (class 2604 OID 332835)
+-- Dependencies: 208 209 209
+-- Name: id; Type: DEFAULT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE workflow_queue ALTER COLUMN id SET DEFAULT nextval('workflow_queue_id_seq'::regclass);
+
+
+--
+-- TOC entry 2470 (class 0 OID 331462)
+-- Dependencies: 148
+-- Data for Name: auth_group; Type: TABLE DATA; Schema: timetracker; Owner: kairos
+--
+
+COPY auth_group (id, name) FROM stdin;
+\.
+
+
+--
+-- TOC entry 2469 (class 0 OID 331447)
+-- Dependencies: 146
+-- Data for Name: auth_group_permissions; Type: TABLE DATA; Schema: timetracker; Owner: kairos
+--
+
+COPY auth_group_permissions (id, group_id, permission_id) FROM stdin;
+\.
+
+
+--
+-- TOC entry 2468 (class 0 OID 331437)
+-- Dependencies: 144
+-- Data for Name: auth_permission; Type: TABLE DATA; Schema: timetracker; Owner: kairos
+--
+
+COPY auth_permission (id, name, content_type_id, codename) FROM stdin;
+1	Can add permission	1	add_permission
+2	Can change permission	1	change_permission
+3	Can delete permission	1	delete_permission
+4	Can add group	2	add_group
+5	Can change group	2	change_group
+6	Can delete group	2	delete_group
+7	Can add user	3	add_user
+8	Can change user	3	change_user
+9	Can delete user	3	delete_user
+10	Can add content type	4	add_contenttype
+11	Can change content type	4	change_contenttype
+12	Can delete content type	4	delete_contenttype
+13	Can add session	5	add_session
+14	Can change session	5	change_session
+15	Can delete session	5	delete_session
+16	Can add site	6	add_site
+17	Can change site	6	change_site
+18	Can delete site	6	delete_site
+19	Can add comment	7	add_comment
+20	Can change comment	7	change_comment
+21	Can delete comment	7	delete_comment
+22	Can moderate comments	7	can_moderate
+23	Can add comment flag	8	add_commentflag
+24	Can change comment flag	8	change_commentflag
+25	Can delete comment flag	8	delete_commentflag
+26	Can add log entry	9	add_logentry
+27	Can change log entry	9	change_logentry
+28	Can delete log entry	9	delete_logentry
+29	Can add vote	10	add_vote
+30	Can change vote	10	change_vote
+31	Can delete vote	10	delete_vote
+32	Can add migration history	11	add_migrationhistory
+33	Can change migration history	11	change_migrationhistory
+34	Can delete migration history	11	delete_migrationhistory
+35	Can add Role	12	add_role
+36	Can change Role	12	change_role
+37	Can delete Role	12	delete_role
+38	Can add Joint Point	13	add_jointpoint
+39	Can change Joint Point	13	change_jointpoint
+40	Can delete Joint Point	13	delete_jointpoint
+41	Can add Rule	14	add_rule
+42	Can change Rule	14	change_rule
+43	Can delete Rule	14	delete_rule
+44	Can add Point Cut	15	add_pointcut
+45	Can change Point Cut	15	change_pointcut
+46	Can delete Point Cut	15	delete_pointcut
+47	Can add Rule Set	16	add_ruleset
+48	Can change Rule Set	16	change_ruleset
+49	Can delete Rule Set	16	delete_ruleset
+50	Can add dropdown	17	add_dropdown
+51	Can change dropdown	17	change_dropdown
+52	Can delete dropdown	17	delete_dropdown
+53	Can add dropdown value	18	add_dropdownvalue
+54	Can change dropdown value	18	change_dropdownvalue
+55	Can delete dropdown value	18	delete_dropdownvalue
+56	Can add holiday	19	add_holiday
+57	Can change holiday	19	change_holiday
+58	Can delete holiday	19	delete_holiday
+59	Can add holiday set	20	add_holidayset
+60	Can change holiday set	20	change_holidayset
+61	Can delete holiday set	20	delete_holidayset
+62	Can add user profile	21	add_userprofile
+63	Can change user profile	21	change_userprofile
+64	Can delete user profile	21	delete_userprofile
+65	Can add user project	22	add_userproject
+66	Can change user project	22	change_userproject
+67	Can delete user project	22	delete_userproject
+68	Can add User TimeOff Policy	23	add_usertimeoffpolicy
+69	Can change User TimeOff Policy	23	change_usertimeoffpolicy
+70	Can delete User TimeOff Policy	23	delete_usertimeoffpolicy
+71	Can add User Overtime Policy	24	add_userovertimepolicy
+72	Can change User Overtime Policy	24	change_userovertimepolicy
+73	Can delete User Overtime Policy	24	delete_userovertimepolicy
+74	Can add client	25	add_client
+75	Can change client	25	change_client
+76	Can delete client	25	delete_client
+77	Can add taxonomy	26	add_taxonomy
+78	Can change taxonomy	26	change_taxonomy
+79	Can delete taxonomy	26	delete_taxonomy
+80	Can add taxonomy role	27	add_taxonomyrole
+81	Can change taxonomy role	27	change_taxonomyrole
+82	Can delete taxonomy role	27	delete_taxonomyrole
+83	Can add activity	28	add_activity
+84	Can change activity	28	change_activity
+85	Can delete activity	28	delete_activity
+86	Can add project	29	add_project
+87	Can change project	29	change_project
+88	Can delete project	29	delete_project
+89	Can add project activity	30	add_projectactivity
+90	Can change project activity	30	change_projectactivity
+91	Can delete project activity	30	delete_projectactivity
+92	Can add pay code type	31	add_paycodetype
+93	Can change pay code type	31	change_paycodetype
+94	Can delete pay code type	31	delete_paycodetype
+95	Can add TimeOff Type	32	add_timeofftype
+96	Can change TimeOff Type	32	change_timeofftype
+97	Can delete TimeOff Type	32	delete_timeofftype
+98	Can add TimeOff Policy	33	add_timeoffpolicy
+99	Can change TimeOff Policy	33	change_timeoffpolicy
+100	Can delete TimeOff Policy	33	delete_timeoffpolicy
+101	Can add Book TimeOff	34	add_booktimeoff
+102	Can change Book TimeOff	34	change_booktimeoff
+103	Can delete Book TimeOff	34	delete_booktimeoff
+104	Can add book time offf history	35	add_booktimeofffhistory
+105	Can change book time offf history	35	change_booktimeofffhistory
+106	Can delete book time offf history	35	delete_booktimeofffhistory
+107	Can add timesheet	36	add_timesheet
+108	Can change timesheet	36	change_timesheet
+109	Can delete timesheet	36	delete_timesheet
+110	Can add timesheet note	37	add_timesheetnote
+111	Can change timesheet note	37	change_timesheetnote
+112	Can delete timesheet note	37	delete_timesheetnote
+113	Can add week snapshot	38	add_weeksnapshot
+114	Can change week snapshot	38	change_weeksnapshot
+115	Can delete week snapshot	38	delete_weeksnapshot
+116	Can add week snapshot history	39	add_weeksnapshothistory
+117	Can change week snapshot history	39	change_weeksnapshothistory
+118	Can delete week snapshot history	39	delete_weeksnapshothistory
+119	Can add Queue	40	add_queue
+120	Can change Queue	40	change_queue
+121	Can delete Queue	40	delete_queue
+122	Can add Approver	41	add_approver
+123	Can change Approver	41	change_approver
+124	Can delete Approver	41	delete_approver
+125	Can add Approver Queue	42	add_approverqueue
+126	Can change Approver Queue	42	change_approverqueue
+127	Can delete Approver Queue	42	delete_approverqueue
+128	Can add Approver Queue History	43	add_approverqueuehistory
+129	Can change Approver Queue History	43	change_approverqueuehistory
+130	Can delete Approver Queue History	43	delete_approverqueuehistory
+131	Can add Overtime Policy	44	add_overtimepolicy
+132	Can change Overtime Policy	44	change_overtimepolicy
+133	Can delete Overtime Policy	44	delete_overtimepolicy
+134	Can add Overtime Condition	45	add_overtimecondition
+135	Can change Overtime Condition	45	change_overtimecondition
+136	Can delete Overtime Condition	45	delete_overtimecondition
+\.
+
+
+--
+-- TOC entry 2473 (class 0 OID 331507)
+-- Dependencies: 154
+-- Data for Name: auth_user; Type: TABLE DATA; Schema: timetracker; Owner: kairos
+--
+
+COPY auth_user (id, username, first_name, last_name, email, password, is_staff, is_active, is_superuser, last_login, date_joined) FROM stdin;
+1	kairos			kairos@kairos.com	pbkdf2_sha256$10000$CTt0PBqhZXDy$rMxYS5weH1oUTwkmO1sTLkozuMAqvtPuWNEhrJFrv/4=	t	t	t	2012-10-02 13:51:37.185271-04	2012-10-02 13:39:39.723201-04
+\.
+
+
+--
+-- TOC entry 2472 (class 0 OID 331492)
+-- Dependencies: 152
+-- Data for Name: auth_user_groups; Type: TABLE DATA; Schema: timetracker; Owner: kairos
+--
+
+COPY auth_user_groups (id, user_id, group_id) FROM stdin;
+\.
+
+
+--
+-- TOC entry 2471 (class 0 OID 331477)
+-- Dependencies: 150
+-- Data for Name: auth_user_user_permissions; Type: TABLE DATA; Schema: timetracker; Owner: kairos
+--
+
+COPY auth_user_user_permissions (id, user_id, permission_id) FROM stdin;
+\.
+
+
+--
+-- TOC entry 2514 (class 0 OID 333310)
+-- Dependencies: 235
+-- Data for Name: categories_activity; Type: TABLE DATA; Schema: timetracker; Owner: kairos
+--
+
+COPY categories_activity (id, code, name) FROM stdin;
+1	DEV	Development
+2	QA	QA Testing
+\.
+
+
+--
+-- TOC entry 2511 (class 0 OID 333278)
+-- Dependencies: 229
+-- Data for Name: categories_client; Type: TABLE DATA; Schema: timetracker; Owner: kairos
+--
+
+COPY categories_client (id, name, address_1, address_2, city, state, phone_1, phone_2, fax, email, active) FROM stdin;
+1	Wireless Generation	55 Washington Street		Brooklyn	NY	\N	\N	\N		t
+\.
+
+
+--
+-- TOC entry 2517 (class 0 OID 333340)
+-- Dependencies: 241
+-- Data for Name: categories_paycodetype; Type: TABLE DATA; Schema: timetracker; Owner: kairos
+--
+
+COPY categories_paycodetype (id, name, description, code, multiplier, active) FROM stdin;
+1	Regular	regular pay	REG	1	t
+2	Double Overtime	double overtime	DOT	2	t
+3	Overtime	Overtime	OT	1	t
+4	Non Payable		NP	0	t
+\.
+
+
+--
+-- TOC entry 2515 (class 0 OID 333320)
+-- Dependencies: 237
+-- Data for Name: categories_project; Type: TABLE DATA; Schema: timetracker; Owner: kairos
+--
+
+COPY categories_project (id, taxonomy_id, name, description, project_code, project_url, data_added, date_updated, active) FROM stdin;
+2	2	Burst		BURST		2012-10-02 14:09:04.225031-04	2012-10-02 14:09:04.225137-04	t
+1	1	Beacon CB		BEACB		2012-10-02 14:08:56.018028-04	2012-10-02 14:41:00.682643-04	t
+\.
+
+
+--
+-- TOC entry 2516 (class 0 OID 333332)
+-- Dependencies: 239
+-- Data for Name: categories_projectactivity; Type: TABLE DATA; Schema: timetracker; Owner: kairos
+--
+
+COPY categories_projectactivity (id, project_id, activity_id) FROM stdin;
+1	1	1
+2	1	2
+\.
+
+
+--
+-- TOC entry 2512 (class 0 OID 333290)
+-- Dependencies: 231
+-- Data for Name: categories_taxonomy; Type: TABLE DATA; Schema: timetracker; Owner: kairos
+--
+
+COPY categories_taxonomy (id, name, description, active, client_id) FROM stdin;
+1	Beacon	beacon	t	1
+2	Burst	burst	t	1
+3	SPT	spt	t	1
+\.
+
+
+--
+-- TOC entry 2513 (class 0 OID 333302)
+-- Dependencies: 233
+-- Data for Name: categories_taxonomyrole; Type: TABLE DATA; Schema: timetracker; Owner: kairos
+--
+
+COPY categories_taxonomyrole (id, role_id, user_id, taxonomy_id) FROM stdin;
+1	1	1	1
+\.
+
+
+--
+-- TOC entry 2518 (class 0 OID 333354)
+-- Dependencies: 243
+-- Data for Name: categories_timeofftype; Type: TABLE DATA; Schema: timetracker; Owner: kairos
+--
+
+COPY categories_timeofftype (id, name, description, booking_required, pay_code_id, active) FROM stdin;
+1	Paid Timeoff	Paid timeoff	t	1	t
+2	Jury Duty		t	1	t
+3	Beaverement		t	1	t
+4	Timeoff In Lieu	timeoff in lieu	t	1	t
+5	Lunch		f	1	t
+\.
+
+
+--
+-- TOC entry 2483 (class 0 OID 331772)
+-- Dependencies: 173
+-- Data for Name: common_dropdown; Type: TABLE DATA; Schema: timetracker; Owner: kairos
+--
+
+COPY common_dropdown (id, name, category, description, active, system) FROM stdin;
+1	Workflow Status	WF	Workflow status	t	t
+2	Operator Type	OPTYP	Operator Types	t	t
+3	Property Type	PTYPE	Property Types supported	t	t
+4	Frequency Types	FREQT	Frequency Types	t	t
+5	Balance Types	BALAT	Balance Types	t	t
+6	TimeOffs	TO	Timeoffs	t	t
+\.
+
+
+--
+-- TOC entry 2484 (class 0 OID 331798)
+-- Dependencies: 175
+-- Data for Name: common_dropdownvalue; Type: TABLE DATA; Schema: timetracker; Owner: kairos
+--
+
+COPY common_dropdownvalue (id, dropdown_id, display, code) FROM stdin;
+1	1	Approved	APPRD
+2	1	Rejected	REJTD
+3	1	Draft	DRAFT
+4	1	In Queue	INQUE
+5	1	Submitted	SUBTD
+6	2	Greater Then	GT
+7	2	Less Then	LT
+8	3	Numeric	NUM
+9	4	Monthly	MON
+10	4	Weekly	WEEK
+11	4	Yearly	YRLY
+12	4	No Occurence	NOFRE
+13	5	Set To	SETTO
+14	5	Carryover Upto	CUPTO
+15	5	Previous Balance	PBALA
+16	6	Approved	APPRD
+17	6	In Queue	INQUE
+18	6	Draft	DRAFT
+19	6	Rejected	REJTD
+20	6	Submitted	SUBTD
+21	5	No Carryover	NOCAR
+\.
+
+
+--
+-- TOC entry 2487 (class 0 OID 331834)
+-- Dependencies: 181
+-- Data for Name: common_holiday; Type: TABLE DATA; Schema: timetracker; Owner: kairos
+--
+
+COPY common_holiday (id, name, description, day) FROM stdin;
+1	4th of July	4th of July	2012-07-04
+2	Labor Day Weekend		2012-08-31
+3	Christmas Day		2012-12-25
+\.
+
+
+--
+-- TOC entry 2485 (class 0 OID 331812)
+-- Dependencies: 177
+-- Data for Name: common_holidayset; Type: TABLE DATA; Schema: timetracker; Owner: kairos
+--
+
+COPY common_holidayset (id, name, description, regional_code, active) FROM stdin;
+1	US Holidays		US	t
+\.
+
+
+--
+-- TOC entry 2486 (class 0 OID 331824)
+-- Dependencies: 179
+-- Data for Name: common_holidayset_holidays; Type: TABLE DATA; Schema: timetracker; Owner: kairos
+--
+
+COPY common_holidayset_holidays (id, holidayset_id, holiday_id) FROM stdin;
+1	1	1
+2	1	2
+3	1	3
+\.
+
+
+--
+-- TOC entry 2510 (class 0 OID 333176)
+-- Dependencies: 227
+-- Data for Name: configuration_userovertimepolicy; Type: TABLE DATA; Schema: timetracker; Owner: kairos
+--
+
+COPY configuration_userovertimepolicy (id, user_profile_id, overtime_policy_id, banked_hours) FROM stdin;
+\.
+
+
+--
+-- TOC entry 2507 (class 0 OID 333137)
+-- Dependencies: 221
+-- Data for Name: configuration_userprofile; Type: TABLE DATA; Schema: timetracker; Owner: kairos
+--
+
+COPY configuration_userprofile (id, user_id, taxonomy_id, configured, holiday_set_id) FROM stdin;
+\.
+
+
+--
+-- TOC entry 2508 (class 0 OID 333149)
+-- Dependencies: 223
+-- Data for Name: configuration_userproject; Type: TABLE DATA; Schema: timetracker; Owner: kairos
+--
+
+COPY configuration_userproject (id, user_profile_id, project_id, last_updated) FROM stdin;
+\.
+
+
+--
+-- TOC entry 2509 (class 0 OID 333159)
+-- Dependencies: 225
+-- Data for Name: configuration_usertimeoffpolicy; Type: TABLE DATA; Schema: timetracker; Owner: kairos
+--
+
+COPY configuration_usertimeoffpolicy (id, user_profile_id, timeoff_type_id, effective_date, starting_balance, starting_balance_type_id, accrue, accrue_frequency_id, reset_with, reset_frequency_id, allow_prorate, tracked, max_balance_limit, max_overdraw_limit, time_remaining) FROM stdin;
+\.
+
+
+--
+-- TOC entry 2479 (class 0 OID 331604)
+-- Dependencies: 165
+-- Data for Name: django_admin_log; Type: TABLE DATA; Schema: timetracker; Owner: kairos
+--
+
+COPY django_admin_log (id, action_time, user_id, content_type_id, object_id, object_repr, action_flag, change_message) FROM stdin;
+1	2012-10-02 13:52:59.959851-04	1	25	1	Wireless Generation	1	
+2	2012-10-02 13:53:39.543284-04	1	31	1	Regular	1	
+3	2012-10-02 13:53:53.665265-04	1	31	2	Double Overtime	1	
+4	2012-10-02 13:55:11.736814-04	1	31	3	Non Payable	1	
+5	2012-10-02 13:55:34.477831-04	1	32	1	Paid Timeoff	1	
+6	2012-10-02 13:56:02.718853-04	1	32	2	Jury Duty	1	
+7	2012-10-02 13:56:18.070641-04	1	32	3	Lunch	1	
+8	2012-10-02 13:56:48.314036-04	1	32	4	Beaverement	1	
+9	2012-10-02 13:57:01.29983-04	1	32	5	Timeoff In Lieu	1	
+10	2012-10-02 13:59:31.35937-04	1	26	1	Beacon	1	
+11	2012-10-02 13:59:37.702301-04	1	26	2	Burst	1	
+12	2012-10-02 13:59:43.27716-04	1	26	3	SPT	1	
+13	2012-10-02 14:00:25.905337-04	1	12	1	Tech Lead	1	
+14	2012-10-02 14:00:39.857208-04	1	12	2	Director of Engineering	1	
+15	2012-10-02 14:01:04.809864-04	1	27	1	Taxonomy: Beacon, Role: Tech Lead, User: kairos	1	
+16	2012-10-02 14:01:42.214491-04	1	29	1	Beacon	1	
+20	2012-10-02 14:07:49.844309-04	1	25	1	Wireless Generation	1	
+21	2012-10-02 14:08:09.640643-04	1	26	1	Beacon	1	
+22	2012-10-02 14:08:17.145594-04	1	26	2	Burst	1	
+23	2012-10-02 14:08:23.145751-04	1	26	3	SPT	1	
+24	2012-10-02 14:08:42.853807-04	1	27	1	Taxonomy: Beacon, Role: Tech Lead, User: kairos	1	
+25	2012-10-02 14:08:56.020221-04	1	29	1	Beacon	1	
+26	2012-10-02 14:09:04.227039-04	1	29	2	Burst	1	
+27	2012-10-02 14:09:26.913868-04	1	31	1	Regular	1	
+28	2012-10-02 14:09:40.678711-04	1	31	2	Double Overtime	1	
+29	2012-10-02 14:10:12.277466-04	1	32	1	Paid Timeoff	1	
+30	2012-10-02 14:10:21.242125-04	1	32	2	Jury Duty	1	
+31	2012-10-02 14:10:30.835837-04	1	32	3	Beaverement	1	
+32	2012-10-02 14:11:00.39468-04	1	28	1	Development	1	
+33	2012-10-02 14:11:08.193636-04	1	28	2	QA Testing	1	
+34	2012-10-02 14:11:18.122545-04	1	30	1	Project: Beacon, Activity: Development	1	
+35	2012-10-02 14:11:23.728685-04	1	30	2	Project: Beacon, Activity: QA Testing	1	
+36	2012-10-02 14:13:40.298944-04	1	32	4	Timeoff In Lieu	1	
+37	2012-10-02 14:14:05.194348-04	1	17	1	Workflow Status	1	
+38	2012-10-02 14:14:22.043123-04	1	17	2	Operator Type	1	
+39	2012-10-02 14:14:45.633169-04	1	17	3	Property Type	1	
+40	2012-10-02 14:15:06.842675-04	1	17	4	Frequency Types	1	
+41	2012-10-02 14:15:22.05032-04	1	17	5	Balance Types	1	
+42	2012-10-02 14:15:55.709578-04	1	17	6	TimeOffs	1	
+43	2012-10-02 14:16:24.78855-04	1	18	1	Approved	1	
+44	2012-10-02 14:16:42.191166-04	1	18	2	Rejected	1	
+45	2012-10-02 14:16:54.511993-04	1	18	3	Draft	1	
+46	2012-10-02 14:17:08.993578-04	1	18	4	In Queue	1	
+47	2012-10-02 14:17:24.274257-04	1	18	5	Submitted	1	
+48	2012-10-02 14:18:40.693828-04	1	18	6	Greater Then for Operator Type	1	
+49	2012-10-02 14:18:53.582472-04	1	18	7	Less Then for Operator Type	1	
+50	2012-10-02 14:19:22.233591-04	1	18	8	Numeric for Property Type	1	
+51	2012-10-02 14:19:39.656812-04	1	18	9	Monthly for Frequency Types	1	
+52	2012-10-02 14:19:47.631989-04	1	18	10	Weekly for Frequency Types	1	
+53	2012-10-02 14:20:04.119849-04	1	18	11	Yearly for Frequency Types	1	
+54	2012-10-02 14:20:23.969703-04	1	18	12	No Occurence for Frequency Types	1	
+55	2012-10-02 14:20:56.550866-04	1	18	13	Set To for Balance Types	1	
+56	2012-10-02 14:21:04.726532-04	1	18	14	Carryover Upto for Balance Types	1	
+57	2012-10-02 14:21:21.798978-04	1	18	15	Previous Balance for Balance Types	1	
+58	2012-10-02 14:21:42.765648-04	1	18	16	Approved for TimeOffs	1	
+59	2012-10-02 14:21:58.619972-04	1	18	17	In Queue for TimeOffs	1	
+60	2012-10-02 14:22:06.437077-04	1	18	18	Draft for TimeOffs	1	
+61	2012-10-02 14:22:14.368135-04	1	18	19	Rejected for TimeOffs	1	
+62	2012-10-02 14:22:22.758019-04	1	18	20	Submitted for TimeOffs	1	
+63	2012-10-02 14:23:14.147614-04	1	18	21	No Carryover for Balance Types	1	
+64	2012-10-02 14:23:43.634145-04	1	19	1	4th of July	1	
+65	2012-10-02 14:23:59.545398-04	1	19	2	Labor Day Weekend	1	
+66	2012-10-02 14:24:13.585974-04	1	19	3	Christmas Day	1	
+67	2012-10-02 14:24:44.8345-04	1	20	1	US Holidays	1	
+68	2012-10-02 14:27:32.847259-04	1	13	1	Weekly Total Hours	1	
+69	2012-10-02 14:28:08.047826-04	1	13	2	Daily Total 1 Hours	1	
+70	2012-10-02 14:28:28.249712-04	1	13	3	Daily Total 2 Hours	1	
+71	2012-10-02 14:28:40.035999-04	1	13	4	Daily Total 3 Hours	1	
+72	2012-10-02 14:28:58.417655-04	1	13	5	Daily Total 4 Hours	1	
+73	2012-10-02 14:29:15.54705-04	1	13	6	Daily Total 5 Hours	1	
+74	2012-10-02 14:29:47.602661-04	1	13	7	Daily Total 6 Hours	1	
+75	2012-10-02 14:30:03.369621-04	1	13	8	Daily Total 7 Hours	1	
+76	2012-10-02 14:30:53.370305-04	1	14	1	Limit Daily 12hrs	1	
+77	2012-10-02 14:31:20.613544-04	1	14	2	Weekly Less then 45hrs	1	
+78	2012-10-02 14:31:46.068515-04	1	15	1	Weekly Less then 45hrs pointcuts @ Weekly Total Hours	1	
+79	2012-10-02 14:31:52.943727-04	1	15	2	Limit Daily 12hrs pointcuts @ Daily Total 1 Hours	1	
+80	2012-10-02 14:31:58.371495-04	1	15	3	Limit Daily 12hrs pointcuts @ Daily Total 2 Hours	1	
+81	2012-10-02 14:32:03.542641-04	1	15	4	Limit Daily 12hrs pointcuts @ Daily Total 3 Hours	1	
+82	2012-10-02 14:32:08.717452-04	1	15	5	Limit Daily 12hrs pointcuts @ Daily Total 4 Hours	1	
+83	2012-10-02 14:32:15.398829-04	1	15	6	Limit Daily 12hrs pointcuts @ Daily Total 5 Hours	1	
+84	2012-10-02 14:32:21.268058-04	1	15	7	Limit Daily 12hrs pointcuts @ Daily Total 6 Hours	1	
+85	2012-10-02 14:32:26.166353-04	1	15	8	Limit Daily 12hrs pointcuts @ Daily Total 7 Hours	1	
+86	2012-10-02 14:32:57.197904-04	1	16	1	Timesheet	1	
+87	2012-10-02 14:33:12.607633-04	1	16	2	Weeksnapshot	1	
+88	2012-10-02 14:36:03.404251-04	1	33	1	System level setup for Initial Policy on timeoff [Paid Timeoff]	1	
+89	2012-10-02 14:36:43.239414-04	1	33	2	System level setup for Initial Policy on timeoff [Jury Duty]	1	
+90	2012-10-02 14:38:01.32159-04	1	40	1	Timesheet Approver Path	1	
+91	2012-10-02 14:38:29.599922-04	1	40	2	Timeoff Approval Path	1	
+92	2012-10-02 14:38:38.603916-04	1	40	2	Timeoff Approval Path	2	Changed active.
+93	2012-10-02 14:38:43.2249-04	1	40	1	Timesheet Approver Path	2	Changed active.
+94	2012-10-02 14:39:06.517023-04	1	41	1	Queue: Timeoff Approval Path, Role: Tech Lead, Sequence: 1	1	
+95	2012-10-02 14:39:20.76479-04	1	41	2	Queue: Timesheet Approver Path, Role: Tech Lead, Sequence: 1	1	
+96	2012-10-02 14:40:03.982784-04	1	31	3	Overtime	1	
+97	2012-10-02 14:40:19.071026-04	1	31	4	Non Payable	1	
+98	2012-10-02 14:41:00.68811-04	1	29	1	Beacon CB	2	Changed name and project_code.
+99	2012-10-02 14:41:48.324176-04	1	32	5	Lunch	1	
+\.
+
+
+--
+-- TOC entry 2478 (class 0 OID 331584)
+-- Dependencies: 163
+-- Data for Name: django_comment_flags; Type: TABLE DATA; Schema: timetracker; Owner: kairos
+--
+
+COPY django_comment_flags (id, user_id, comment_id, flag, flag_date) FROM stdin;
+\.
+
+
+--
+-- TOC entry 2477 (class 0 OID 331558)
+-- Dependencies: 161
+-- Data for Name: django_comments; Type: TABLE DATA; Schema: timetracker; Owner: kairos
+--
+
+COPY django_comments (id, content_type_id, object_pk, site_id, user_id, user_name, user_email, user_url, comment, submit_date, ip_address, is_public, is_removed) FROM stdin;
+\.
+
+
+--
+-- TOC entry 2474 (class 0 OID 331527)
+-- Dependencies: 156
+-- Data for Name: django_content_type; Type: TABLE DATA; Schema: timetracker; Owner: kairos
+--
+
+COPY django_content_type (id, name, app_label, model) FROM stdin;
+1	permission	auth	permission
+2	group	auth	group
+3	user	auth	user
+4	content type	contenttypes	contenttype
+5	session	sessions	session
+6	site	sites	site
+7	comment	comments	comment
+8	comment flag	comments	commentflag
+9	log entry	admin	logentry
+10	vote	secretballot	vote
+11	migration history	south	migrationhistory
+12	Role	users	role
+13	Joint Point	rules	jointpoint
+14	Rule	rules	rule
+15	Point Cut	rules	pointcut
+16	Rule Set	rules	ruleset
+17	dropdown	common	dropdown
+18	dropdown value	common	dropdownvalue
+19	holiday	common	holiday
+20	holiday set	common	holidayset
+21	user profile	configuration	userprofile
+22	user project	configuration	userproject
+23	User TimeOff Policy	configuration	usertimeoffpolicy
+24	User Overtime Policy	configuration	userovertimepolicy
+25	client	categories	client
+26	taxonomy	categories	taxonomy
+27	taxonomy role	categories	taxonomyrole
+28	activity	categories	activity
+29	project	categories	project
+30	project activity	categories	projectactivity
+31	pay code type	categories	paycodetype
+32	TimeOff Type	categories	timeofftype
+33	TimeOff Policy	timeoff	timeoffpolicy
+34	Book TimeOff	timeoff	booktimeoff
+35	book time offf history	timeoff	booktimeofffhistory
+36	timesheet	tracker	timesheet
+37	timesheet note	tracker	timesheetnote
+38	week snapshot	tracker	weeksnapshot
+39	week snapshot history	tracker	weeksnapshothistory
+40	Queue	workflow	queue
+41	Approver	workflow	approver
+42	Approver Queue	workflow	approverqueue
+43	Approver Queue History	workflow	approverqueuehistory
+44	Overtime Policy	overtime	overtimepolicy
+45	Overtime Condition	overtime	overtimecondition
+\.
+
+
+--
+-- TOC entry 2475 (class 0 OID 331540)
+-- Dependencies: 157
+-- Data for Name: django_session; Type: TABLE DATA; Schema: timetracker; Owner: kairos
+--
+
+COPY django_session (session_key, session_data, expire_date) FROM stdin;
+93335d6bec58aeb09f6503aa5bb23713	NzdmY2YzYmQ2NTU5YzQ2M2QwNmVhY2NkMjhhYzBhZGQ1MmUwNTVjYTqAAn1xAShVEl9hdXRoX3Vz\nZXJfYmFja2VuZHECVSNrYWlyb3MuZGphbmdvX2V4dC5LYWlyb3NBdXRoQmFja2VuZHEDVQ1fYXV0\naF91c2VyX2lkcQRLAXUu\n	2012-10-16 13:51:37.196163-04
+\.
+
+
+--
+-- TOC entry 2476 (class 0 OID 331550)
+-- Dependencies: 159
+-- Data for Name: django_site; Type: TABLE DATA; Schema: timetracker; Owner: kairos
+--
+
+COPY django_site (id, domain, name) FROM stdin;
+1	example.com	example.com
+\.
+
+
+--
+-- TOC entry 2506 (class 0 OID 333003)
+-- Dependencies: 219
+-- Data for Name: overtime_overtimecondition; Type: TABLE DATA; Schema: timetracker; Owner: kairos
+--
+
+COPY overtime_overtimecondition (id, overtime_policy_id, ruleset_id) FROM stdin;
+\.
+
+
+--
+-- TOC entry 2505 (class 0 OID 332990)
+-- Dependencies: 217
+-- Data for Name: overtime_overtimepolicy; Type: TABLE DATA; Schema: timetracker; Owner: kairos
+--
+
+COPY overtime_overtimepolicy (id, name, description, active, pay_or_bank) FROM stdin;
+\.
+
+
+--
+-- TOC entry 2488 (class 0 OID 331888)
+-- Dependencies: 183
+-- Data for Name: rules_jointpoint; Type: TABLE DATA; Schema: timetracker; Owner: kairos
+--
+
+COPY rules_jointpoint (id, name, property_name, property_type_id, content_type_id) FROM stdin;
+1	Weekly Total Hours	total_hours	8	38
+2	Daily Total 1 Hours	day_1_hours	8	36
+3	Daily Total 2 Hours	day_2_hours	8	36
+4	Daily Total 3 Hours	day_3_hours	8	36
+5	Daily Total 4 Hours	day_4_hours	8	36
+6	Daily Total 5 Hours	day_5_hours	8	36
+7	Daily Total 6 Hours	day_6_hours	8	36
+8	Daily Total 7 Hours	total_hours	8	36
+\.
+
+
+--
+-- TOC entry 2490 (class 0 OID 331907)
+-- Dependencies: 187
+-- Data for Name: rules_pointcut; Type: TABLE DATA; Schema: timetracker; Owner: kairos
+--
+
+COPY rules_pointcut (id, description, rule_id, jointpoint_id, aggregate_id) FROM stdin;
+1		2	1	\N
+2		1	2	\N
+3		1	3	\N
+4		1	4	\N
+5		1	5	\N
+6		1	6	\N
+7		1	7	\N
+8		1	8	\N
+\.
+
+
+--
+-- TOC entry 2489 (class 0 OID 331896)
+-- Dependencies: 185
+-- Data for Name: rules_rule; Type: TABLE DATA; Schema: timetracker; Owner: kairos
+--
+
+COPY rules_rule (id, name, description, required_value, operator_type_id) FROM stdin;
+1	Limit Daily 12hrs		12	7
+2	Weekly Less then 45hrs		45	7
+\.
+
+
+--
+-- TOC entry 2491 (class 0 OID 331918)
+-- Dependencies: 189
+-- Data for Name: rules_ruleset; Type: TABLE DATA; Schema: timetracker; Owner: kairos
+--
+
+COPY rules_ruleset (id, name, description, validator_module, active) FROM stdin;
+1	Timesheet			t
+2	Weeksnapshot			t
+\.
+
+
+--
+-- TOC entry 2492 (class 0 OID 331930)
+-- Dependencies: 191
+-- Data for Name: rules_ruleset_pointcuts; Type: TABLE DATA; Schema: timetracker; Owner: kairos
+--
+
+COPY rules_ruleset_pointcuts (id, ruleset_id, pointcut_id) FROM stdin;
+1	1	2
+2	1	3
+3	1	4
+4	1	5
+5	1	6
+6	1	7
+7	1	8
+8	2	1
+\.
+
+
+--
+-- TOC entry 2480 (class 0 OID 331626)
+-- Dependencies: 167
+-- Data for Name: secretballot_vote; Type: TABLE DATA; Schema: timetracker; Owner: kairos
+--
+
+COPY secretballot_vote (id, token, vote, content_type_id, object_id) FROM stdin;
+\.
+
+
+--
+-- TOC entry 2481 (class 0 OID 331642)
+-- Dependencies: 169
+-- Data for Name: south_migrationhistory; Type: TABLE DATA; Schema: timetracker; Owner: kairos
+--
+
+COPY south_migrationhistory (id, app_name, migration, applied) FROM stdin;
+1	users	0001_initial	2012-10-02 13:39:56.738011-04
+2	common	0001_initial	2012-10-02 13:40:05.075619-04
+3	common	0002_auto__del_dropdownmodel__add_dropdown__add_dropdownvalues	2012-10-02 13:40:05.125882-04
+4	common	0003_auto__del_dropdownvalues__add_dropdownvalue	2012-10-02 13:40:05.137754-04
+5	common	0004_auto__add_holidayset__add_holiday__add_field_dropdown_system	2012-10-02 13:40:05.172756-04
+6	common	0005_auto__chg_field_holiday_day	2012-10-02 13:40:05.20515-04
+7	rules	0001_initial	2012-10-02 13:40:13.219245-04
+19	timeoff	0001_initial	2012-10-02 13:40:34.969601-04
+20	timeoff	0002_auto__add_timeofftype__add_timeoffpolicy	2012-10-02 13:40:35.039081-04
+21	timeoff	0003_auto__chg_field_timeofftype_description__add_field_timeoffpolicy_name	2012-10-02 13:40:35.07544-04
+22	timeoff	0004_auto__add_usertimeoffhistory__add_usertimeoff__add_field_timeoffpolicy	2012-10-02 13:40:35.12538-04
+23	timeoff	0005_auto__del_usertimeoffhistory__del_usertimeoff__add_booktimeoff__add_bo	2012-10-02 13:40:35.168992-04
+24	timeoff	0006_auto__add_field_timeoffpolicy_starting_balance	2012-10-02 13:40:35.203793-04
+25	timeoff	0007_auto__del_timeofftype__chg_field_booktimeoff_timeoff_type__chg_field_t	2012-10-02 13:40:35.27793-04
+26	timeoff	0008_auto__add_field_booktimeoff_title	2012-10-02 13:40:35.304614-04
+27	timeoff	0009_auto__add_field_booktimeoff_number_of_days	2012-10-02 13:40:35.335118-04
+28	timeoff	0010_auto__chg_field_timeoffpolicy_max_overdraw_limit	2012-10-02 13:40:35.403618-04
+29	timeoff	0011_auto__add_field_timeoffpolicy_no_max_balance_limit__add_field_timeoffp	2012-10-02 13:40:35.4475-04
+30	tracker	0001_initial	2012-10-02 13:40:52.287451-04
+31	workflow	0001_initial	2012-10-02 13:41:40.126949-04
+32	workflow	0002_auto__add_field_queue_name__add_field_queue_description	2012-10-02 13:41:40.198376-04
+33	workflow	0003_auto__del_field_approverqueue_note	2012-10-02 13:41:40.226876-04
+34	workflow	0004_auto__chg_field_approverqueue_last_updated	2012-10-02 13:41:40.299807-04
+35	workflow	0005_auto__add_approverqueuehistory	2012-10-02 13:41:40.361384-04
+36	workflow	0006_auto__add_field_approver_final__del_field_approverqueuehistory_status_	2012-10-02 13:41:40.449057-04
+37	overtime	0001_initial	2012-10-02 13:41:40.620249-04
+39	categories	0001_initial	2012-10-02 14:06:20.623634-04
+\.
+
+
+--
+-- TOC entry 2494 (class 0 OID 332529)
+-- Dependencies: 195
+-- Data for Name: timeoff_booktimeoff; Type: TABLE DATA; Schema: timetracker; Owner: kairos
+--
+
+COPY timeoff_booktimeoff (id, user_id, timeoff_type_id, start_date, end_date, title, number_of_days) FROM stdin;
+\.
+
+
+--
+-- TOC entry 2495 (class 0 OID 332537)
+-- Dependencies: 197
+-- Data for Name: timeoff_booktimeofffhistory; Type: TABLE DATA; Schema: timetracker; Owner: kairos
+--
+
+COPY timeoff_booktimeofffhistory (id, book_timeoff_id, book_timeoff_status_id, last_updated) FROM stdin;
+\.
+
+
+--
+-- TOC entry 2493 (class 0 OID 332421)
+-- Dependencies: 193
+-- Data for Name: timeoff_timeoffpolicy; Type: TABLE DATA; Schema: timetracker; Owner: kairos
+--
+
+COPY timeoff_timeoffpolicy (id, timeoff_type_id, starting_balance_type_id, accrue, accrue_frequency_id, reset_with, reset_frequency_id, allow_prorate, max_balance_limit, max_overdraw_limit, name, tracked, starting_balance, no_max_balance_limit, no_max_overdraw_limit) FROM stdin;
+1	1	13	2.00	9	0.00	11	f	5	2	Initial Policy	t	0.00	f	f
+2	2	13	2.00	11	0.00	11	f	0	0	Initial Policy	t	1.00	f	f
+\.
+
+
+--
+-- TOC entry 2496 (class 0 OID 332713)
+-- Dependencies: 199
+-- Data for Name: tracker_timesheet; Type: TABLE DATA; Schema: timetracker; Owner: kairos
+--
+
+COPY tracker_timesheet (id, project_id, activity_id, day, day_1_hours, day_2_hours, day_3_hours, day_4_hours, day_5_hours, day_6_hours, day_7_hours) FROM stdin;
+\.
+
+
+--
+-- TOC entry 2497 (class 0 OID 332721)
+-- Dependencies: 201
+-- Data for Name: tracker_timesheetnote; Type: TABLE DATA; Schema: timetracker; Owner: kairos
+--
+
+COPY tracker_timesheetnote (id, timesheet_id, day_1_note, day_2_note, day_3_note, day_4_note, day_5_note, day_6_note, day_7_note) FROM stdin;
+\.
+
+
+--
+-- TOC entry 2498 (class 0 OID 332732)
+-- Dependencies: 203
+-- Data for Name: tracker_weeksnapshot; Type: TABLE DATA; Schema: timetracker; Owner: kairos
+--
+
+COPY tracker_weeksnapshot (id, start_week, end_week, week, user_id) FROM stdin;
+\.
+
+
+--
+-- TOC entry 2499 (class 0 OID 332741)
+-- Dependencies: 205
+-- Data for Name: tracker_weeksnapshot_timesheets; Type: TABLE DATA; Schema: timetracker; Owner: kairos
+--
+
+COPY tracker_weeksnapshot_timesheets (id, weeksnapshot_id, timesheet_id) FROM stdin;
+\.
+
+
+--
+-- TOC entry 2500 (class 0 OID 332751)
+-- Dependencies: 207
+-- Data for Name: tracker_weeksnapshothistory; Type: TABLE DATA; Schema: timetracker; Owner: kairos
+--
+
+COPY tracker_weeksnapshothistory (id, weeksnapshot_id, weeksnapshot_status_id, last_updated) FROM stdin;
+\.
+
+
+--
+-- TOC entry 2482 (class 0 OID 331681)
+-- Dependencies: 171
+-- Data for Name: users_role; Type: TABLE DATA; Schema: timetracker; Owner: kairos
+--
+
+COPY users_role (id, name, description, active) FROM stdin;
+1	Tech Lead	Tech lead	t
+2	Director of Engineering		t
+\.
+
+
+--
+-- TOC entry 2502 (class 0 OID 332841)
+-- Dependencies: 211
+-- Data for Name: workflow_approver; Type: TABLE DATA; Schema: timetracker; Owner: kairos
+--
+
+COPY workflow_approver (id, role_id, sequence, queue_id, final) FROM stdin;
+1	1	1	2	t
+2	1	1	1	t
+\.
+
+
+--
+-- TOC entry 2503 (class 0 OID 332851)
+-- Dependencies: 213
+-- Data for Name: workflow_approverqueue; Type: TABLE DATA; Schema: timetracker; Owner: kairos
+--
+
+COPY workflow_approverqueue (id, content_type_id, object_id, current_sequence, current_user_id, created_on, last_updated, current_status_id) FROM stdin;
+\.
+
+
+--
+-- TOC entry 2504 (class 0 OID 332918)
+-- Dependencies: 215
+-- Data for Name: workflow_approverqueuehistory; Type: TABLE DATA; Schema: timetracker; Owner: kairos
+--
+
+COPY workflow_approverqueuehistory (id, approver_queue_id, created_on, from_user_id, from_status_id, from_sequence, to_user_id, to_status_id, to_sequence) FROM stdin;
+\.
+
+
+--
+-- TOC entry 2501 (class 0 OID 332832)
+-- Dependencies: 209
+-- Data for Name: workflow_queue; Type: TABLE DATA; Schema: timetracker; Owner: kairos
+--
+
+COPY workflow_queue (id, content_type_id, active, name, description) FROM stdin;
+2	34	t	Timeoff Approval Path	Timeoff Approval Path
+1	38	t	Timesheet Approver Path	Timesheet Approver Path
+\.
+
+
+--
+-- TOC entry 2202 (class 2606 OID 331469)
+-- Dependencies: 148 148
+-- Name: auth_group_name_key; Type: CONSTRAINT; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+ALTER TABLE ONLY auth_group
+    ADD CONSTRAINT auth_group_name_key UNIQUE (name);
+
+
+--
+-- TOC entry 2197 (class 2606 OID 331454)
+-- Dependencies: 146 146 146
+-- Name: auth_group_permissions_group_id_permission_id_key; Type: CONSTRAINT; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+ALTER TABLE ONLY auth_group_permissions
+    ADD CONSTRAINT auth_group_permissions_group_id_permission_id_key UNIQUE (group_id, permission_id);
+
+
+--
+-- TOC entry 2200 (class 2606 OID 331452)
+-- Dependencies: 146 146
+-- Name: auth_group_permissions_pkey; Type: CONSTRAINT; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+ALTER TABLE ONLY auth_group_permissions
+    ADD CONSTRAINT auth_group_permissions_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2204 (class 2606 OID 331467)
+-- Dependencies: 148 148
+-- Name: auth_group_pkey; Type: CONSTRAINT; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+ALTER TABLE ONLY auth_group
+    ADD CONSTRAINT auth_group_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2192 (class 2606 OID 331444)
+-- Dependencies: 144 144 144
+-- Name: auth_permission_content_type_id_codename_key; Type: CONSTRAINT; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+ALTER TABLE ONLY auth_permission
+    ADD CONSTRAINT auth_permission_content_type_id_codename_key UNIQUE (content_type_id, codename);
+
+
+--
+-- TOC entry 2194 (class 2606 OID 331442)
+-- Dependencies: 144 144
+-- Name: auth_permission_pkey; Type: CONSTRAINT; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+ALTER TABLE ONLY auth_permission
+    ADD CONSTRAINT auth_permission_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2213 (class 2606 OID 331497)
+-- Dependencies: 152 152
+-- Name: auth_user_groups_pkey; Type: CONSTRAINT; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+ALTER TABLE ONLY auth_user_groups
+    ADD CONSTRAINT auth_user_groups_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2216 (class 2606 OID 331499)
+-- Dependencies: 152 152 152
+-- Name: auth_user_groups_user_id_group_id_key; Type: CONSTRAINT; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+ALTER TABLE ONLY auth_user_groups
+    ADD CONSTRAINT auth_user_groups_user_id_group_id_key UNIQUE (user_id, group_id);
+
+
+--
+-- TOC entry 2218 (class 2606 OID 331512)
+-- Dependencies: 154 154
+-- Name: auth_user_pkey; Type: CONSTRAINT; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+ALTER TABLE ONLY auth_user
+    ADD CONSTRAINT auth_user_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2207 (class 2606 OID 331482)
+-- Dependencies: 150 150
+-- Name: auth_user_user_permissions_pkey; Type: CONSTRAINT; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+ALTER TABLE ONLY auth_user_user_permissions
+    ADD CONSTRAINT auth_user_user_permissions_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2210 (class 2606 OID 331484)
+-- Dependencies: 150 150 150
+-- Name: auth_user_user_permissions_user_id_permission_id_key; Type: CONSTRAINT; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+ALTER TABLE ONLY auth_user_user_permissions
+    ADD CONSTRAINT auth_user_user_permissions_user_id_permission_id_key UNIQUE (user_id, permission_id);
+
+
+--
+-- TOC entry 2220 (class 2606 OID 331514)
+-- Dependencies: 154 154
+-- Name: auth_user_username_key; Type: CONSTRAINT; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+ALTER TABLE ONLY auth_user
+    ADD CONSTRAINT auth_user_username_key UNIQUE (username);
+
+
+--
+-- TOC entry 2385 (class 2606 OID 333317)
+-- Dependencies: 235 235
+-- Name: categories_activity_code_key; Type: CONSTRAINT; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+ALTER TABLE ONLY categories_activity
+    ADD CONSTRAINT categories_activity_code_key UNIQUE (code);
+
+
+--
+-- TOC entry 2387 (class 2606 OID 333315)
+-- Dependencies: 235 235
+-- Name: categories_activity_pkey; Type: CONSTRAINT; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+ALTER TABLE ONLY categories_activity
+    ADD CONSTRAINT categories_activity_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2375 (class 2606 OID 333287)
+-- Dependencies: 229 229
+-- Name: categories_client_pkey; Type: CONSTRAINT; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+ALTER TABLE ONLY categories_client
+    ADD CONSTRAINT categories_client_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2396 (class 2606 OID 333351)
+-- Dependencies: 241 241
+-- Name: categories_paycodetype_pkey; Type: CONSTRAINT; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+ALTER TABLE ONLY categories_paycodetype
+    ADD CONSTRAINT categories_paycodetype_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2389 (class 2606 OID 333329)
+-- Dependencies: 237 237
+-- Name: categories_project_pkey; Type: CONSTRAINT; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+ALTER TABLE ONLY categories_project
+    ADD CONSTRAINT categories_project_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2393 (class 2606 OID 333337)
+-- Dependencies: 239 239
+-- Name: categories_projectactivity_pkey; Type: CONSTRAINT; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+ALTER TABLE ONLY categories_projectactivity
+    ADD CONSTRAINT categories_projectactivity_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2378 (class 2606 OID 333299)
+-- Dependencies: 231 231
+-- Name: categories_taxonomy_pkey; Type: CONSTRAINT; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+ALTER TABLE ONLY categories_taxonomy
+    ADD CONSTRAINT categories_taxonomy_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2380 (class 2606 OID 333307)
+-- Dependencies: 233 233
+-- Name: categories_taxonomyrole_pkey; Type: CONSTRAINT; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+ALTER TABLE ONLY categories_taxonomyrole
+    ADD CONSTRAINT categories_taxonomyrole_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2399 (class 2606 OID 333364)
+-- Dependencies: 243 243
+-- Name: categories_timeofftype_pkey; Type: CONSTRAINT; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+ALTER TABLE ONLY categories_timeofftype
+    ADD CONSTRAINT categories_timeofftype_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2257 (class 2606 OID 331781)
+-- Dependencies: 173 173
+-- Name: common_dropdown_pkey; Type: CONSTRAINT; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+ALTER TABLE ONLY common_dropdown
+    ADD CONSTRAINT common_dropdown_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2260 (class 2606 OID 331803)
+-- Dependencies: 175 175
+-- Name: common_dropdownvalue_pkey; Type: CONSTRAINT; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+ALTER TABLE ONLY common_dropdownvalue
+    ADD CONSTRAINT common_dropdownvalue_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2270 (class 2606 OID 331842)
+-- Dependencies: 181 181
+-- Name: common_holiday_pkey; Type: CONSTRAINT; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+ALTER TABLE ONLY common_holiday
+    ADD CONSTRAINT common_holiday_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2266 (class 2606 OID 331831)
+-- Dependencies: 179 179 179
+-- Name: common_holidayset_holidays_holidayset_id_53a0e5fc78dbeda7_uniq; Type: CONSTRAINT; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+ALTER TABLE ONLY common_holidayset_holidays
+    ADD CONSTRAINT common_holidayset_holidays_holidayset_id_53a0e5fc78dbeda7_uniq UNIQUE (holidayset_id, holiday_id);
+
+
+--
+-- TOC entry 2268 (class 2606 OID 331829)
+-- Dependencies: 179 179
+-- Name: common_holidayset_holidays_pkey; Type: CONSTRAINT; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+ALTER TABLE ONLY common_holidayset_holidays
+    ADD CONSTRAINT common_holidayset_holidays_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2262 (class 2606 OID 331821)
+-- Dependencies: 177 177
+-- Name: common_holidayset_pkey; Type: CONSTRAINT; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+ALTER TABLE ONLY common_holidayset
+    ADD CONSTRAINT common_holidayset_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2372 (class 2606 OID 333182)
+-- Dependencies: 227 227
+-- Name: configuration_userovertimepolicy_pkey; Type: CONSTRAINT; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+ALTER TABLE ONLY configuration_userovertimepolicy
+    ADD CONSTRAINT configuration_userovertimepolicy_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2352 (class 2606 OID 333144)
+-- Dependencies: 221 221
+-- Name: configuration_userprofile_pkey; Type: CONSTRAINT; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+ALTER TABLE ONLY configuration_userprofile
+    ADD CONSTRAINT configuration_userprofile_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2356 (class 2606 OID 333146)
+-- Dependencies: 221 221 221
+-- Name: configuration_userprofile_user_id_2e8aa098539d79d8_uniq; Type: CONSTRAINT; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+ALTER TABLE ONLY configuration_userprofile
+    ADD CONSTRAINT configuration_userprofile_user_id_2e8aa098539d79d8_uniq UNIQUE (user_id, taxonomy_id);
+
+
+--
+-- TOC entry 2358 (class 2606 OID 333154)
+-- Dependencies: 223 223
+-- Name: configuration_userproject_pkey; Type: CONSTRAINT; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+ALTER TABLE ONLY configuration_userproject
+    ADD CONSTRAINT configuration_userproject_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2362 (class 2606 OID 333156)
+-- Dependencies: 223 223 223
+-- Name: configuration_userproject_user_profile_id_164e9336bc1e411d_uniq; Type: CONSTRAINT; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+ALTER TABLE ONLY configuration_userproject
+    ADD CONSTRAINT configuration_userproject_user_profile_id_164e9336bc1e411d_uniq UNIQUE (user_profile_id, project_id);
+
+
+--
+-- TOC entry 2365 (class 2606 OID 333173)
+-- Dependencies: 225 225
+-- Name: configuration_usertimeoffpolicy_pkey; Type: CONSTRAINT; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+ALTER TABLE ONLY configuration_usertimeoffpolicy
+    ADD CONSTRAINT configuration_usertimeoffpolicy_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2245 (class 2606 OID 331613)
+-- Dependencies: 165 165
+-- Name: django_admin_log_pkey; Type: CONSTRAINT; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+ALTER TABLE ONLY django_admin_log
+    ADD CONSTRAINT django_admin_log_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2239 (class 2606 OID 331589)
+-- Dependencies: 163 163
+-- Name: django_comment_flags_pkey; Type: CONSTRAINT; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+ALTER TABLE ONLY django_comment_flags
+    ADD CONSTRAINT django_comment_flags_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2242 (class 2606 OID 331591)
+-- Dependencies: 163 163 163 163
+-- Name: django_comment_flags_user_id_comment_id_flag_key; Type: CONSTRAINT; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+ALTER TABLE ONLY django_comment_flags
+    ADD CONSTRAINT django_comment_flags_user_id_comment_id_flag_key UNIQUE (user_id, comment_id, flag);
+
+
+--
+-- TOC entry 2232 (class 2606 OID 331566)
+-- Dependencies: 161 161
+-- Name: django_comments_pkey; Type: CONSTRAINT; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+ALTER TABLE ONLY django_comments
+    ADD CONSTRAINT django_comments_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2222 (class 2606 OID 331534)
+-- Dependencies: 156 156 156
+-- Name: django_content_type_app_label_model_key; Type: CONSTRAINT; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+ALTER TABLE ONLY django_content_type
+    ADD CONSTRAINT django_content_type_app_label_model_key UNIQUE (app_label, model);
+
+
+--
+-- TOC entry 2224 (class 2606 OID 331532)
+-- Dependencies: 156 156
+-- Name: django_content_type_pkey; Type: CONSTRAINT; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+ALTER TABLE ONLY django_content_type
+    ADD CONSTRAINT django_content_type_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2227 (class 2606 OID 331547)
+-- Dependencies: 157 157
+-- Name: django_session_pkey; Type: CONSTRAINT; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+ALTER TABLE ONLY django_session
+    ADD CONSTRAINT django_session_pkey PRIMARY KEY (session_key);
+
+
+--
+-- TOC entry 2229 (class 2606 OID 331555)
+-- Dependencies: 159 159
+-- Name: django_site_pkey; Type: CONSTRAINT; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+ALTER TABLE ONLY django_site
+    ADD CONSTRAINT django_site_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2348 (class 2606 OID 333008)
+-- Dependencies: 219 219
+-- Name: overtime_overtimecondition_pkey; Type: CONSTRAINT; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+ALTER TABLE ONLY overtime_overtimecondition
+    ADD CONSTRAINT overtime_overtimecondition_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2345 (class 2606 OID 333000)
+-- Dependencies: 217 217
+-- Name: overtime_overtimepolicy_pkey; Type: CONSTRAINT; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+ALTER TABLE ONLY overtime_overtimepolicy
+    ADD CONSTRAINT overtime_overtimepolicy_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2273 (class 2606 OID 331893)
+-- Dependencies: 183 183
+-- Name: rules_jointpoint_pkey; Type: CONSTRAINT; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+ALTER TABLE ONLY rules_jointpoint
+    ADD CONSTRAINT rules_jointpoint_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2281 (class 2606 OID 331915)
+-- Dependencies: 187 187
+-- Name: rules_pointcut_pkey; Type: CONSTRAINT; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+ALTER TABLE ONLY rules_pointcut
+    ADD CONSTRAINT rules_pointcut_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2277 (class 2606 OID 331904)
+-- Dependencies: 185 185
+-- Name: rules_rule_pkey; Type: CONSTRAINT; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+ALTER TABLE ONLY rules_rule
+    ADD CONSTRAINT rules_rule_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2284 (class 2606 OID 331927)
+-- Dependencies: 189 189
+-- Name: rules_ruleset_pkey; Type: CONSTRAINT; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+ALTER TABLE ONLY rules_ruleset
+    ADD CONSTRAINT rules_ruleset_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2286 (class 2606 OID 331935)
+-- Dependencies: 191 191
+-- Name: rules_ruleset_pointcuts_pkey; Type: CONSTRAINT; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+ALTER TABLE ONLY rules_ruleset_pointcuts
+    ADD CONSTRAINT rules_ruleset_pointcuts_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2290 (class 2606 OID 331937)
+-- Dependencies: 191 191 191
+-- Name: rules_ruleset_pointcuts_ruleset_id_69d4547197399068_uniq; Type: CONSTRAINT; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+ALTER TABLE ONLY rules_ruleset_pointcuts
+    ADD CONSTRAINT rules_ruleset_pointcuts_ruleset_id_69d4547197399068_uniq UNIQUE (ruleset_id, pointcut_id);
+
+
+--
+-- TOC entry 2249 (class 2606 OID 331632)
+-- Dependencies: 167 167
+-- Name: secretballot_vote_pkey; Type: CONSTRAINT; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+ALTER TABLE ONLY secretballot_vote
+    ADD CONSTRAINT secretballot_vote_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2251 (class 2606 OID 331634)
+-- Dependencies: 167 167 167 167
+-- Name: secretballot_vote_token_content_type_id_object_id_key; Type: CONSTRAINT; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+ALTER TABLE ONLY secretballot_vote
+    ADD CONSTRAINT secretballot_vote_token_content_type_id_object_id_key UNIQUE (token, content_type_id, object_id);
+
+
+--
+-- TOC entry 2253 (class 2606 OID 331650)
+-- Dependencies: 169 169
+-- Name: south_migrationhistory_pkey; Type: CONSTRAINT; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+ALTER TABLE ONLY south_migrationhistory
+    ADD CONSTRAINT south_migrationhistory_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2298 (class 2606 OID 332534)
+-- Dependencies: 195 195
+-- Name: timeoff_booktimeoff_pkey; Type: CONSTRAINT; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+ALTER TABLE ONLY timeoff_booktimeoff
+    ADD CONSTRAINT timeoff_booktimeoff_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2304 (class 2606 OID 332542)
+-- Dependencies: 197 197
+-- Name: timeoff_booktimeofffhistory_pkey; Type: CONSTRAINT; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+ALTER TABLE ONLY timeoff_booktimeofffhistory
+    ADD CONSTRAINT timeoff_booktimeofffhistory_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2293 (class 2606 OID 332431)
+-- Dependencies: 193 193
+-- Name: timeoff_timeoffpolicy_pkey; Type: CONSTRAINT; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+ALTER TABLE ONLY timeoff_timeoffpolicy
+    ADD CONSTRAINT timeoff_timeoffpolicy_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2307 (class 2606 OID 332718)
+-- Dependencies: 199 199
+-- Name: tracker_timesheet_pkey; Type: CONSTRAINT; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+ALTER TABLE ONLY tracker_timesheet
+    ADD CONSTRAINT tracker_timesheet_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2310 (class 2606 OID 332729)
+-- Dependencies: 201 201
+-- Name: tracker_timesheetnote_pkey; Type: CONSTRAINT; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+ALTER TABLE ONLY tracker_timesheetnote
+    ADD CONSTRAINT tracker_timesheetnote_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2313 (class 2606 OID 332738)
+-- Dependencies: 203 203
+-- Name: tracker_weeksnapshot_pkey; Type: CONSTRAINT; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+ALTER TABLE ONLY tracker_weeksnapshot
+    ADD CONSTRAINT tracker_weeksnapshot_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2316 (class 2606 OID 332748)
+-- Dependencies: 205 205 205
+-- Name: tracker_weeksnapshot_time_weeksnapshot_id_549189261012b253_uniq; Type: CONSTRAINT; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+ALTER TABLE ONLY tracker_weeksnapshot_timesheets
+    ADD CONSTRAINT tracker_weeksnapshot_time_weeksnapshot_id_549189261012b253_uniq UNIQUE (weeksnapshot_id, timesheet_id);
+
+
+--
+-- TOC entry 2318 (class 2606 OID 332746)
+-- Dependencies: 205 205
+-- Name: tracker_weeksnapshot_timesheets_pkey; Type: CONSTRAINT; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+ALTER TABLE ONLY tracker_weeksnapshot_timesheets
+    ADD CONSTRAINT tracker_weeksnapshot_timesheets_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2322 (class 2606 OID 332756)
+-- Dependencies: 207 207
+-- Name: tracker_weeksnapshothistory_pkey; Type: CONSTRAINT; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+ALTER TABLE ONLY tracker_weeksnapshothistory
+    ADD CONSTRAINT tracker_weeksnapshothistory_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2255 (class 2606 OID 331690)
+-- Dependencies: 171 171
+-- Name: users_role_pkey; Type: CONSTRAINT; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+ALTER TABLE ONLY users_role
+    ADD CONSTRAINT users_role_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2329 (class 2606 OID 332848)
+-- Dependencies: 211 211
+-- Name: workflow_approver_pkey; Type: CONSTRAINT; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+ALTER TABLE ONLY workflow_approver
+    ADD CONSTRAINT workflow_approver_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2336 (class 2606 OID 332861)
+-- Dependencies: 213 213
+-- Name: workflow_approverqueue_pkey; Type: CONSTRAINT; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+ALTER TABLE ONLY workflow_approverqueue
+    ADD CONSTRAINT workflow_approverqueue_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2341 (class 2606 OID 332924)
+-- Dependencies: 215 215
+-- Name: workflow_approverqueuehistory_pkey; Type: CONSTRAINT; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+ALTER TABLE ONLY workflow_approverqueuehistory
+    ADD CONSTRAINT workflow_approverqueuehistory_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2327 (class 2606 OID 332838)
+-- Dependencies: 209 209
+-- Name: workflow_queue_pkey; Type: CONSTRAINT; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+ALTER TABLE ONLY workflow_queue
+    ADD CONSTRAINT workflow_queue_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2195 (class 1259 OID 331653)
+-- Dependencies: 146
+-- Name: auth_group_permissions_group_id; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX auth_group_permissions_group_id ON auth_group_permissions USING btree (group_id);
+
+
+--
+-- TOC entry 2198 (class 1259 OID 331654)
+-- Dependencies: 146
+-- Name: auth_group_permissions_permission_id; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX auth_group_permissions_permission_id ON auth_group_permissions USING btree (permission_id);
+
+
+--
+-- TOC entry 2190 (class 1259 OID 331652)
+-- Dependencies: 144
+-- Name: auth_permission_content_type_id; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX auth_permission_content_type_id ON auth_permission USING btree (content_type_id);
+
+
+--
+-- TOC entry 2211 (class 1259 OID 331658)
+-- Dependencies: 152
+-- Name: auth_user_groups_group_id; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX auth_user_groups_group_id ON auth_user_groups USING btree (group_id);
+
+
+--
+-- TOC entry 2214 (class 1259 OID 331657)
+-- Dependencies: 152
+-- Name: auth_user_groups_user_id; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX auth_user_groups_user_id ON auth_user_groups USING btree (user_id);
+
+
+--
+-- TOC entry 2205 (class 1259 OID 331656)
+-- Dependencies: 150
+-- Name: auth_user_user_permissions_permission_id; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX auth_user_user_permissions_permission_id ON auth_user_user_permissions USING btree (permission_id);
+
+
+--
+-- TOC entry 2208 (class 1259 OID 331655)
+-- Dependencies: 150
+-- Name: auth_user_user_permissions_user_id; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX auth_user_user_permissions_user_id ON auth_user_user_permissions USING btree (user_id);
+
+
+--
+-- TOC entry 2390 (class 1259 OID 333394)
+-- Dependencies: 237
+-- Name: categories_project_taxonomy_id; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX categories_project_taxonomy_id ON categories_project USING btree (taxonomy_id);
+
+
+--
+-- TOC entry 2391 (class 1259 OID 333406)
+-- Dependencies: 239
+-- Name: categories_projectactivity_activity_id; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX categories_projectactivity_activity_id ON categories_projectactivity USING btree (activity_id);
+
+
+--
+-- TOC entry 2394 (class 1259 OID 333400)
+-- Dependencies: 239
+-- Name: categories_projectactivity_project_id; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX categories_projectactivity_project_id ON categories_projectactivity USING btree (project_id);
+
+
+--
+-- TOC entry 2376 (class 1259 OID 333370)
+-- Dependencies: 231
+-- Name: categories_taxonomy_client_id; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX categories_taxonomy_client_id ON categories_taxonomy USING btree (client_id);
+
+
+--
+-- TOC entry 2381 (class 1259 OID 333376)
+-- Dependencies: 233
+-- Name: categories_taxonomyrole_role_id; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX categories_taxonomyrole_role_id ON categories_taxonomyrole USING btree (role_id);
+
+
+--
+-- TOC entry 2382 (class 1259 OID 333388)
+-- Dependencies: 233
+-- Name: categories_taxonomyrole_taxonomy_id; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX categories_taxonomyrole_taxonomy_id ON categories_taxonomyrole USING btree (taxonomy_id);
+
+
+--
+-- TOC entry 2383 (class 1259 OID 333382)
+-- Dependencies: 233
+-- Name: categories_taxonomyrole_user_id; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX categories_taxonomyrole_user_id ON categories_taxonomyrole USING btree (user_id);
+
+
+--
+-- TOC entry 2397 (class 1259 OID 333412)
+-- Dependencies: 243
+-- Name: categories_timeofftype_pay_code_id; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX categories_timeofftype_pay_code_id ON categories_timeofftype USING btree (pay_code_id);
+
+
+--
+-- TOC entry 2258 (class 1259 OID 331809)
+-- Dependencies: 175
+-- Name: common_dropdownvalue_dropdown_id; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX common_dropdownvalue_dropdown_id ON common_dropdownvalue USING btree (dropdown_id);
+
+
+--
+-- TOC entry 2263 (class 1259 OID 331869)
+-- Dependencies: 179
+-- Name: common_holidayset_holidays_holiday_id; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX common_holidayset_holidays_holiday_id ON common_holidayset_holidays USING btree (holiday_id);
+
+
+--
+-- TOC entry 2264 (class 1259 OID 331863)
+-- Dependencies: 179
+-- Name: common_holidayset_holidays_holidayset_id; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX common_holidayset_holidays_holidayset_id ON common_holidayset_holidays USING btree (holidayset_id);
+
+
+--
+-- TOC entry 2370 (class 1259 OID 333254)
+-- Dependencies: 227
+-- Name: configuration_userovertimepolicy_overtime_policy_id; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX configuration_userovertimepolicy_overtime_policy_id ON configuration_userovertimepolicy USING btree (overtime_policy_id);
+
+
+--
+-- TOC entry 2373 (class 1259 OID 333248)
+-- Dependencies: 227
+-- Name: configuration_userovertimepolicy_user_profile_id; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX configuration_userovertimepolicy_user_profile_id ON configuration_userovertimepolicy USING btree (user_profile_id);
+
+
+--
+-- TOC entry 2350 (class 1259 OID 333200)
+-- Dependencies: 221
+-- Name: configuration_userprofile_holiday_set_id; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX configuration_userprofile_holiday_set_id ON configuration_userprofile USING btree (holiday_set_id);
+
+
+--
+-- TOC entry 2353 (class 1259 OID 333194)
+-- Dependencies: 221
+-- Name: configuration_userprofile_taxonomy_id; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX configuration_userprofile_taxonomy_id ON configuration_userprofile USING btree (taxonomy_id);
+
+
+--
+-- TOC entry 2354 (class 1259 OID 333188)
+-- Dependencies: 221
+-- Name: configuration_userprofile_user_id; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX configuration_userprofile_user_id ON configuration_userprofile USING btree (user_id);
+
+
+--
+-- TOC entry 2359 (class 1259 OID 333212)
+-- Dependencies: 223
+-- Name: configuration_userproject_project_id; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX configuration_userproject_project_id ON configuration_userproject USING btree (project_id);
+
+
+--
+-- TOC entry 2360 (class 1259 OID 333206)
+-- Dependencies: 223
+-- Name: configuration_userproject_user_profile_id; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX configuration_userproject_user_profile_id ON configuration_userproject USING btree (user_profile_id);
+
+
+--
+-- TOC entry 2363 (class 1259 OID 333236)
+-- Dependencies: 225
+-- Name: configuration_usertimeoffpolicy_accrue_frequency_id; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX configuration_usertimeoffpolicy_accrue_frequency_id ON configuration_usertimeoffpolicy USING btree (accrue_frequency_id);
+
+
+--
+-- TOC entry 2366 (class 1259 OID 333242)
+-- Dependencies: 225
+-- Name: configuration_usertimeoffpolicy_reset_frequency_id; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX configuration_usertimeoffpolicy_reset_frequency_id ON configuration_usertimeoffpolicy USING btree (reset_frequency_id);
+
+
+--
+-- TOC entry 2367 (class 1259 OID 333230)
+-- Dependencies: 225
+-- Name: configuration_usertimeoffpolicy_starting_balance_type_id; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX configuration_usertimeoffpolicy_starting_balance_type_id ON configuration_usertimeoffpolicy USING btree (starting_balance_type_id);
+
+
+--
+-- TOC entry 2368 (class 1259 OID 333224)
+-- Dependencies: 225
+-- Name: configuration_usertimeoffpolicy_timeoff_type_id; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX configuration_usertimeoffpolicy_timeoff_type_id ON configuration_usertimeoffpolicy USING btree (timeoff_type_id);
+
+
+--
+-- TOC entry 2369 (class 1259 OID 333218)
+-- Dependencies: 225
+-- Name: configuration_usertimeoffpolicy_user_profile_id; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX configuration_usertimeoffpolicy_user_profile_id ON configuration_usertimeoffpolicy USING btree (user_profile_id);
+
+
+--
+-- TOC entry 2243 (class 1259 OID 331668)
+-- Dependencies: 165
+-- Name: django_admin_log_content_type_id; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX django_admin_log_content_type_id ON django_admin_log USING btree (content_type_id);
+
+
+--
+-- TOC entry 2246 (class 1259 OID 331667)
+-- Dependencies: 165
+-- Name: django_admin_log_user_id; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX django_admin_log_user_id ON django_admin_log USING btree (user_id);
+
+
+--
+-- TOC entry 2235 (class 1259 OID 331664)
+-- Dependencies: 163
+-- Name: django_comment_flags_comment_id; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX django_comment_flags_comment_id ON django_comment_flags USING btree (comment_id);
+
+
+--
+-- TOC entry 2236 (class 1259 OID 331665)
+-- Dependencies: 163
+-- Name: django_comment_flags_flag; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX django_comment_flags_flag ON django_comment_flags USING btree (flag);
+
+
+--
+-- TOC entry 2237 (class 1259 OID 331666)
+-- Dependencies: 163
+-- Name: django_comment_flags_flag_like; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX django_comment_flags_flag_like ON django_comment_flags USING btree (flag varchar_pattern_ops);
+
+
+--
+-- TOC entry 2240 (class 1259 OID 331663)
+-- Dependencies: 163
+-- Name: django_comment_flags_user_id; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX django_comment_flags_user_id ON django_comment_flags USING btree (user_id);
+
+
+--
+-- TOC entry 2230 (class 1259 OID 331660)
+-- Dependencies: 161
+-- Name: django_comments_content_type_id; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX django_comments_content_type_id ON django_comments USING btree (content_type_id);
+
+
+--
+-- TOC entry 2233 (class 1259 OID 331661)
+-- Dependencies: 161
+-- Name: django_comments_site_id; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX django_comments_site_id ON django_comments USING btree (site_id);
+
+
+--
+-- TOC entry 2234 (class 1259 OID 331662)
+-- Dependencies: 161
+-- Name: django_comments_user_id; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX django_comments_user_id ON django_comments USING btree (user_id);
+
+
+--
+-- TOC entry 2225 (class 1259 OID 331659)
+-- Dependencies: 157
+-- Name: django_session_expire_date; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX django_session_expire_date ON django_session USING btree (expire_date);
+
+
+--
+-- TOC entry 2346 (class 1259 OID 333014)
+-- Dependencies: 219
+-- Name: overtime_overtimecondition_overtime_policy_id; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX overtime_overtimecondition_overtime_policy_id ON overtime_overtimecondition USING btree (overtime_policy_id);
+
+
+--
+-- TOC entry 2349 (class 1259 OID 333020)
+-- Dependencies: 219
+-- Name: overtime_overtimecondition_ruleset_id; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX overtime_overtimecondition_ruleset_id ON overtime_overtimecondition USING btree (ruleset_id);
+
+
+--
+-- TOC entry 2271 (class 1259 OID 331949)
+-- Dependencies: 183
+-- Name: rules_jointpoint_content_type_id; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX rules_jointpoint_content_type_id ON rules_jointpoint USING btree (content_type_id);
+
+
+--
+-- TOC entry 2274 (class 1259 OID 331943)
+-- Dependencies: 183
+-- Name: rules_jointpoint_property_type_id; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX rules_jointpoint_property_type_id ON rules_jointpoint USING btree (property_type_id);
+
+
+--
+-- TOC entry 2278 (class 1259 OID 331973)
+-- Dependencies: 187
+-- Name: rules_pointcut_aggregate_id; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX rules_pointcut_aggregate_id ON rules_pointcut USING btree (aggregate_id);
+
+
+--
+-- TOC entry 2279 (class 1259 OID 331967)
+-- Dependencies: 187
+-- Name: rules_pointcut_jointpoint_id; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX rules_pointcut_jointpoint_id ON rules_pointcut USING btree (jointpoint_id);
+
+
+--
+-- TOC entry 2282 (class 1259 OID 331961)
+-- Dependencies: 187
+-- Name: rules_pointcut_rule_id; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX rules_pointcut_rule_id ON rules_pointcut USING btree (rule_id);
+
+
+--
+-- TOC entry 2275 (class 1259 OID 331955)
+-- Dependencies: 185
+-- Name: rules_rule_operator_type_id; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX rules_rule_operator_type_id ON rules_rule USING btree (operator_type_id);
+
+
+--
+-- TOC entry 2287 (class 1259 OID 331985)
+-- Dependencies: 191
+-- Name: rules_ruleset_pointcuts_pointcut_id; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX rules_ruleset_pointcuts_pointcut_id ON rules_ruleset_pointcuts USING btree (pointcut_id);
+
+
+--
+-- TOC entry 2288 (class 1259 OID 331979)
+-- Dependencies: 191
+-- Name: rules_ruleset_pointcuts_ruleset_id; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX rules_ruleset_pointcuts_ruleset_id ON rules_ruleset_pointcuts USING btree (ruleset_id);
+
+
+--
+-- TOC entry 2247 (class 1259 OID 331669)
+-- Dependencies: 167
+-- Name: secretballot_vote_content_type_id; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX secretballot_vote_content_type_id ON secretballot_vote USING btree (content_type_id);
+
+
+--
+-- TOC entry 2299 (class 1259 OID 332584)
+-- Dependencies: 195
+-- Name: timeoff_booktimeoff_timeoff_type_id; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX timeoff_booktimeoff_timeoff_type_id ON timeoff_booktimeoff USING btree (timeoff_type_id);
+
+
+--
+-- TOC entry 2300 (class 1259 OID 332548)
+-- Dependencies: 195
+-- Name: timeoff_booktimeoff_user_id; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX timeoff_booktimeoff_user_id ON timeoff_booktimeoff USING btree (user_id);
+
+
+--
+-- TOC entry 2301 (class 1259 OID 332560)
+-- Dependencies: 197
+-- Name: timeoff_booktimeofffhistory_book_timeoff_id; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX timeoff_booktimeofffhistory_book_timeoff_id ON timeoff_booktimeofffhistory USING btree (book_timeoff_id);
+
+
+--
+-- TOC entry 2302 (class 1259 OID 332566)
+-- Dependencies: 197
+-- Name: timeoff_booktimeofffhistory_book_timeoff_status_id; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX timeoff_booktimeofffhistory_book_timeoff_status_id ON timeoff_booktimeofffhistory USING btree (book_timeoff_status_id);
+
+
+--
+-- TOC entry 2291 (class 1259 OID 332455)
+-- Dependencies: 193
+-- Name: timeoff_timeoffpolicy_accrue_frequency_id; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX timeoff_timeoffpolicy_accrue_frequency_id ON timeoff_timeoffpolicy USING btree (accrue_frequency_id);
+
+
+--
+-- TOC entry 2294 (class 1259 OID 332461)
+-- Dependencies: 193
+-- Name: timeoff_timeoffpolicy_reset_frequency_id; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX timeoff_timeoffpolicy_reset_frequency_id ON timeoff_timeoffpolicy USING btree (reset_frequency_id);
+
+
+--
+-- TOC entry 2295 (class 1259 OID 332449)
+-- Dependencies: 193
+-- Name: timeoff_timeoffpolicy_starting_balance_type_id; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX timeoff_timeoffpolicy_starting_balance_type_id ON timeoff_timeoffpolicy USING btree (starting_balance_type_id);
+
+
+--
+-- TOC entry 2296 (class 1259 OID 332596)
+-- Dependencies: 193
+-- Name: timeoff_timeoffpolicy_timeoff_type_id; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX timeoff_timeoffpolicy_timeoff_type_id ON timeoff_timeoffpolicy USING btree (timeoff_type_id);
+
+
+--
+-- TOC entry 2305 (class 1259 OID 332768)
+-- Dependencies: 199
+-- Name: tracker_timesheet_activity_id; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX tracker_timesheet_activity_id ON tracker_timesheet USING btree (activity_id);
+
+
+--
+-- TOC entry 2308 (class 1259 OID 332762)
+-- Dependencies: 199
+-- Name: tracker_timesheet_project_id; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX tracker_timesheet_project_id ON tracker_timesheet USING btree (project_id);
+
+
+--
+-- TOC entry 2311 (class 1259 OID 332774)
+-- Dependencies: 201
+-- Name: tracker_timesheetnote_timesheet_id; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX tracker_timesheetnote_timesheet_id ON tracker_timesheetnote USING btree (timesheet_id);
+
+
+--
+-- TOC entry 2319 (class 1259 OID 332792)
+-- Dependencies: 205
+-- Name: tracker_weeksnapshot_timesheets_timesheet_id; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX tracker_weeksnapshot_timesheets_timesheet_id ON tracker_weeksnapshot_timesheets USING btree (timesheet_id);
+
+
+--
+-- TOC entry 2320 (class 1259 OID 332786)
+-- Dependencies: 205
+-- Name: tracker_weeksnapshot_timesheets_weeksnapshot_id; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX tracker_weeksnapshot_timesheets_weeksnapshot_id ON tracker_weeksnapshot_timesheets USING btree (weeksnapshot_id);
+
+
+--
+-- TOC entry 2314 (class 1259 OID 332780)
+-- Dependencies: 203
+-- Name: tracker_weeksnapshot_user_id; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX tracker_weeksnapshot_user_id ON tracker_weeksnapshot USING btree (user_id);
+
+
+--
+-- TOC entry 2323 (class 1259 OID 332798)
+-- Dependencies: 207
+-- Name: tracker_weeksnapshothistory_weeksnapshot_id; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX tracker_weeksnapshothistory_weeksnapshot_id ON tracker_weeksnapshothistory USING btree (weeksnapshot_id);
+
+
+--
+-- TOC entry 2324 (class 1259 OID 332804)
+-- Dependencies: 207
+-- Name: tracker_weeksnapshothistory_weeksnapshot_status_id; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX tracker_weeksnapshothistory_weeksnapshot_status_id ON tracker_weeksnapshothistory USING btree (weeksnapshot_status_id);
+
+
+--
+-- TOC entry 2330 (class 1259 OID 332879)
+-- Dependencies: 211
+-- Name: workflow_approver_queue_id; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX workflow_approver_queue_id ON workflow_approver USING btree (queue_id);
+
+
+--
+-- TOC entry 2331 (class 1259 OID 332873)
+-- Dependencies: 211
+-- Name: workflow_approver_role_id; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX workflow_approver_role_id ON workflow_approver USING btree (role_id);
+
+
+--
+-- TOC entry 2332 (class 1259 OID 332885)
+-- Dependencies: 213
+-- Name: workflow_approverqueue_content_type_id; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX workflow_approverqueue_content_type_id ON workflow_approverqueue USING btree (content_type_id);
+
+
+--
+-- TOC entry 2333 (class 1259 OID 332987)
+-- Dependencies: 213
+-- Name: workflow_approverqueue_current_status_id; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX workflow_approverqueue_current_status_id ON workflow_approverqueue USING btree (current_status_id);
+
+
+--
+-- TOC entry 2334 (class 1259 OID 332891)
+-- Dependencies: 213
+-- Name: workflow_approverqueue_current_user_id; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX workflow_approverqueue_current_user_id ON workflow_approverqueue USING btree (current_user_id);
+
+
+--
+-- TOC entry 2337 (class 1259 OID 332930)
+-- Dependencies: 215
+-- Name: workflow_approverqueuehistory_approver_queue_id; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX workflow_approverqueuehistory_approver_queue_id ON workflow_approverqueuehistory USING btree (approver_queue_id);
+
+
+--
+-- TOC entry 2338 (class 1259 OID 332969)
+-- Dependencies: 215
+-- Name: workflow_approverqueuehistory_from_status_id; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX workflow_approverqueuehistory_from_status_id ON workflow_approverqueuehistory USING btree (from_status_id);
+
+
+--
+-- TOC entry 2339 (class 1259 OID 332963)
+-- Dependencies: 215
+-- Name: workflow_approverqueuehistory_from_user_id; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX workflow_approverqueuehistory_from_user_id ON workflow_approverqueuehistory USING btree (from_user_id);
+
+
+--
+-- TOC entry 2342 (class 1259 OID 332981)
+-- Dependencies: 215
+-- Name: workflow_approverqueuehistory_to_status_id; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX workflow_approverqueuehistory_to_status_id ON workflow_approverqueuehistory USING btree (to_status_id);
+
+
+--
+-- TOC entry 2343 (class 1259 OID 332975)
+-- Dependencies: 215
+-- Name: workflow_approverqueuehistory_to_user_id; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX workflow_approverqueuehistory_to_user_id ON workflow_approverqueuehistory USING btree (to_user_id);
+
+
+--
+-- TOC entry 2325 (class 1259 OID 332867)
+-- Dependencies: 209
+-- Name: workflow_queue_content_type_id; Type: INDEX; Schema: timetracker; Owner: kairos; Tablespace: 
+--
+
+CREATE INDEX workflow_queue_content_type_id ON workflow_queue USING btree (content_type_id);
+
+
+--
+-- TOC entry 2427 (class 2606 OID 332450)
+-- Dependencies: 193 2259 175
+-- Name: accrue_frequency_id_refs_id_4391fc31c51bacdf; Type: FK CONSTRAINT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE ONLY timeoff_timeoffpolicy
+    ADD CONSTRAINT accrue_frequency_id_refs_id_4391fc31c51bacdf FOREIGN KEY (accrue_frequency_id) REFERENCES common_dropdownvalue(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- TOC entry 2456 (class 2606 OID 333231)
+-- Dependencies: 175 225 2259
+-- Name: accrue_frequency_id_refs_id_495912cc08bed5e4; Type: FK CONSTRAINT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE ONLY configuration_usertimeoffpolicy
+    ADD CONSTRAINT accrue_frequency_id_refs_id_495912cc08bed5e4 FOREIGN KEY (accrue_frequency_id) REFERENCES common_dropdownvalue(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- TOC entry 2465 (class 2606 OID 333401)
+-- Dependencies: 2386 235 239
+-- Name: activity_id_refs_id_3f82534b10ec191; Type: FK CONSTRAINT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE ONLY categories_projectactivity
+    ADD CONSTRAINT activity_id_refs_id_3f82534b10ec191 FOREIGN KEY (activity_id) REFERENCES categories_activity(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- TOC entry 2423 (class 2606 OID 331968)
+-- Dependencies: 175 187 2259
+-- Name: aggregate_id_refs_id_2e3e69bfa41e2fbd; Type: FK CONSTRAINT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE ONLY rules_pointcut
+    ADD CONSTRAINT aggregate_id_refs_id_2e3e69bfa41e2fbd FOREIGN KEY (aggregate_id) REFERENCES common_dropdownvalue(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- TOC entry 2444 (class 2606 OID 332925)
+-- Dependencies: 2335 213 215
+-- Name: approver_queue_id_refs_id_4ea6db34e5010f40; Type: FK CONSTRAINT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE ONLY workflow_approverqueuehistory
+    ADD CONSTRAINT approver_queue_id_refs_id_4ea6db34e5010f40 FOREIGN KEY (approver_queue_id) REFERENCES workflow_approverqueue(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- TOC entry 2401 (class 2606 OID 331455)
+-- Dependencies: 144 146 2193
+-- Name: auth_group_permissions_permission_id_fkey; Type: FK CONSTRAINT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE ONLY auth_group_permissions
+    ADD CONSTRAINT auth_group_permissions_permission_id_fkey FOREIGN KEY (permission_id) REFERENCES auth_permission(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- TOC entry 2405 (class 2606 OID 331500)
+-- Dependencies: 152 2203 148
+-- Name: auth_user_groups_group_id_fkey; Type: FK CONSTRAINT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE ONLY auth_user_groups
+    ADD CONSTRAINT auth_user_groups_group_id_fkey FOREIGN KEY (group_id) REFERENCES auth_group(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- TOC entry 2403 (class 2606 OID 331485)
+-- Dependencies: 2193 144 150
+-- Name: auth_user_user_permissions_permission_id_fkey; Type: FK CONSTRAINT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE ONLY auth_user_user_permissions
+    ADD CONSTRAINT auth_user_user_permissions_permission_id_fkey FOREIGN KEY (permission_id) REFERENCES auth_permission(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- TOC entry 2430 (class 2606 OID 332555)
+-- Dependencies: 197 2297 195
+-- Name: book_timeoff_id_refs_id_4e6f3c3a3e8c0751; Type: FK CONSTRAINT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE ONLY timeoff_booktimeofffhistory
+    ADD CONSTRAINT book_timeoff_id_refs_id_4e6f3c3a3e8c0751 FOREIGN KEY (book_timeoff_id) REFERENCES timeoff_booktimeoff(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- TOC entry 2431 (class 2606 OID 332561)
+-- Dependencies: 175 2259 197
+-- Name: book_timeoff_status_id_refs_id_67dd90a8d05939b2; Type: FK CONSTRAINT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE ONLY timeoff_booktimeofffhistory
+    ADD CONSTRAINT book_timeoff_status_id_refs_id_67dd90a8d05939b2 FOREIGN KEY (book_timeoff_status_id) REFERENCES common_dropdownvalue(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- TOC entry 2460 (class 2606 OID 333365)
+-- Dependencies: 229 2374 231
+-- Name: client_id_refs_id_66880f67f4cf1215; Type: FK CONSTRAINT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE ONLY categories_taxonomy
+    ADD CONSTRAINT client_id_refs_id_66880f67f4cf1215 FOREIGN KEY (client_id) REFERENCES categories_client(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- TOC entry 2438 (class 2606 OID 332862)
+-- Dependencies: 209 156 2223
+-- Name: content_type_id_refs_id_67952fc693c231c5; Type: FK CONSTRAINT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE ONLY workflow_queue
+    ADD CONSTRAINT content_type_id_refs_id_67952fc693c231c5 FOREIGN KEY (content_type_id) REFERENCES django_content_type(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- TOC entry 2400 (class 2606 OID 331535)
+-- Dependencies: 156 2223 144
+-- Name: content_type_id_refs_id_728de91f; Type: FK CONSTRAINT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE ONLY auth_permission
+    ADD CONSTRAINT content_type_id_refs_id_728de91f FOREIGN KEY (content_type_id) REFERENCES django_content_type(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- TOC entry 2419 (class 2606 OID 331944)
+-- Dependencies: 183 156 2223
+-- Name: content_type_id_refs_id_7707db7b06e47efa; Type: FK CONSTRAINT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE ONLY rules_jointpoint
+    ADD CONSTRAINT content_type_id_refs_id_7707db7b06e47efa FOREIGN KEY (content_type_id) REFERENCES django_content_type(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- TOC entry 2441 (class 2606 OID 332880)
+-- Dependencies: 213 2223 156
+-- Name: content_type_id_refs_id_7dfc55f2179bb0c0; Type: FK CONSTRAINT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE ONLY workflow_approverqueue
+    ADD CONSTRAINT content_type_id_refs_id_7dfc55f2179bb0c0 FOREIGN KEY (content_type_id) REFERENCES django_content_type(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- TOC entry 2443 (class 2606 OID 332982)
+-- Dependencies: 2259 175 213
+-- Name: current_status_id_refs_id_4340cfd652914ef3; Type: FK CONSTRAINT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE ONLY workflow_approverqueue
+    ADD CONSTRAINT current_status_id_refs_id_4340cfd652914ef3 FOREIGN KEY (current_status_id) REFERENCES common_dropdownvalue(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- TOC entry 2442 (class 2606 OID 332886)
+-- Dependencies: 2217 213 154
+-- Name: current_user_id_refs_id_41f131d0be9ab13c; Type: FK CONSTRAINT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE ONLY workflow_approverqueue
+    ADD CONSTRAINT current_user_id_refs_id_41f131d0be9ab13c FOREIGN KEY (current_user_id) REFERENCES auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- TOC entry 2413 (class 2606 OID 331619)
+-- Dependencies: 156 165 2223
+-- Name: django_admin_log_content_type_id_fkey; Type: FK CONSTRAINT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE ONLY django_admin_log
+    ADD CONSTRAINT django_admin_log_content_type_id_fkey FOREIGN KEY (content_type_id) REFERENCES django_content_type(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- TOC entry 2412 (class 2606 OID 331614)
+-- Dependencies: 2217 165 154
+-- Name: django_admin_log_user_id_fkey; Type: FK CONSTRAINT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE ONLY django_admin_log
+    ADD CONSTRAINT django_admin_log_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- TOC entry 2411 (class 2606 OID 331597)
+-- Dependencies: 161 2231 163
+-- Name: django_comment_flags_comment_id_fkey; Type: FK CONSTRAINT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE ONLY django_comment_flags
+    ADD CONSTRAINT django_comment_flags_comment_id_fkey FOREIGN KEY (comment_id) REFERENCES django_comments(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- TOC entry 2410 (class 2606 OID 331592)
+-- Dependencies: 154 2217 163
+-- Name: django_comment_flags_user_id_fkey; Type: FK CONSTRAINT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE ONLY django_comment_flags
+    ADD CONSTRAINT django_comment_flags_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- TOC entry 2407 (class 2606 OID 331567)
+-- Dependencies: 161 2223 156
+-- Name: django_comments_content_type_id_fkey; Type: FK CONSTRAINT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE ONLY django_comments
+    ADD CONSTRAINT django_comments_content_type_id_fkey FOREIGN KEY (content_type_id) REFERENCES django_content_type(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- TOC entry 2408 (class 2606 OID 331572)
+-- Dependencies: 161 159 2228
+-- Name: django_comments_site_id_fkey; Type: FK CONSTRAINT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE ONLY django_comments
+    ADD CONSTRAINT django_comments_site_id_fkey FOREIGN KEY (site_id) REFERENCES django_site(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- TOC entry 2409 (class 2606 OID 331577)
+-- Dependencies: 2217 161 154
+-- Name: django_comments_user_id_fkey; Type: FK CONSTRAINT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE ONLY django_comments
+    ADD CONSTRAINT django_comments_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- TOC entry 2415 (class 2606 OID 331804)
+-- Dependencies: 175 173 2256
+-- Name: dropdown_id_refs_id_78d2b8e236ddee63; Type: FK CONSTRAINT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE ONLY common_dropdownvalue
+    ADD CONSTRAINT dropdown_id_refs_id_78d2b8e236ddee63 FOREIGN KEY (dropdown_id) REFERENCES common_dropdown(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- TOC entry 2446 (class 2606 OID 332964)
+-- Dependencies: 2259 215 175
+-- Name: from_status_id_refs_id_590b3c6fb6377908; Type: FK CONSTRAINT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE ONLY workflow_approverqueuehistory
+    ADD CONSTRAINT from_status_id_refs_id_590b3c6fb6377908 FOREIGN KEY (from_status_id) REFERENCES common_dropdownvalue(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- TOC entry 2445 (class 2606 OID 332958)
+-- Dependencies: 215 2217 154
+-- Name: from_user_id_refs_id_6a971f01a2136597; Type: FK CONSTRAINT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE ONLY workflow_approverqueuehistory
+    ADD CONSTRAINT from_user_id_refs_id_6a971f01a2136597 FOREIGN KEY (from_user_id) REFERENCES auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- TOC entry 2402 (class 2606 OID 331470)
+-- Dependencies: 2203 146 148
+-- Name: group_id_refs_id_3cea63fe; Type: FK CONSTRAINT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE ONLY auth_group_permissions
+    ADD CONSTRAINT group_id_refs_id_3cea63fe FOREIGN KEY (group_id) REFERENCES auth_group(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- TOC entry 2417 (class 2606 OID 331864)
+-- Dependencies: 181 179 2269
+-- Name: holiday_id_refs_id_4e3148a2fa3d2581; Type: FK CONSTRAINT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE ONLY common_holidayset_holidays
+    ADD CONSTRAINT holiday_id_refs_id_4e3148a2fa3d2581 FOREIGN KEY (holiday_id) REFERENCES common_holiday(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- TOC entry 2452 (class 2606 OID 333195)
+-- Dependencies: 2261 221 177
+-- Name: holiday_set_id_refs_id_352656ffe8da4da4; Type: FK CONSTRAINT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE ONLY configuration_userprofile
+    ADD CONSTRAINT holiday_set_id_refs_id_352656ffe8da4da4 FOREIGN KEY (holiday_set_id) REFERENCES common_holidayset(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- TOC entry 2416 (class 2606 OID 331858)
+-- Dependencies: 177 179 2261
+-- Name: holidayset_id_refs_id_2ead2bece26eeb5e; Type: FK CONSTRAINT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE ONLY common_holidayset_holidays
+    ADD CONSTRAINT holidayset_id_refs_id_2ead2bece26eeb5e FOREIGN KEY (holidayset_id) REFERENCES common_holidayset(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- TOC entry 2422 (class 2606 OID 331962)
+-- Dependencies: 183 2272 187
+-- Name: jointpoint_id_refs_id_40670f18633d3085; Type: FK CONSTRAINT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE ONLY rules_pointcut
+    ADD CONSTRAINT jointpoint_id_refs_id_40670f18633d3085 FOREIGN KEY (jointpoint_id) REFERENCES rules_jointpoint(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- TOC entry 2420 (class 2606 OID 331950)
+-- Dependencies: 2259 175 185
+-- Name: operator_type_id_refs_id_54336741f8196c7f; Type: FK CONSTRAINT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE ONLY rules_rule
+    ADD CONSTRAINT operator_type_id_refs_id_54336741f8196c7f FOREIGN KEY (operator_type_id) REFERENCES common_dropdownvalue(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- TOC entry 2449 (class 2606 OID 333009)
+-- Dependencies: 217 2344 219
+-- Name: overtime_policy_id_refs_id_2c8078cd838af7db; Type: FK CONSTRAINT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE ONLY overtime_overtimecondition
+    ADD CONSTRAINT overtime_policy_id_refs_id_2c8078cd838af7db FOREIGN KEY (overtime_policy_id) REFERENCES overtime_overtimepolicy(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- TOC entry 2459 (class 2606 OID 333249)
+-- Dependencies: 227 217 2344
+-- Name: overtime_policy_id_refs_id_58e53f73348b3dc; Type: FK CONSTRAINT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE ONLY configuration_userovertimepolicy
+    ADD CONSTRAINT overtime_policy_id_refs_id_58e53f73348b3dc FOREIGN KEY (overtime_policy_id) REFERENCES overtime_overtimepolicy(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- TOC entry 2467 (class 2606 OID 333407)
+-- Dependencies: 2395 241 243
+-- Name: pay_code_id_refs_id_3dbb3cf8dd9cede8; Type: FK CONSTRAINT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE ONLY categories_timeofftype
+    ADD CONSTRAINT pay_code_id_refs_id_3dbb3cf8dd9cede8 FOREIGN KEY (pay_code_id) REFERENCES categories_paycodetype(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- TOC entry 2425 (class 2606 OID 331980)
+-- Dependencies: 187 191 2280
+-- Name: pointcut_id_refs_id_71413371ccd9db4e; Type: FK CONSTRAINT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE ONLY rules_ruleset_pointcuts
+    ADD CONSTRAINT pointcut_id_refs_id_71413371ccd9db4e FOREIGN KEY (pointcut_id) REFERENCES rules_pointcut(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- TOC entry 2466 (class 2606 OID 333395)
+-- Dependencies: 2388 237 239
+-- Name: project_id_refs_id_3ece29f02051d988; Type: FK CONSTRAINT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE ONLY categories_projectactivity
+    ADD CONSTRAINT project_id_refs_id_3ece29f02051d988 FOREIGN KEY (project_id) REFERENCES categories_project(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- TOC entry 2418 (class 2606 OID 331938)
+-- Dependencies: 175 2259 183
+-- Name: property_type_id_refs_id_19846878fd02f939; Type: FK CONSTRAINT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE ONLY rules_jointpoint
+    ADD CONSTRAINT property_type_id_refs_id_19846878fd02f939 FOREIGN KEY (property_type_id) REFERENCES common_dropdownvalue(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- TOC entry 2440 (class 2606 OID 332874)
+-- Dependencies: 211 2326 209
+-- Name: queue_id_refs_id_10c14fb22b4cfb0; Type: FK CONSTRAINT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE ONLY workflow_approver
+    ADD CONSTRAINT queue_id_refs_id_10c14fb22b4cfb0 FOREIGN KEY (queue_id) REFERENCES workflow_queue(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- TOC entry 2428 (class 2606 OID 332456)
+-- Dependencies: 2259 193 175
+-- Name: reset_frequency_id_refs_id_4391fc31c51bacdf; Type: FK CONSTRAINT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE ONLY timeoff_timeoffpolicy
+    ADD CONSTRAINT reset_frequency_id_refs_id_4391fc31c51bacdf FOREIGN KEY (reset_frequency_id) REFERENCES common_dropdownvalue(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- TOC entry 2457 (class 2606 OID 333237)
+-- Dependencies: 2259 175 225
+-- Name: reset_frequency_id_refs_id_495912cc08bed5e4; Type: FK CONSTRAINT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE ONLY configuration_usertimeoffpolicy
+    ADD CONSTRAINT reset_frequency_id_refs_id_495912cc08bed5e4 FOREIGN KEY (reset_frequency_id) REFERENCES common_dropdownvalue(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- TOC entry 2463 (class 2606 OID 333371)
+-- Dependencies: 171 233 2254
+-- Name: role_id_refs_id_1c10c01cf4e0f8e3; Type: FK CONSTRAINT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE ONLY categories_taxonomyrole
+    ADD CONSTRAINT role_id_refs_id_1c10c01cf4e0f8e3 FOREIGN KEY (role_id) REFERENCES users_role(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- TOC entry 2439 (class 2606 OID 332868)
+-- Dependencies: 171 2254 211
+-- Name: role_id_refs_id_5c8dcf6439007c4c; Type: FK CONSTRAINT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE ONLY workflow_approver
+    ADD CONSTRAINT role_id_refs_id_5c8dcf6439007c4c FOREIGN KEY (role_id) REFERENCES users_role(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- TOC entry 2421 (class 2606 OID 331956)
+-- Dependencies: 187 2276 185
+-- Name: rule_id_refs_id_7ecfebdf83a7402f; Type: FK CONSTRAINT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE ONLY rules_pointcut
+    ADD CONSTRAINT rule_id_refs_id_7ecfebdf83a7402f FOREIGN KEY (rule_id) REFERENCES rules_rule(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- TOC entry 2450 (class 2606 OID 333015)
+-- Dependencies: 189 219 2283
+-- Name: ruleset_id_refs_id_2fa9c079c1f0cce8; Type: FK CONSTRAINT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE ONLY overtime_overtimecondition
+    ADD CONSTRAINT ruleset_id_refs_id_2fa9c079c1f0cce8 FOREIGN KEY (ruleset_id) REFERENCES rules_ruleset(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- TOC entry 2424 (class 2606 OID 331974)
+-- Dependencies: 191 189 2283
+-- Name: ruleset_id_refs_id_3483b86d1de30103; Type: FK CONSTRAINT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE ONLY rules_ruleset_pointcuts
+    ADD CONSTRAINT ruleset_id_refs_id_3483b86d1de30103 FOREIGN KEY (ruleset_id) REFERENCES rules_ruleset(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- TOC entry 2414 (class 2606 OID 331635)
+-- Dependencies: 156 2223 167
+-- Name: secretballot_vote_content_type_id_fkey; Type: FK CONSTRAINT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE ONLY secretballot_vote
+    ADD CONSTRAINT secretballot_vote_content_type_id_fkey FOREIGN KEY (content_type_id) REFERENCES django_content_type(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- TOC entry 2426 (class 2606 OID 332444)
+-- Dependencies: 2259 193 175
+-- Name: starting_balance_type_id_refs_id_4391fc31c51bacdf; Type: FK CONSTRAINT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE ONLY timeoff_timeoffpolicy
+    ADD CONSTRAINT starting_balance_type_id_refs_id_4391fc31c51bacdf FOREIGN KEY (starting_balance_type_id) REFERENCES common_dropdownvalue(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- TOC entry 2455 (class 2606 OID 333225)
+-- Dependencies: 175 225 2259
+-- Name: starting_balance_type_id_refs_id_495912cc08bed5e4; Type: FK CONSTRAINT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE ONLY configuration_usertimeoffpolicy
+    ADD CONSTRAINT starting_balance_type_id_refs_id_495912cc08bed5e4 FOREIGN KEY (starting_balance_type_id) REFERENCES common_dropdownvalue(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- TOC entry 2461 (class 2606 OID 333383)
+-- Dependencies: 233 2377 231
+-- Name: taxonomy_id_refs_id_4b95228b151b0dd1; Type: FK CONSTRAINT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE ONLY categories_taxonomyrole
+    ADD CONSTRAINT taxonomy_id_refs_id_4b95228b151b0dd1 FOREIGN KEY (taxonomy_id) REFERENCES categories_taxonomy(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- TOC entry 2464 (class 2606 OID 333389)
+-- Dependencies: 2377 231 237
+-- Name: taxonomy_id_refs_id_621d53a10d8276f8; Type: FK CONSTRAINT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE ONLY categories_project
+    ADD CONSTRAINT taxonomy_id_refs_id_621d53a10d8276f8 FOREIGN KEY (taxonomy_id) REFERENCES categories_taxonomy(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- TOC entry 2432 (class 2606 OID 332769)
+-- Dependencies: 199 201 2306
+-- Name: timesheet_id_refs_id_1713581da74be8bf; Type: FK CONSTRAINT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE ONLY tracker_timesheetnote
+    ADD CONSTRAINT timesheet_id_refs_id_1713581da74be8bf FOREIGN KEY (timesheet_id) REFERENCES tracker_timesheet(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- TOC entry 2435 (class 2606 OID 332787)
+-- Dependencies: 2306 205 199
+-- Name: timesheet_id_refs_id_72653531273b36e9; Type: FK CONSTRAINT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE ONLY tracker_weeksnapshot_timesheets
+    ADD CONSTRAINT timesheet_id_refs_id_72653531273b36e9 FOREIGN KEY (timesheet_id) REFERENCES tracker_timesheet(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- TOC entry 2448 (class 2606 OID 332976)
+-- Dependencies: 2259 215 175
+-- Name: to_status_id_refs_id_590b3c6fb6377908; Type: FK CONSTRAINT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE ONLY workflow_approverqueuehistory
+    ADD CONSTRAINT to_status_id_refs_id_590b3c6fb6377908 FOREIGN KEY (to_status_id) REFERENCES common_dropdownvalue(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- TOC entry 2447 (class 2606 OID 332970)
+-- Dependencies: 154 215 2217
+-- Name: to_user_id_refs_id_6a971f01a2136597; Type: FK CONSTRAINT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE ONLY workflow_approverqueuehistory
+    ADD CONSTRAINT to_user_id_refs_id_6a971f01a2136597 FOREIGN KEY (to_user_id) REFERENCES auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- TOC entry 2462 (class 2606 OID 333377)
+-- Dependencies: 2217 154 233
+-- Name: user_id_refs_id_1109a5cab47b7c75; Type: FK CONSTRAINT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE ONLY categories_taxonomyrole
+    ADD CONSTRAINT user_id_refs_id_1109a5cab47b7c75 FOREIGN KEY (user_id) REFERENCES auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- TOC entry 2433 (class 2606 OID 332775)
+-- Dependencies: 203 2217 154
+-- Name: user_id_refs_id_4edde2cd9d33a311; Type: FK CONSTRAINT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE ONLY tracker_weeksnapshot
+    ADD CONSTRAINT user_id_refs_id_4edde2cd9d33a311 FOREIGN KEY (user_id) REFERENCES auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- TOC entry 2429 (class 2606 OID 332543)
+-- Dependencies: 154 195 2217
+-- Name: user_id_refs_id_68ddc039a765c849; Type: FK CONSTRAINT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE ONLY timeoff_booktimeoff
+    ADD CONSTRAINT user_id_refs_id_68ddc039a765c849 FOREIGN KEY (user_id) REFERENCES auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- TOC entry 2451 (class 2606 OID 333183)
+-- Dependencies: 2217 154 221
+-- Name: user_id_refs_id_737b9569bf55d3b6; Type: FK CONSTRAINT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE ONLY configuration_userprofile
+    ADD CONSTRAINT user_id_refs_id_737b9569bf55d3b6 FOREIGN KEY (user_id) REFERENCES auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- TOC entry 2406 (class 2606 OID 331520)
+-- Dependencies: 154 2217 152
+-- Name: user_id_refs_id_831107f1; Type: FK CONSTRAINT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE ONLY auth_user_groups
+    ADD CONSTRAINT user_id_refs_id_831107f1 FOREIGN KEY (user_id) REFERENCES auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- TOC entry 2404 (class 2606 OID 331515)
+-- Dependencies: 150 154 2217
+-- Name: user_id_refs_id_f2045483; Type: FK CONSTRAINT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE ONLY auth_user_user_permissions
+    ADD CONSTRAINT user_id_refs_id_f2045483 FOREIGN KEY (user_id) REFERENCES auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- TOC entry 2454 (class 2606 OID 333213)
+-- Dependencies: 225 2351 221
+-- Name: user_profile_id_refs_id_12a6137960be5c6; Type: FK CONSTRAINT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE ONLY configuration_usertimeoffpolicy
+    ADD CONSTRAINT user_profile_id_refs_id_12a6137960be5c6 FOREIGN KEY (user_profile_id) REFERENCES configuration_userprofile(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- TOC entry 2458 (class 2606 OID 333243)
+-- Dependencies: 2351 227 221
+-- Name: user_profile_id_refs_id_3bb5b26f5f1212f6; Type: FK CONSTRAINT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE ONLY configuration_userovertimepolicy
+    ADD CONSTRAINT user_profile_id_refs_id_3bb5b26f5f1212f6 FOREIGN KEY (user_profile_id) REFERENCES configuration_userprofile(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- TOC entry 2453 (class 2606 OID 333201)
+-- Dependencies: 2351 221 223
+-- Name: user_profile_id_refs_id_4bb930cf14381101; Type: FK CONSTRAINT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE ONLY configuration_userproject
+    ADD CONSTRAINT user_profile_id_refs_id_4bb930cf14381101 FOREIGN KEY (user_profile_id) REFERENCES configuration_userprofile(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- TOC entry 2434 (class 2606 OID 332781)
+-- Dependencies: 205 2312 203
+-- Name: weeksnapshot_id_refs_id_11022c93c6b65c48; Type: FK CONSTRAINT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE ONLY tracker_weeksnapshot_timesheets
+    ADD CONSTRAINT weeksnapshot_id_refs_id_11022c93c6b65c48 FOREIGN KEY (weeksnapshot_id) REFERENCES tracker_weeksnapshot(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- TOC entry 2436 (class 2606 OID 332793)
+-- Dependencies: 203 207 2312
+-- Name: weeksnapshot_id_refs_id_6036febdb82b09c0; Type: FK CONSTRAINT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE ONLY tracker_weeksnapshothistory
+    ADD CONSTRAINT weeksnapshot_id_refs_id_6036febdb82b09c0 FOREIGN KEY (weeksnapshot_id) REFERENCES tracker_weeksnapshot(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- TOC entry 2437 (class 2606 OID 332799)
+-- Dependencies: 175 2259 207
+-- Name: weeksnapshot_status_id_refs_id_51737488d38e8bad; Type: FK CONSTRAINT; Schema: timetracker; Owner: kairos
+--
+
+ALTER TABLE ONLY tracker_weeksnapshothistory
+    ADD CONSTRAINT weeksnapshot_status_id_refs_id_51737488d38e8bad FOREIGN KEY (weeksnapshot_status_id) REFERENCES common_dropdownvalue(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+-- Completed on 2012-10-02 15:03:44 EDT
+
+--
+-- PostgreSQL database dump complete
+--
+

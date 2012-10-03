@@ -111,6 +111,7 @@ class ProjectActivity(models.Model):
     activity = models.ForeignKey(Activity, related_name="activity")
 
     class Meta:
+        verbose_name = _("Project Activity")
         verbose_name_plural = _("Project Activities")
 
     def __unicode__(self):
@@ -127,6 +128,10 @@ class PayCodeType(models.Model):
     active = models.BooleanField(_('Active'), default=True)
     
     #TODO lotta of these classes, have same unicode, and active flag that needs to be filtered. create abstract class that takes care of this 
+    
+    class Meta:
+        verbose_name = _("Pay Code")
+        verbose_name_plural = _("Pay Codes")
     
     def __unicode__(self):
         return self.name
@@ -149,8 +154,8 @@ class TimeOffType(models.Model):
     active = models.BooleanField(_('Active'), default=True)
     
     class Meta:
-        verbose_name = _("TimeOff Type")
-        verbose_name_plural = _("TimeOff Types")
+        verbose_name = _("Time-Off Type")
+        verbose_name_plural = _("Time-Off Types")
     
     def __unicode__(self):
         return self.name
