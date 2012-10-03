@@ -62,8 +62,8 @@ def timesheet_by_week(request, week=None):
             for timesheet in timsheets:
                 rule_set = RuleSet.objects.for_instance(timesheet)
                 if rule_set:
-                    errors = GenericAspect.validate(rule_set, timesheet)
-                    if errors:
+                    validated_instance = GenericAspect.validate(rule_set, timesheet)
+                    if validated_instance.has_errors:
                         raise TypeError('ruleset errors encountered')
                 week_snapshot.timesheets.add(timesheet)
             week_snapshot.save()
@@ -73,10 +73,9 @@ def timesheet_by_week(request, week=None):
         #check if we have validators
         rule_set = RuleSet.objects.for_instance(week_snapshot)
         if rule_set:
-            errors = GenericAspect.validate(rule_set, week_snapshot)
-            if errors:
+            validated_instance = GenericAspect.validate(rule_set, week_snapshot)
+            if validated_instance.has_errors:
                 raise TypeError('ruleset errors encountered')
-        
         
         #add new status to the weeksnapshot
         post_status_update(week_snapshot, status)            

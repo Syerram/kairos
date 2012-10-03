@@ -85,8 +85,8 @@ def timeoff_book(request, start_date=None):
             #TODO: have all forms extend RuleEnabledForm that on save can actually run the ruleSet.            
             rule_set = RuleSet.objects.for_instance(booktimeoff)
             if rule_set:
-                errors = GenericAspect.validate(rule_set, booktimeoff)
-                if errors:
+                validated_instance = GenericAspect.validate(rule_set, booktimeoff)
+                if validated_instance.has_errors:
                     raise TypeError('ruleset errors encountered')
             
         #TODO: circulate back to main html

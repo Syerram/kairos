@@ -1,6 +1,30 @@
-<span>{{queue_item.content_object.user.username}}</span>
-<span>{{queue_item.content_object.timeoff_type.name}}</span>
-<span>{{queue_item.content_object.start_date|date:"d.NY"}}</span>
-<span>{{queue_item.content_object.end_date|date:"d.NY"}}</span>
-<span>{{queue_item.content_object.start_date|timesince:queue_item.content_object.end_date}}</span>
-<!-- TODO: include start date as well -->
+{% load timeoff_tags %}
+
+<h2>
+    <strong>{{queue_item.content_object.user.username}}</strong>
+    <span title="Time off" class="icon time-off">&nbsp;</span>
+</h2>
+
+<h3>
+    <strong><span>{{queue_item.content_object.start_date|date:"m/d"}}</span> to <span>{{queue_item.content_object.end_date|date:"m/d"}}</span></strong>
+    <strong>Total Days <span>{{queue_item.content_object.number_of_days}}</span></strong>
+</h3>
+<ul class="tasks">
+    <li>
+        <h4>Time Off</h4>
+        <h5>{{queue_item.content_object.timeoff_type.name}}</h5>
+        <div class="hours">{{queue_item.content_object.number_of_days}}</div>
+    </li>
+</ul>
+<div class="comments">
+    This is my comment text I entered with this comment available to read here...
+</div>
+<div class="buttons">
+    <a href="javascript:" class="button comments" onclick="comments_toggle(this);"><span>&nbsp;</span></a>
+    {% if queue_item.content_object|is_approved %}
+        <div class="approved">Approved <time datetime="2012-10-02">just now</time></div>
+    {% else %}
+        <a href="/q/-/{{queue_item.id}}" class="button reject"><span>Reject</span></a>
+        <a href="/q/+/{{queue_item.id}}" class="button approve"><span>Approve</span></a>        
+    {% endif %}
+</div>

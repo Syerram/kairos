@@ -6,11 +6,23 @@ Created on Sep 9, 2012
 from kairos.util import get_type
 from decimal import Decimal
 
+class ValidatorObject(object):
+    '''
+        This object will contain all of the properties that got validated, with property name as attribute and value as 
+        a tuple of (passed, error_message, expected, actual)
+    '''
+    pass
+
 class GenericAspect(object):
 
     @staticmethod    
-    def validate(rulesets, instance):
-        errors = {}
+    def validate(rulesets, instance, validator=None):
+        if validator:
+            validator = GenericValidator
+            
+        validated_instance = ValidatorObject()
+        has_errors = False
+        
         for ruleset in rulesets:
             validator_module = ruleset.validator_module
             if validator_module:
@@ -33,35 +45,45 @@ class GenericAspect(object):
                     prop_name = property_name + '_validate'
                     prop_name_method = getattr(validator_module, prop_name, None)
                     if prop_name_method and callable(prop_name_method):
-                        passed, error = prop_name_method(required_value, operator_type, property_value)                        
+                        validated_outcome = prop_name_method(required_value, operator_type, property_value)                        
                 else:
                     #invoke default validator
-                    passed, error = GenericValidator.validator(operator_type.code, property_type, required_value, property_value)
+                    validated_outcome = validator.validate(operator_type.code, property_type, required_value, property_value)
                 
-                if not passed:
-                    errors[property_name] = error
-        return errors
+                #check if error occured, so we can let callers know there are errors in the instance
+                if not has_errors and not validated_outcome[0]:
+                    has_errors = True
+                    
+                #add this to 
+                setattr(validated_instance, name, validated_outcome)                
+        
+        setattr(validated_instance, 'has_errors', has_errors)
+        
+        return validated_instance
 
 
 class GenericValidator(object):
+    '''
+        Generic validator that child classes can overide
+    '''
     
     def greater_then_validator(required_value, property_value):
         if property_value > required_value:
-            return True, None
+            return True, None, required_value, property_value
         else:
-            return False, str(required_value) + ' is not greater than ' + str(property_value)
+            return False, str(required_value) + ' is not greater than ' + str(property_value), required_value, property_value
 
     def less_then_validator(required_value, property_value):
         if property_value < required_value:
-            return True, None
+            return True, None, required_value, property_value
         else:
-            return False, str(required_value) + ' is not less than ' + str(property_value)
+            return False, str(required_value) + ' is not less than ' + str(property_value), required_value, property_value
         
     def equal_to_validator(required_value, property_value):
         if property_value == required_value:
-            return True, None
+            return True, None, required_value, property_value
         else:
-            return False, str(required_value) + ' is not equal to ' + str(property_value)
+            return False, str(required_value) + ' is not equal to ' + str(property_value), required_value, property_value
     
     operator_mapping = {'GT': greater_then_validator, 'LT': less_then_validator, 'EQ': equal_to_validator}
     
@@ -74,7 +96,10 @@ class GenericValidator(object):
         return value
     
     @staticmethod
-    def validator(operator_type, property_type, required_value, property_value):
+    def validate(operator_type, property_type, required_value, property_value):
+        '''
+        Validater calls the appropriate function that maps to the operator mapping
+        '''
         validator_func = GenericValidator.operator_mapping[operator_type]        
         return validator_func(GenericValidator.to_property_type(property_type, required_value), GenericValidator.to_property_type(property_type, property_value))
     

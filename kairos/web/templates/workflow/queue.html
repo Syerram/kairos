@@ -4,6 +4,7 @@
 
 {% block script %}
     <script type="text/javascript" src="/static/js/tabs.js"></script>
+
 {% endblock %}
 
 {% block approvals_active %}active{% endblock %}
@@ -31,13 +32,13 @@
         </div>
         
         <ul class="approvals">
-	        <li class="col">
-	            {% for queue_item in queue_items %}            
-		            <div class="box">
-		                {% content_type_snapshot queue_item %}
-		            </div>
-	            {% endfor %}
-	        </li>
+            {% for queue_item in queue_items %}
+                 <li class="col">
+                     <div class="box">
+                        {% content_type_snapshot queue_item %}
+                     </div>
+                 </li>
+            {% endfor %}            
 	    </ul>
     </div>
 {% endblock %}
