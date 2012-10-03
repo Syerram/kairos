@@ -1,8 +1,38 @@
 {% load tracker_tags %}
 
 {% total_hours queue_item.content_object as total_hours %}
-<span>{{queue_item.content_object.user.username}}</span>
-<span>{{total_hours}}</span>
-<span>{{queue_item.content_object.week}}</span>
-<span>{{queue_item.content_object.start_week}}</span>
-<span>{{queue_item.content_object.end_week}}</span>
+<h2>
+    <strong>{{queue_item.content_object.user.username}}</strong>
+    <span class="icon timesheet">&nbsp;</span>
+</h2>
+<h3>
+    <strong><span>{{queue_item.content_object.start_week|date:"m/d"}}</span> to <span>{{queue_item.content_object.end_week|date:"m/d"}}</span></strong>
+    <strong>Total Hours <span>{{total_hours}}</span></strong>
+</h3>
+<ul class="tasks">
+        {% for timesheet in queue_item.content_object.timesheets.all %}    
+	        <li>
+	            {% if timesheet.is_timeoff %}
+	               <h4>{{timesheet.timeoff_type.name}}</h4>
+	               <h5>&nbsp;</h5>
+	            {% else %}
+	               <h4>{{timesheet.project.name}}</h4>
+	               <h5>{{timesheet.activity.name}}</h5>
+	            {% endif %}
+	            <div class="hours">{{timesheet.total_hours}}</div>
+	        </li>
+        {% endfor %}
+</ul>
+<div class="comments">
+    This is my comment text I entered with this comment available to read here...
+</div>
+<div class="buttons">
+    <a href="javascript:" class="button comments" onclick="comments_toggle(this);"><span>&nbsp;</span></a>
+    {% if queue_item.content_object|is_approved %}
+        <div class="approved">Approved <time datetime="2012-10-02">just now</time></div>
+    {% else %}
+        <a href="/q/-/{{queue_item.id}}" class="button reject"><span>Reject</span></a>
+        <a href="/q/+/{{queue_item.id}}" class="button approve"><span>Approve</span></a>        
+    {% endif %}
+</div>
+

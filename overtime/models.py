@@ -1,6 +1,7 @@
 from django.db import models
 from rules.models import RuleSet
 from django.utils.translation import ugettext_lazy as _
+from django.contrib import admin
 
 class OvertimePolicy(models.Model):
     """
@@ -20,6 +21,8 @@ class OvertimePolicy(models.Model):
     def __unicode__(self):
         return 'Overtime policy ' + self.name
     
+admin.site.register(OvertimePolicy)
+
 class OvertimeCondition(models.Model):
     """
         Defines conditions for each overtime policy
@@ -33,3 +36,5 @@ class OvertimeCondition(models.Model):
     
     def __unicode__(self):
         return 'Overtime Condition ' + self.ruleset.name + ' for ' + self.overtime_policy.name
+
+admin.site.register(OvertimeCondition)

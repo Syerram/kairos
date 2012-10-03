@@ -6,7 +6,7 @@
         {% current_week_number as current_week_number %}
 	    <header>
 	        <div class="wrapper">
-	            <div class="logo"><a href="/home/"><img alt="" src="/static/img/logo-header.png"> </a></div>
+	            <a href="/home/"><div class="logo"></div></a>
 	            {% block navigation %}
 	                   <ul class="navigation">
 			                <li class="timesheets {% block timesheet_active %}{% endblock %}"><a href="/timesheet/{{current_week_number}}/"><span></span> Log Time</a></li>
