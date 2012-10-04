@@ -4,7 +4,58 @@ Created on Sep 9, 2012
 @author: staticfish
 '''
 from kairos.util import get_type
-from decimal import Decimal
+
+class GenericValidator(object):
+    '''
+        Generic validator that child classes can overide
+    '''
+    
+    def __init__(self, *args, **kwargs):
+        self.operator_mapping = {'GT': self.greater_then_validator, 
+                                 'LT': self.less_then_validator, 
+                                 'EQ': self.equal_to_validator, 
+                                 'GE': self.greater_than_equal_to_validator}
+    
+    def greater_then_validator(self, required_value, property_value):
+        if property_value > required_value:
+            return True, None, required_value, property_value
+        else:
+            return False, str(required_value) + ' is not greater than ' + str(property_value), required_value, property_value
+    
+    def equal_to_validator(self, required_value, property_value):
+        if property_value == required_value:
+            return True, None, required_value, property_value
+        else:
+            return False, str(required_value) + ' is not equal to ' + str(property_value), required_value, property_value
+    
+    def greater_than_equal_to_validator(self, required_value, property_value):
+        validated_data = self.greater_then_validator(required_value, property_value)
+        if not validated_data[0]:
+            validated_data = self.equal_to_validator(required_value, property_value)
+        
+        return validated_data
+        
+    def less_then_validator(self, required_value, property_value):
+        if property_value < required_value:
+            return True, None, required_value, property_value
+        else:
+            return False, str(required_value) + ' is not less than ' + str(property_value), required_value, property_value
+    
+    def to_property_type(self, value_type, value):
+        """convert to primitive if its object type"""
+        if value_type.code == 'NUM': 
+            return int(value)
+                    
+        return value
+    
+    def validate(self, operator_type, property_type, required_value, property_value):
+        '''
+        Validater calls the appropriate function that maps to the operator mapping
+        '''
+        validator_func = self.operator_mapping[operator_type]        
+        return validator_func(self.to_property_type(property_type, required_value), self.to_property_type(property_type, property_value))
+    
+generic_validator = GenericValidator()    
 
 class ValidatorObject(object):
     '''
@@ -17,8 +68,8 @@ class GenericAspect(object):
 
     @staticmethod    
     def validate(rulesets, instance, validator=None):
-        if validator:
-            validator = GenericValidator
+        if not validator:
+            validator = generic_validator
             
         validated_instance = ValidatorObject()
         has_errors = False
@@ -55,52 +106,8 @@ class GenericAspect(object):
                     has_errors = True
                     
                 #add this to 
-                setattr(validated_instance, name, validated_outcome)                
+                setattr(validated_instance, property_name, validated_outcome)                
         
         setattr(validated_instance, 'has_errors', has_errors)
         
         return validated_instance
-
-
-class GenericValidator(object):
-    '''
-        Generic validator that child classes can overide
-    '''
-    
-    def greater_then_validator(required_value, property_value):
-        if property_value > required_value:
-            return True, None, required_value, property_value
-        else:
-            return False, str(required_value) + ' is not greater than ' + str(property_value), required_value, property_value
-
-    def less_then_validator(required_value, property_value):
-        if property_value < required_value:
-            return True, None, required_value, property_value
-        else:
-            return False, str(required_value) + ' is not less than ' + str(property_value), required_value, property_value
-        
-    def equal_to_validator(required_value, property_value):
-        if property_value == required_value:
-            return True, None, required_value, property_value
-        else:
-            return False, str(required_value) + ' is not equal to ' + str(property_value), required_value, property_value
-    
-    operator_mapping = {'GT': greater_then_validator, 'LT': less_then_validator, 'EQ': equal_to_validator}
-    
-    @staticmethod
-    def to_property_type(value_type, value):
-        """convert to primitive if its object type"""
-        if value_type.code == 'NUM': 
-            return int(value)
-                    
-        return value
-    
-    @staticmethod
-    def validate(operator_type, property_type, required_value, property_value):
-        '''
-        Validater calls the appropriate function that maps to the operator mapping
-        '''
-        validator_func = GenericValidator.operator_mapping[operator_type]        
-        return validator_func(GenericValidator.to_property_type(property_type, required_value), GenericValidator.to_property_type(property_type, property_value))
-    
-    

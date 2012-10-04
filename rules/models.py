@@ -12,8 +12,7 @@ class JointPoint(models.Model):
     name = models.CharField(_('Name'), max_length=125)
     property_name = models.CharField(_('Property Name'), max_length=255)
     property_type = models.ForeignKey(DropdownValue, related_name="property_types", verbose_name=_('Property Type'))
-    content_type = models.ForeignKey(ContentType, related_name="content_type", verbose_name=_('Content Type'))
-    
+        
     class Meta:
         verbose_name = _("Joint Point")
         verbose_name_plural = _("Joint Points")
@@ -74,7 +73,7 @@ class RuleSetManager(models.Manager):
     @cacher(key=ruleset_key_gen)
     def for_content_type(self, content_type):
         """Call if ContentType is available"""
-        return RuleSet.objects.filter(pointcuts__in=PointCut.objects.filter(jointpoint__content_type=content_type)).filter(active=True).distinct()
+        return RuleSet.objects.filter(content_type=content_type).filter(active=True).distinct()
 
     def for_instance(self, instance):
         """Call if instance is available. The fetching of ContentType is cached by Django"""
@@ -84,6 +83,7 @@ class RuleSet(models.Model):
     name = models.TextField(_('Name'), max_length=255)
     description = models.TextField(_('Description'), null=True, blank=True)
     pointcuts = models.ManyToManyField(PointCut, verbose_name=_('Pointcuts'), related_name="pointcuts")
+    content_type = models.ForeignKey(ContentType, related_name="content_type", verbose_name=_('Content Type'))
     validator_module = models.CharField(_('Validator Module'), max_length=255, null=True, blank=True)
     
     active = models.BooleanField(_('Active'), default=False)
