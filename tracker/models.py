@@ -47,6 +47,14 @@ class Timesheet(models.Model):
     
     is_timeoff = property(__is_timeoff)
     
+    def __total_work_hours(self):
+        if self.is_timeoff:
+            return 0
+        else:
+            return self.total_hours
+    
+    total_work_hours = property(__total_work_hours)
+    
 class TimesheetNote(models.Model):
     """
         Represents notes for each time sheet. 

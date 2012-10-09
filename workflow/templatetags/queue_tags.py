@@ -6,6 +6,8 @@ Created on Sep 20, 2012
 from kairos import django_ext
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
+from workflow.views import queue_count as q_count
+from django.utils import timesince
 
 """Queue based tags"""
 
@@ -32,4 +34,14 @@ def content_type_history(queue_item_history):
     QUEUE_HISTORY = settings.QUEUE_CONTENT_TYPE_SETTINGS['QUEUE_HISTORY']
     if content_type_label in QUEUE_HISTORY:
         return {'content_snapshot_path': QUEUE_HISTORY[content_type_label], 'queue_item': queue_item_history}
-    
+
+def queue_count(user):
+    '''
+    Returns the count of the queue waiting for approval
+    Arguments: 
+        user (User): queue count for the given user
+    '''
+    return q_count(user)
+
+
+register.assignment_tag(queue_count)

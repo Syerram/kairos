@@ -85,7 +85,7 @@ class UserOverTimePolicy(models.Model):
     user_profile = models.ForeignKey(UserProfile, verbose_name=_('User'), related_name='user_overtime')
     overtime_policy = models.ForeignKey(OvertimePolicy, verbose_name=_('Overtime Policy'), related_name='user_overtime_policies')
     
-    banked_hours = models.DecimalField(_('Banked Hours'), max_digits=4, decimal_places=2, default=0)
+    bank_user_timeoff_policy = models.ForeignKey(UserTimeOffPolicy, verbose_name=_('Bank to User Timeoff Policy'), related_name='bank_to_user_timeoff')
     
     class Meta:
         verbose_name = _("User Overtime Policy")

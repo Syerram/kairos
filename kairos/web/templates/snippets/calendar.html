@@ -1,0 +1,45 @@
+{% load calendar_tags %}
+{% load web_tags %}
+
+<div class="tab-content" id="tab-period">
+         <h3>{{month_name}} {{year}}</h3>
+         <a href="/timesheet/{{first_week|add:'-1'}}/" class="date-navigation left">&larr; {{month_name|month_shift:'-1'}}</a>
+         <a href="/timesheet/{{last_week|add:'1'}}/" class="date-navigation right">{{month_name|month_shift:'1'}} &rarr;</a>
+         <table>
+             <thead>
+                 <tr>
+                     <td title="Week">W</td>
+                     <td title="Monday">M</td>
+                     <td title="Tuesday">T</td>
+                     <td title="Wednesday">W</td>
+                     <td title="Thursday">T</td>
+                     <td title="Friday">F</td>
+                     <td title="Saturday">S</td>
+                     <td title="Sunday">S</td>
+                 </tr>
+             </thead>             
+             <tbody>
+                {% for week in month_calendar %}
+                    {% assign week_idx first_week|add:forloop.counter0 %}
+                    {% if week_idx == current_week %}
+                        <tr class="current-week">
+                    {% else %}
+                        <tr>
+                    {% endif %}
+                         <th><a href="/timesheet/{{week_idx}}/">{{week_idx}}</a></th>
+	                     {% for day in week %}	                         
+	                         {% if day %}
+	                            {% if day == today_day and month == today_month %}
+	                               <td class="current-day">{{day}}</td>
+	                            {% else %}
+	                               <td class="day">{{day}}</td>
+	                            {% endif %}
+                             {% else %}
+		                        <td class="not-in-month">&nbsp;</td>
+		                     {% endif %}		                     
+	                      {% endfor %}
+                    </tr>
+                {% endfor %}                 
+             </tbody>
+    </table>
+</div>

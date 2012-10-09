@@ -16,7 +16,7 @@ def day_plus(start_date=None, day_increment=1):
     return start_date + timedelta(days=int(day_increment))
 
 def week_number(date=None):
-    """Returns the current week number """
+    """Returns the week number """
     return date.isocalendar()[1]
 
 def is_in_future(date=None):

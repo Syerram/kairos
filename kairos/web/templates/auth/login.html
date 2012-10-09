@@ -1,13 +1,62 @@
 {% extends "includes/base.html" %}
+{% load web_tags %}
+
 {% block head_title %}Login{% endblock %}
+
+{% block extra_style %}
+    <style type="text/css">
+        #errors ul li {
+            list-style: none;    
+            font-size:13px;        
+        }
+    </style>
+{% endblock %}
+
+{% block script %}
+    <script type="text/javascript" src="/static/js/qtip.jquery.min.js"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.js"></script>
+    
+    <script type="text/javascript">
+	    $(document).ready(function ()
+	    {	
+	        $(".error").qtip({
+	            style: { 
+	                padding: 5,
+	                fontSize: 11,
+	                border: {
+	                    width: 1
+	                },
+	                tip: {
+	                    corner: 'topMiddle',
+	                    size: {
+	                        x: 6,
+	                        y: 6
+	                    }
+	                },
+	                name: 'red'
+	            },
+	            position: {
+	                corner: {
+	                    target: 'bottomMiddle',
+	                    tooltip: 'topMiddle'
+	                }
+	            }
+	        });
+	    });
+	</script>
+
+{% endblock %}
 
 {% block content %}  
     <div class="modal login">
         <form action="{% url django.contrib.auth.views.login %}" class="login" method="post" autocomplete="off">
-            {% csrf_token %}
+            {% csrf_token %}            
             <div class="logo">Work +</div>
-            <input type="email" id="{{form.username.auto_id}}" name="{{form.username.name}}" placeholder="user@email.com" />
-            <input type="password" id="{{form.password.auto_id}}" name="{{form.password.name}}" placeholder="password" />
+            <div id="errors">
+                {{form.non_field_errors}}
+            </div>
+            <input type="email" class="{% error_class form 'username' %}" title="{% error_message form 'username' %}" id="{{form.username.auto_id}}" name="{{form.username.name}}" placeholder="user@email.com" />            
+            <input type="password" class="{% error_class form 'password' %}" title="{% error_message form 'password' %}" id="{{form.password.auto_id}}" name="{{form.password.name}}" placeholder="password" />
             <input type="submit" name="btnsubmit" value="Login"  />
             <input type="hidden" name="next" value="/home/" />
             <label><input type="checkbox" name="rememberme" value="Y" />Remember me</label>

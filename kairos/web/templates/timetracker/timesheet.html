@@ -1,6 +1,7 @@
 {% extends "includes/content_base.html" %}
 {% load tracker_tags %}
 {% load categories_tags %}
+{% load calendar_tags %}
 
 {% block extra_style %}
    <link rel="stylesheet" href="/static/css/chosen.css" media="screen" />
@@ -223,7 +224,7 @@
             <header>
                 <h1>Log Time</h1>
                 <a href="javascript:" onclick="hanging_box_toggle(this)" class="button gray arrow-right"><span>&nbsp;</span></a>
-                <!-- <h2>Week {{week}} - {{week_snapshot.last_status.weeksnapshot_status.display}}</h2>  -->                
+                <h2>Week {{week}} - {{week_snapshot.last_status.weeksnapshot_status.display}}</h2>                
             </header>
             <section class="log-time main-content">
                 <form id="id_timesheet" name="timesheet" action="/timesheet/{{week}}/" method="POST">
@@ -233,7 +234,7 @@
 	                        <tr>
 	                            <th class="project">&nbsp;</th>
 	                            <th class="task">&nbsp;</th>
-	                            <th class="day"><span>M</span>{{week_snapshot.start_week|date:"M"}} {{week_snapshot.start_week|date:"d"}}</th>
+	                            <th class="day"><span>M</span>{{week_snapshot.start_week|day_plus:"0"|date:"M"}} {{week_snapshot.start_week|day_plus:"0"|date:"d"}}</th>
 	                            <th class="day"><span>T</span>{{week_snapshot.start_week|day_plus:"1"|date:"M"}} {{week_snapshot.start_week|day_plus:"1"|date:"d"}}</th>
 	                            <th class="day"><span>W</span>{{week_snapshot.start_week|day_plus:"2"|date:"M"}} {{week_snapshot.start_week|day_plus:"2"|date:"d"}}</th>
 	                            <th class="day"><span>T</span>{{week_snapshot.start_week|day_plus:"3"|date:"M"}} {{week_snapshot.start_week|day_plus:"3"|date:"d"}}</th>
@@ -354,7 +355,7 @@
             <footer>
                 <a href="#" class="button gray left" id="id_reset">Reset</a>
                 <a href="#" class="button default right" id="id_save">Submit</a>
-                <a href="#" class="button default right" id="id_draft">Save</a>
+                <a href="#" class="button special right" id="id_draft">Save</a>
                 <a href="#" class="button gray right" id="id_add_log">Add Log Entry</a>
                 <a href="#" class="button gray right" id="id_add_timeoff">Add Timeoff</a>
             </footer>
@@ -377,77 +378,7 @@
             <ul class="tabs">
                 <li class="active"><a href="javascript:" onclick="tab_open('tab-period', this);">Period</a></li><li><a href="javascript:" onclick="tab_open('tab-comments', this);">Comments</a></li><li><a href="javascript:" onclick="tab_open('tab-stats', this);">Stats</a></li>
             </ul>
-            <div class="tab-content" id="tab-period">
-                <h3>September 2012</h3>
-                <a href="#" class="date-navigation left">&larr; August</a>
-                <a href="#" class="date-navigation right">October &rarr;</a>
-                <table>
-                    <thead>
-                        <tr>
-                            <td title="Week">W</td>
-                            <td title="Monday">M</td>
-                            <td title="Tuesday">T</td>
-                            <td title="Wednesday">W</td>
-                            <td title="Thursday">T</td>
-                            <td title="Friday">F</td>
-                            <td title="Saturday">S</td>
-                            <td title="Sunday">S</td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <th><a href="#">35</a></th>
-                            <td class="not-in-month">&nbsp;</td>
-                            <td class="not-in-month">&nbsp;</td>
-                            <td class="not-in-month">&nbsp;</td>
-                            <td class="not-in-month">&nbsp;</td>
-                            <td class="not-in-month">&nbsp;</td>
-                            <td class="day">1</td>
-                            <td class="day">2</td>
-                        </tr>
-                        <tr>
-                            <th><a href="#">36</a></th>
-                            <td class="day">3</td>
-                            <td class="day">4</td>
-                            <td class="day">5</td>
-                            <td class="day">6</td>
-                            <td class="day">7</td>
-                            <td class="day">8</td>
-                            <td class="day">9</td>
-                        </tr>
-                        <tr>
-                            <th><a href="#">37</a></th>
-                            <td class="day">10</td>
-                            <td class="day">11</td>
-                            <td class="day">12</td>
-                            <td class="day">13</td>
-                            <td class="day">14</td>
-                            <td class="day">15</td>
-                            <td class="day">16</td>
-                        </tr>
-                        <tr class="current-week">
-                            <th><a href="#">38</a></th>
-                            <td class="day">17</td>
-                            <td class="day">18</td>
-                            <td class="day">19</td>
-                            <td class="day">20</td>
-                            <td class="day">21</td>
-                            <td class="day">22</td>
-                            <td class="day current-day">23</td>
-                        </tr>
-                        <tr>
-                            <th><a href="#">38</a></th>
-                            <td class="day">24</td>
-                            <td class="day">25</td>
-                            <td class="day">26</td>
-                            <td class="day">27</td>
-                            <td class="day">28</td>
-                            <td class="day">29</td>
-                            <td class="day">30</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+            {% month_calendar week_snapshot.end_week %}
             <div class="tab-content" id="tab-comments">
                 <p>Enter your timesheet comments here</p>
                 <textarea name="comments" id="comments"></textarea>

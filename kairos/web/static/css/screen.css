@@ -1,6 +1,6 @@
 /* Main Styles */
 body {
-    background: #EAEBEC url(/static/img/bg.png) repeat left top;
+    background: #EAEBEC url(/static/img/bg.png);
     font-family: 'Helvetica Neue', Helvetica, Verdana, sans-serif;
     -webkit-font-smoothing: subpixel-antialiased;
 }
@@ -131,6 +131,48 @@ a.button.default:active {
     background-image: -o-linear-gradient(90deg, #466681 0%, #132835 100%);
     background-image: -webkit-linear-gradient(90deg, #466681 0%, #132835 100%);
     background-image: linear-gradient(90deg, #466681 0%, #132835 100%);
+    padding: 6px 10px 4px;
+}
+a.button.special {
+    font-size: 13px;
+    padding: 5px 10px;
+    color: #fff;
+    border-radius: 3px;
+    -moz-background-clip: padding;
+    -webkit-background-clip: padding-box;
+    background-clip: padding-box;
+    background-color: #a7a7a7;
+    -moz-box-shadow: 0 0 0 1px #3d4042, 0 2px 1px #ededed, inset 0 1px 0 rgba(139,148,156,.75);
+    -webkit-box-shadow: 0 0 0 1px #3d4042, 0 2px 1px #ededed, inset 0 1px 0 rgba(139,148,156,.75);
+    box-shadow: 0 0 0 1px #3d4042, 0 2px 1px #ededed, inset 0 1px 0 rgba(139,148,156,.75);
+    background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEwMCAxMDAiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPjxsaW5lYXJHcmFkaWVudCBpZD0iaGF0MCIgZ3JhZGllbnRVbml0cz0ib2JqZWN0Qm91bmRpbmdCb3giIHgxPSI1MCUiIHkxPSIxMDAlIiB4Mj0iNTAlIiB5Mj0iLTEuNDIxMDg1NDcxNTIwMmUtMTQlIj4KPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzJjMzEzNSIgc3RvcC1vcGFjaXR5PSIxIi8+CjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzcyN2I4MyIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgIDwvbGluZWFyR3JhZGllbnQ+Cgo8cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0idXJsKCNoYXQwKSIgLz4KPC9zdmc+);
+    background-image: -moz-linear-gradient(bottom, #2c3135 0%, #727b83 100%);
+    background-image: -o-linear-gradient(bottom, #2c3135 0%, #727b83 100%);
+    background-image: -webkit-linear-gradient(bottom, #2c3135 0%, #727b83 100%);
+    background-image: linear-gradient(bottom, #2c3135 0%, #727b83 100%);
+    font-weight: bold;
+    text-shadow: 0 -1px 0 #192f3e;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+a.button.special:hover {
+    text-decoration: none;
+    background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEwMCAxMDAiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPjxsaW5lYXJHcmFkaWVudCBpZD0iaGF0MCIgZ3JhZGllbnRVbml0cz0ib2JqZWN0Qm91bmRpbmdCb3giIHgxPSI1MCUiIHkxPSIxMDAlIiB4Mj0iNTAlIiB5Mj0iLTEuNDIxMDg1NDcxNTIwMmUtMTQlIj4KPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzNmNDY0YSIgc3RvcC1vcGFjaXR5PSIxIi8+CjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzg5OGU5MyIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgIDwvbGluZWFyR3JhZGllbnQ+Cgo8cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0idXJsKCNoYXQwKSIgLz4KPC9zdmc+);
+    background-image: -moz-linear-gradient(bottom, #3f464a 0%, #898e93 100%);
+    background-image: -o-linear-gradient(bottom, #3f464a 0%, #898e93 100%);
+    background-image: -webkit-linear-gradient(bottom, #3f464a 0%, #898e93 100%);
+    background-image: linear-gradient(bottom, #3f464a 0%, #898e93 100%);
+}
+a.button.special:active {
+    -moz-box-shadow: 0 0 0 1px #3d4042, 0 2px 1px #ededed, inset 0 3px 4px rgba(47,50,52,.75);
+    -webkit-box-shadow: 0 0 0 1px #3d4042, 0 2px 1px #ededed, inset 0 3px 4px rgba(47,50,52,.75);
+    box-shadow: 0 0 0 1px #3d4042, 0 2px 1px #ededed, inset 0 3px 4px rgba(47,50,52,.75);
+    background-color: #a7a7a7;
+    background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEwMCAxMDAiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPjxsaW5lYXJHcmFkaWVudCBpZD0iaGF0MCIgZ3JhZGllbnRVbml0cz0ib2JqZWN0Qm91bmRpbmdCb3giIHgxPSI1MCUiIHkxPSIxMDAlIiB4Mj0iNTAlIiB5Mj0iLTEuNDIxMDg1NDcxNTIwMmUtMTQlIj4KPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzcyN2I4MyIgc3RvcC1vcGFjaXR5PSIxIi8+CjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzM2M2IzZiIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgIDwvbGluZWFyR3JhZGllbnQ+Cgo8cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0idXJsKCNoYXQwKSIgLz4KPC9zdmc+);
+    background-image: -moz-linear-gradient(bottom, #727b83 0%, #363b3f 100%);
+    background-image: -o-linear-gradient(bottom, #727b83 0%, #363b3f 100%);
+    background-image: -webkit-linear-gradient(bottom, #727b83 0%, #363b3f 100%);
+    background-image: linear-gradient(bottom, #727b83 0%, #363b3f 100%);
     padding: 6px 10px 4px;
 }
 
@@ -393,6 +435,29 @@ div.modal.main li {
     list-style: none;
     width: 189px;
     float: left;
+    position: relative;
+}
+div.modal.main .count {
+    position: absolute;
+    top: 40px;
+    right: 45px;
+    padding: 4px 15px;
+    color: white;
+    text-shadow: 0 -1px 0 rgba(106,4,4,.75);
+    font-size: 12px;
+    border-radius: 30px;
+    -moz-background-clip: padding;
+    -webkit-background-clip: padding-box;
+    background-clip: padding-box;
+    background-color: #fff;
+    -moz-box-shadow: 0 0 3px rgba(2,1,1,.75), inset 0 0 1px 2px rgba(255,255,255,.9);
+    -webkit-box-shadow: 0 0 3px rgba(2,1,1,.75), inset 0 0 1px 2px rgba(255,255,255,.9);
+    box-shadow: 0 0 3px rgba(2,1,1,.75), inset 0 0 1px 2px rgba(255,255,255,.9);
+    background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEwMCAxMDAiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPjxsaW5lYXJHcmFkaWVudCBpZD0iaGF0MCIgZ3JhZGllbnRVbml0cz0ib2JqZWN0Qm91bmRpbmdCb3giIHgxPSI1MCUiIHkxPSIxMDAlIiB4Mj0iNTAlIiB5Mj0iLTEuNDIxMDg1NDcxNTIwMmUtMTQlIj4KPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzg4MTcwNSIgc3RvcC1vcGFjaXR5PSIxIi8+CjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iI2UwMTgxOCIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgIDwvbGluZWFyR3JhZGllbnQ+Cgo8cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0idXJsKCNoYXQwKSIgLz4KPC9zdmc+);
+    background-image: -moz-linear-gradient(bottom, #881705 0%, #e01818 100%);
+    background-image: -o-linear-gradient(bottom, #881705 0%, #e01818 100%);
+    background-image: -webkit-linear-gradient(bottom, #881705 0%, #e01818 100%);
+    background-image: linear-gradient(bottom, #881705 0%, #e01818 100%);
 }
 div.modal.main a {
     display: block;
@@ -511,9 +576,13 @@ div.content {
         0 0 0 1px #a7a7a7;
     background: #fff url(/static/img/bg-content.gif) no-repeat 50% 100%;
 }
+div.content.nofx {
+    background: #fff;
+    height: 90px;
+}
 div.content > header {
     border-bottom: 1px solid #d2d2d2;
-    height: 35px;
+    height: 55px;
     padding: 25px;
 }
 div.content > header:last-child {
@@ -526,8 +595,16 @@ div.content > header h1 {
     color: #1d3444;
     float: left;
 }
+div.content > header h2 {
+    clear: left;
+    font-size: 12px;
+    font-weight: bold;
+    color: #1d3444;
+    float: left;
+}
 div.content > header a.button {
     float: right;
+    margin: 15px 0 0;
 }
 div.content > header a.button.arrow-right span,
 div.content > header a.button.arrow-left span {
@@ -702,6 +779,37 @@ div.content > footer .button.right {
         0 2px 1px #ededed,
         inset 0 1px 3px rgba(0,0,0,.1);
 }
+.error {
+    -moz-box-shadow:
+        0 0 0 1px #831e1e,
+        0 2px 1px #ededed,
+        inset 0 1px 3px rgba(0,0,0,.1) !important;
+    -webkit-box-shadow:
+        0 0 0 1px #831e1e,
+        0 2px 1px #ededed,
+        inset 0 1px 3px rgba(0,0,0,.1) !important;
+    box-shadow:
+        0 0 0 1px #831e1e,
+        0 2px 1px #ededed,
+        inset 0 1px 3px rgba(0,0,0,.1) !important;
+    color: #831e1e !important;
+    background-color: #fef2f2 !important;
+}
+.log-time tbody td input[type=text].disabled {
+    -moz-box-shadow:
+        0 0 0 1px #bbb,
+        0 2px 1px #ededed,
+        inset 0 1px 3px rgba(0,0,0,.1);
+    -webkit-box-shadow:
+        0 0 0 1px #bbb,
+        0 2px 1px #ededed,
+        inset 0 1px 3px rgba(0,0,0,.1);
+    box-shadow:
+        0 0 0 1px #bbb,
+        0 2px 1px #ededed,
+        inset 0 1px 3px rgba(0,0,0,.1);
+    color: #bbb;
+}
 .log-time tfoot td {
     text-align: center;
     font-size: 12px;
@@ -724,7 +832,7 @@ div.content > footer .button.right {
 .hanging-box {
     position: absolute;
     z-index: 5;
-    top: 154px;
+    top: 174px;
     left: 50%;
     width: 340px;
     background: white;
@@ -947,15 +1055,14 @@ body.hanging-box-active > header .hanging-box-wrapper {
 #tab-period table tbody tr:hover td.day {
     background: #e2eef7;
 }
-#tab-period table tbody tr:hover td.day:hover {
-    cursor: pointer;
+#tab-period table tbody tr:hover td.day:hover {    
     color: #3f5768;
     background: #e2eef7;
 }
 #tab-period table tbody tr.current-week td {
-    background: #f9fafb;
+    background: #e2eef7;
 }
-#tab-period table tbody tr.current-week td.current-day {
+#tab-period table tbody tr td.current-day {
     background: #eef3f7;
     color: #5b85a7;
     font-weight: bold;
@@ -998,7 +1105,7 @@ body.hanging-box-active > header .hanging-box-wrapper {
     padding: 0;
 }
 .content header ul.stats li {
-    border-left: 1px solid #eee;
+    border-left: 1px solid #d1d1d1;
     display: block;
     float: left;
     width: 136px;
@@ -1103,6 +1210,9 @@ body.hanging-box-active > header .hanging-box-wrapper {
     font-size: 16px;
     vertical-align: baseline;
 }
+.wrapper > ul.approvals .box h3 strong span.hours {
+    margin: 0 0 0 5px;
+}
 .wrapper > ul.approvals .box ul.tasks {
     border-bottom: 1px solid #d1d1d1;
 }
@@ -1153,70 +1263,71 @@ body.hanging-box-active > header .hanging-box-wrapper {
     font-size: 13px;
 }
 .wrapper > ul.approvals .box .button.reject {
-    float: right;
+    float: left;
     background-color: #a7a7a7;
-    -moz-box-shadow: 0 0 0 1px #8e4f4a, 0 2px 1px #ededed, inset 0 1px 0 #fdb5ad;
-    -webkit-box-shadow: 0 0 0 1px #8e4f4a, 0 2px 1px #ededed, inset 0 1px 0 #fdb5ad;
-    box-shadow: 0 0 0 1px #8e4f4a, 0 2px 1px #ededed, inset 0 1px 0 #fdb5ad;
-    background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEwMCAxMDAiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPjxsaW5lYXJHcmFkaWVudCBpZD0iaGF0MCIgZ3JhZGllbnRVbml0cz0ib2JqZWN0Qm91bmRpbmdCb3giIHgxPSI1MCUiIHkxPSIxMDAlIiB4Mj0iNTAlIiB5Mj0iLTEuNDIxMDg1NDcxNTIwMmUtMTQlIj4KPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2YxNWQ0ZSIgc3RvcC1vcGFjaXR5PSIxIi8+CjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iI2ZhOGE3ZSIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgIDwvbGluZWFyR3JhZGllbnQ+Cgo8cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0idXJsKCNoYXQwKSIgLz4KPC9zdmc+);
-    background-image: -moz-linear-gradient(bottom, #f15d4e 0%, #fa8a7e 100%);
-    background-image: -o-linear-gradient(bottom, #f15d4e 0%, #fa8a7e 100%);
-    background-image: -webkit-linear-gradient(bottom, #f15d4e 0%, #fa8a7e 100%);
-    background-image: linear-gradient(bottom, #f15d4e 0%, #fa8a7e 100%);
-    color: #431c18;
-    text-shadow: 0 1px 0 #f2b1b1;
+    -moz-box-shadow: 0 0 0 1px #3e0602, 0 2px 1px #ededed, inset 0 1px 0 #af544a;
+    -webkit-box-shadow: 0 0 0 1px #3e0602, 0 2px 1px #ededed, inset 0 1px 0 #af544a;
+    box-shadow: 0 0 0 1px #3e0602, 0 2px 1px #ededed, inset 0 1px 0 #af544a;
+    background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEwMCAxMDAiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPjxsaW5lYXJHcmFkaWVudCBpZD0iaGF0MCIgZ3JhZGllbnRVbml0cz0ib2JqZWN0Qm91bmRpbmdCb3giIHgxPSI1MCUiIHkxPSIxMDAlIiB4Mj0iNTAlIiB5Mj0iLTEuNDIxMDg1NDcxNTIwMmUtMTQlIj4KPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzcxMTYxNiIgc3RvcC1vcGFjaXR5PSIxIi8+CjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzk2MjUyNSIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgIDwvbGluZWFyR3JhZGllbnQ+Cgo8cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0idXJsKCNoYXQwKSIgLz4KPC9zdmc+);
+    background-image: -moz-linear-gradient(bottom, #711616 0%, #962525 100%);
+    background-image: -o-linear-gradient(bottom, #711616 0%, #962525 100%);
+    background-image: -webkit-linear-gradient(bottom, #711616 0%, #962525 100%);
+    background-image: linear-gradient(bottom, #711616 0%, #962525 100%);
+    color: #fdeeee;
+    text-shadow: 0 -1px 0 #3b2727;
     margin: 0 0 0 10px;
 }
 .wrapper > ul.approvals .box .button.reject:hover {
     text-decoration: none;
-    background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEwMCAxMDAiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPjxsaW5lYXJHcmFkaWVudCBpZD0iaGF0MCIgZ3JhZGllbnRVbml0cz0ib2JqZWN0Qm91bmRpbmdCb3giIHgxPSI1MCUiIHkxPSIxMDAlIiB4Mj0iNTAlIiB5Mj0iLTEuNDIxMDg1NDcxNTIwMmUtMTQlIj4KPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2ZhNzE2NCIgc3RvcC1vcGFjaXR5PSIxIi8+CjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iI2ZlYTE5NyIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgIDwvbGluZWFyR3JhZGllbnQ+Cgo8cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0idXJsKCNoYXQwKSIgLz4KPC9zdmc+);
-    background-image: -moz-linear-gradient(bottom, #fa7164 0%, #fea197 100%);
-    background-image: -o-linear-gradient(bottom, #fa7164 0%, #fea197 100%);
-    background-image: -webkit-linear-gradient(bottom, #fa7164 0%, #fea197 100%);
-    background-image: linear-gradient(bottom, #fa7164 0%, #fea197 100%);
+    background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEwMCAxMDAiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPjxsaW5lYXJHcmFkaWVudCBpZD0iaGF0MCIgZ3JhZGllbnRVbml0cz0ib2JqZWN0Qm91bmRpbmdCb3giIHgxPSI1MCUiIHkxPSIxMDAlIiB4Mj0iNTAlIiB5Mj0iLTEuNDIxMDg1NDcxNTIwMmUtMTQlIj4KPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzgyMjAyMCIgc3RvcC1vcGFjaXR5PSIxIi8+CjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iI2E2MzAzMCIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgIDwvbGluZWFyR3JhZGllbnQ+Cgo8cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0idXJsKCNoYXQwKSIgLz4KPC9zdmc+);
+    background-image: -moz-linear-gradient(bottom, #822020 0%, #a63030 100%);
+    background-image: -o-linear-gradient(bottom, #822020 0%, #a63030 100%);
+    background-image: -webkit-linear-gradient(bottom, #822020 0%, #a63030 100%);
+    background-image: linear-gradient(bottom, #822020 0%, #a63030 100%);
 }
 .wrapper > ul.approvals .box .button.reject:active {
     background-color: #a7a7a7;
-    -moz-box-shadow: 0 0 0 1px #8e4f4a, 0 2px 1px #ededed, inset 0 3px 3px #bc3f32;
-    -webkit-box-shadow: 0 0 0 1px #8e4f4a, 0 2px 1px #ededed, inset 0 3px 3px #bc3f32;
-    box-shadow: 0 0 0 1px #8e4f4a, 0 2px 1px #ededed, inset 0 3px 3px #bc3f32;
-    background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEwMCAxMDAiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPjxsaW5lYXJHcmFkaWVudCBpZD0iaGF0MCIgZ3JhZGllbnRVbml0cz0ib2JqZWN0Qm91bmRpbmdCb3giIHgxPSI1MCUiIHkxPSIxMDAlIiB4Mj0iNTAlIiB5Mj0iLTEuNDIxMDg1NDcxNTIwMmUtMTQlIj4KPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2ZhOGE3ZSIgc3RvcC1vcGFjaXR5PSIxIi8+CjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iI2YxNWQ0ZSIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgIDwvbGluZWFyR3JhZGllbnQ+Cgo8cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0idXJsKCNoYXQwKSIgLz4KPC9zdmc+);
-    background-image: -moz-linear-gradient(bottom, #fa8a7e 0%, #f15d4e 100%);
-    background-image: -o-linear-gradient(bottom, #fa8a7e 0%, #f15d4e 100%);
-    background-image: -webkit-linear-gradient(bottom, #fa8a7e 0%, #f15d4e 100%);
-    background-image: linear-gradient(bottom, #fa8a7e 0%, #f15d4e 100%);
+    -moz-box-shadow: 0 0 0 1px #3e0602, 0 2px 1px #ededed, inset 0 3px 4px #3e0a05;
+    -webkit-box-shadow: 0 0 0 1px #3e0602, 0 2px 1px #ededed, inset 0 3px 4px #3e0a05;
+    box-shadow: 0 0 0 1px #3e0602, 0 2px 1px #ededed, inset 0 3px 4px #3e0a05;
+    background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEwMCAxMDAiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPjxsaW5lYXJHcmFkaWVudCBpZD0iaGF0MCIgZ3JhZGllbnRVbml0cz0ib2JqZWN0Qm91bmRpbmdCb3giIHgxPSI1MCUiIHkxPSIxMDAlIiB4Mj0iNTAlIiB5Mj0iLTEuNDIxMDg1NDcxNTIwMmUtMTQlIj4KPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzk2MjUyNSIgc3RvcC1vcGFjaXR5PSIxIi8+CjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzcxMTYxNiIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgIDwvbGluZWFyR3JhZGllbnQ+Cgo8cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0idXJsKCNoYXQwKSIgLz4KPC9zdmc+);
+    background-image: -moz-linear-gradient(bottom, #962525 0%, #711616 100%);
+    background-image: -o-linear-gradient(bottom, #962525 0%, #711616 100%);
+    background-image: -webkit-linear-gradient(bottom, #962525 0%, #711616 100%);
+    background-image: linear-gradient(bottom, #962525 0%, #711616 100%);
 }
 .wrapper > ul.approvals .box .button.approve {
-    float: right;
-    -moz-box-shadow: 0 0 0 1px #769b53, 0 2px 1px #ededed, inset 0 1px 0 #d3faad;
-    -webkit-box-shadow: 0 0 0 1px #769b53, 0 2px 1px #ededed, inset 0 1px 0 #d3faad;
-    box-shadow: 0 0 0 1px #769b53, 0 2px 1px #ededed, inset 0 1px 0 #d3faad;
-    background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEwMCAxMDAiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPjxsaW5lYXJHcmFkaWVudCBpZD0iaGF0MCIgZ3JhZGllbnRVbml0cz0ib2JqZWN0Qm91bmRpbmdCb3giIHgxPSI1MCUiIHkxPSIxMDAlIiB4Mj0iNTAlIiB5Mj0iLTEuNDIxMDg1NDcxNTIwMmUtMTQlIj4KPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzk4ZDI1ZiIgc3RvcC1vcGFjaXR5PSIxIi8+CjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iI2IxZWE3YSIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgIDwvbGluZWFyR3JhZGllbnQ+Cgo8cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0idXJsKCNoYXQwKSIgLz4KPC9zdmc+);
-    background-image: -moz-linear-gradient(bottom, #98d25f 0%, #b1ea7a 100%);
-    background-image: -o-linear-gradient(bottom, #98d25f 0%, #b1ea7a 100%);
-    background-image: -webkit-linear-gradient(bottom, #98d25f 0%, #b1ea7a 100%);
-    background-image: linear-gradient(bottom, #98d25f 0%, #b1ea7a 100%);
-    color: #284111;
-    text-shadow: 0 1px 0 #e9fad9;
+    float: left;
+    -moz-box-shadow: 0 0 0 1px #2f461a, 0 2px 1px #ededed, inset 0 1px 0 #4a9123;
+    -webkit-box-shadow: 0 0 0 1px #2f461a, 0 2px 1px #ededed, inset 0 1px 0 #4a9123;
+    box-shadow: 0 0 0 1px #2f461a, 0 2px 1px #ededed, inset 0 1px 0 #4a9123;
+    background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEwMCAxMDAiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPjxsaW5lYXJHcmFkaWVudCBpZD0iaGF0MCIgZ3JhZGllbnRVbml0cz0ib2JqZWN0Qm91bmRpbmdCb3giIHgxPSI1MCUiIHkxPSIxMDAlIiB4Mj0iNTAlIiB5Mj0iLTEuNDIxMDg1NDcxNTIwMmUtMTQlIj4KPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzJiNTEwZiIgc3RvcC1vcGFjaXR5PSIxIi8+CjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzM1NmYwZSIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgIDwvbGluZWFyR3JhZGllbnQ+Cgo8cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0idXJsKCNoYXQwKSIgLz4KPC9zdmc+);
+    background-image: -moz-linear-gradient(bottom, #2b510f 0%, #356f0e 100%);
+    background-image: -o-linear-gradient(bottom, #2b510f 0%, #356f0e 100%);
+    background-image: -webkit-linear-gradient(bottom, #2b510f 0%, #356f0e 100%);
+    background-image: linear-gradient(bottom, #2b510f 0%, #356f0e 100%);
+    color: #e4f5d8;
+    text-shadow: 0 -1px 0 #26331d;
+    margin: 0 0 0 10px;
 }
 .wrapper > ul.approvals .box .button.approve:hover {
     text-decoration: none;
-    background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEwMCAxMDAiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPjxsaW5lYXJHcmFkaWVudCBpZD0iaGF0MCIgZ3JhZGllbnRVbml0cz0ib2JqZWN0Qm91bmRpbmdCb3giIHgxPSI1MCUiIHkxPSIxMDAlIiB4Mj0iNTAlIiB5Mj0iLTEuNDIxMDg1NDcxNTIwMmUtMTQlIj4KPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2E3ZGQ3MiIgc3RvcC1vcGFjaXR5PSIxIi8+CjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iI2M1Zjc5NCIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgIDwvbGluZWFyR3JhZGllbnQ+Cgo8cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0idXJsKCNoYXQwKSIgLz4KPC9zdmc+);
-    background-image: -moz-linear-gradient(bottom, #a7dd72 0%, #c5f794 100%);
-    background-image: -o-linear-gradient(bottom, #a7dd72 0%, #c5f794 100%);
-    background-image: -webkit-linear-gradient(bottom, #a7dd72 0%, #c5f794 100%);
-    background-image: linear-gradient(bottom, #a7dd72 0%, #c5f794 100%);
+    background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEwMCAxMDAiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPjxsaW5lYXJHcmFkaWVudCBpZD0iaGF0MCIgZ3JhZGllbnRVbml0cz0ib2JqZWN0Qm91bmRpbmdCb3giIHgxPSI1MCUiIHkxPSIxMDAlIiB4Mj0iNTAlIiB5Mj0iLTEuNDIxMDg1NDcxNTIwMmUtMTQlIj4KPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzM3NjIxOCIgc3RvcC1vcGFjaXR5PSIxIi8+CjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzQzODIxOSIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgIDwvbGluZWFyR3JhZGllbnQ+Cgo8cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0idXJsKCNoYXQwKSIgLz4KPC9zdmc+);
+    background-image: -moz-linear-gradient(bottom, #376218 0%, #438219 100%);
+    background-image: -o-linear-gradient(bottom, #376218 0%, #438219 100%);
+    background-image: -webkit-linear-gradient(bottom, #376218 0%, #438219 100%);
+    background-image: linear-gradient(bottom, #376218 0%, #438219 100%);
 }
 .wrapper > ul.approvals .box .button.approve:active {
     background-color: #a7a7a7;
-    -moz-box-shadow: 0 0 0 1px #769b53, 0 2px 1px #ededed, inset 0 3px 3px #7cae4b;
-    -webkit-box-shadow: 0 0 0 1px #769b53, 0 2px 1px #ededed, inset 0 3px 3px #7cae4b;
-    box-shadow: 0 0 0 1px #769b53, 0 2px 1px #ededed, inset 0 3px 3px #7cae4b;
-    background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEwMCAxMDAiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPjxsaW5lYXJHcmFkaWVudCBpZD0iaGF0MCIgZ3JhZGllbnRVbml0cz0ib2JqZWN0Qm91bmRpbmdCb3giIHgxPSI1MCUiIHkxPSIxMDAlIiB4Mj0iNTAlIiB5Mj0iLTEuNDIxMDg1NDcxNTIwMmUtMTQlIj4KPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2IxZWE3YSIgc3RvcC1vcGFjaXR5PSIxIi8+CjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzk4ZDI1ZiIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgIDwvbGluZWFyR3JhZGllbnQ+Cgo8cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0idXJsKCNoYXQwKSIgLz4KPC9zdmc+);
-    background-image: -moz-linear-gradient(bottom, #b1ea7a 0%, #98d25f 100%);
-    background-image: -o-linear-gradient(bottom, #b1ea7a 0%, #98d25f 100%);
-    background-image: -webkit-linear-gradient(bottom, #b1ea7a 0%, #98d25f 100%);
-    background-image: linear-gradient(bottom, #b1ea7a 0%, #98d25f 100%);
+    -moz-box-shadow: 0 0 0 1px #2f461a, 0 2px 1px #ededed, inset 0 3px 4px #163805;
+    -webkit-box-shadow: 0 0 0 1px #2f461a, 0 2px 1px #ededed, inset 0 3px 4px #163805;
+    box-shadow: 0 0 0 1px #2f461a, 0 2px 1px #ededed, inset 0 3px 4px #163805;
+    background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEwMCAxMDAiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPjxsaW5lYXJHcmFkaWVudCBpZD0iaGF0MCIgZ3JhZGllbnRVbml0cz0ib2JqZWN0Qm91bmRpbmdCb3giIHgxPSI1MCUiIHkxPSIxMDAlIiB4Mj0iNTAlIiB5Mj0iLTEuNDIxMDg1NDcxNTIwMmUtMTQlIj4KPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzM1NmYwZSIgc3RvcC1vcGFjaXR5PSIxIi8+CjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzJiNTEwZiIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgIDwvbGluZWFyR3JhZGllbnQ+Cgo8cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0idXJsKCNoYXQwKSIgLz4KPC9zdmc+);
+    background-image: -moz-linear-gradient(bottom, #356f0e 0%, #2b510f 100%);
+    background-image: -o-linear-gradient(bottom, #356f0e 0%, #2b510f 100%);
+    background-image: -webkit-linear-gradient(bottom, #356f0e 0%, #2b510f 100%);
+    background-image: linear-gradient(bottom, #356f0e 0%, #2b510f 100%);
 }
 .wrapper > ul.approvals .box .button.comments {
     float: left;
@@ -1268,10 +1379,12 @@ body.hanging-box-active > header .hanging-box-wrapper {
     background-image: linear-gradient(90deg, #466681 0%, #132835 100%);
 }
 .wrapper > ul.approvals .box .button.comments span {
+    position: relative;
+    top: 2px;
     display: inline-block;
     width: 16px;
     height: 16px;
-    margin: 2px 0 0;
+    margin: 0 0;
     background: url(/static/img/icon-comments.png) no-repeat 50% 50%;
 }
 .wrapper > ul.approvals .box .button.comments:active span,
@@ -1279,22 +1392,32 @@ body.hanging-box-active > header .hanging-box-wrapper {
     background: url(/static/img/icon-comments-active.png) no-repeat 50% 50%;
 }
 .wrapper > ul.approvals .box .approved {
-    float: right;
+    float: left;
     font-size: 14px;
     line-height: 30px;
     font-weight: bold;
     color: #294111;
+    margin: 0 0 0 10px;
 }
 .wrapper > ul.approvals .box .rejected {
-    float: right;
+    float: left;
     font-size: 14px;
     line-height: 30px;
     font-weight: bold;
     color: #941307;
+    margin: 0 0 0 10px;
 }
 .wrapper > ul.approvals .box time {
+    border-radius: 15px;
+    float: right;
     display: inline-block;
+    background: #f1f1f1;
+    font-size: 12px;
     font-weight: normal;
-    color: #999;
-    margin: 0 0 0 5px;
+    line-height: 24px;
+    vertical-align: middle;
+    color: #333;
+    text-shadow: 0 1px 0 #fff;
+    padding: 0 10px;
+    margin: 3px 0 0 5px;
 }

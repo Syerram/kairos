@@ -9,7 +9,9 @@ import workflow
 from workflow.models import ApproverQueue
 from rules.models import RuleSet
 from rules.validators import GenericAspect
+from django.contrib.contenttypes.models import ContentType
 
+#TODO: to be big of a method
 @login_required
 @render_to_html_dict(
                      {'timesheet':'timetracker/timesheet.html',
@@ -21,7 +23,7 @@ def timesheet_by_week(request, week=None):
     if one doesn't exists, it creates in-mem object.
     If Post, saves it to the database
     """
-    #TODO: have submit thru JSON
+    #TODO: have submit thru JSON    
     if not week:
         week = current_week_number()
     
@@ -55,14 +57,20 @@ def timesheet_by_week(request, week=None):
         
         TimesheetFormSet = modelformset_factory(Timesheet, can_delete=True)    
         timesheet_form_set = TimesheetFormSet(request.POST)
+        
+        #Pull rulesets for weeksnapshot
+        rulesets = RuleSet.objects.for_invoker_model(WeekSnapshot)
+        
+        timesheet_rulesets = rulesets.filter(content_type=ContentType.objects.get_for_model(Timesheet))
+        week_rulesets = rulesets.filter(content_type=ContentType.objects.get_for_model(WeekSnapshot))
         #TODO: serve the errors through JSON errors
         if timesheet_form_set.is_valid():
             timsheets = timesheet_form_set.save()
             week_snapshot.timesheets.clear()
+            #TODO: should batch all of the errors into one and send them back
             for timesheet in timsheets:
-                rule_set = RuleSet.objects.for_instance(timesheet)
-                if rule_set:
-                    validated_instance = GenericAspect.validate(rule_set, timesheet)
+                if timesheet_rulesets:
+                    validated_instance = GenericAspect.validate(timesheet_rulesets, timesheet)
                     if validated_instance.has_errors:
                         raise TypeError('ruleset errors encountered')
                 week_snapshot.timesheets.add(timesheet)
@@ -71,9 +79,8 @@ def timesheet_by_week(request, week=None):
             raise TypeError('validation errors encountered')
         
         #check if we have validators
-        rule_set = RuleSet.objects.for_instance(week_snapshot)
-        if rule_set:
-            validated_instance = GenericAspect.validate(rule_set, week_snapshot)
+        if week_rulesets:
+            validated_instance = GenericAspect.validate(week_rulesets, week_snapshot)
             if validated_instance.has_errors:
                 raise TypeError('ruleset errors encountered')
         
@@ -86,9 +93,21 @@ def timesheet_by_week(request, week=None):
         return 'home-r', {}
     
 def post_status_update(instance, status):
+    """
+    Helper class to update the `WeekSnapshot` history.
+    
+    Arguments:
+        instance: Expected to be `Weeksnapshot` instance
+        status: Status of the timesheet
+    """
     weeksnapshot_status = WeekSnapshotHistory(weeksnapshot=instance, weeksnapshot_status=status)
     weeksnapshot_status.save() 
     
 def post_final_status_update(sender, **kwargs):
+    """
+       Event handlers for post final Status 
+    
+    """
+    #TODO: update the name to more meaningful like _event_handler
     post_status_update(kwargs['instance'], kwargs['status']);
     #TODO send email if rejected

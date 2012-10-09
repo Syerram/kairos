@@ -1,4 +1,5 @@
 {% load timeoff_tags %}
+{% load web_tags %}
 
 <h2>
     <strong>{{queue_item.content_object.user.username}}</strong>
@@ -22,9 +23,10 @@
 <div class="buttons">
     <a href="javascript:" class="button comments" onclick="comments_toggle(this);"><span>&nbsp;</span></a>
     {% if queue_item.content_object|is_approved %}
-        <div class="approved">Approved <time datetime="2012-10-02">just now</time></div>
-    {% else %}
-        <a href="/q/-/{{queue_item.id}}" class="button reject"><span>Reject</span></a>
-        <a href="/q/+/{{queue_item.id}}" class="button approve"><span>Approve</span></a>        
+        <div class="approved">Approved</div>
+    {% else %}        
+        <a href="/q/+/{{queue_item.id}}" class="button approve"><span>Approve</span></a>
+        <a href="/q/-/{{queue_item.id}}" class="button reject"><span>Reject</span></a> 
+        <time datetime="{{queue_item.created_on}}">{{queue_item.created_on|timesince_ext:4}}</time>       
     {% endif %}
 </div>

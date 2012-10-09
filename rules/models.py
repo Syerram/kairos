@@ -71,19 +71,33 @@ def ruleset_key_gen(*args, **kwargs):
 class RuleSetManager(models.Manager):
     
     @cacher(key=ruleset_key_gen)
-    def for_content_type(self, content_type):
+    def for_invoker_content_type(self, content_type_invoker):
         """Call if ContentType is available"""
-        return RuleSet.objects.filter(content_type=content_type).filter(active=True).distinct()
+        return RuleSet.objects.filter(content_type_invoker=content_type_invoker).filter(active=True).distinct()
 
-    def for_instance(self, instance):
+    def for_invoker_model(self, instance):
         """Call if instance is available. The fetching of ContentType is cached by Django"""
-        return self.for_content_type(ContentType.objects.get_for_model(instance))
+        return self.for_invoker_content_type(ContentType.objects.get_for_model(instance))
 
 class RuleSet(models.Model):
+    '''
+    Ruleset defines the combination of `pointcuts` to be validated against the `content_type`
+    
+    Since validation can be run on content-types by different modules, we need a taxonomy such that validation can have repeating content types.
+    The `content_type_invoker` is such a taxonomy, where a module can invoke a ruleset on a `content_type` it wants to validate on. 
+    
+    For e.g.: 
+        `Overtime` wants to validate on `weeksnapshot` and `timesheet` content types.
+        `Weeksnapshot` itself wants to be validate and in addition wants to validate on `timesheet.
+        If both these types have to pull their respective ruleset, they will be running rules that don't belong to them.
+        Hence we use `content_type_invoker` that will invoke their rulesets pertaining to themselves but will still validate on specific `content_type` 
+    
+    '''
     name = models.TextField(_('Name'), max_length=255)
     description = models.TextField(_('Description'), null=True, blank=True)
     pointcuts = models.ManyToManyField(PointCut, verbose_name=_('Pointcuts'), related_name="pointcuts")
-    content_type = models.ForeignKey(ContentType, related_name="content_type", verbose_name=_('Content Type'))
+    content_type = models.ForeignKey(ContentType, related_name="source_content_type", verbose_name=_('Validate on Content Type'))
+    content_type_invoker = models.ForeignKey(ContentType, related_name="invoker_content_type", verbose_name=_('Invoked by Content Type'))
     validator_module = models.CharField(_('Validator Module'), max_length=255, null=True, blank=True)
     
     active = models.BooleanField(_('Active'), default=False)

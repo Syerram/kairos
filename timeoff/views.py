@@ -18,13 +18,19 @@ import workflow
 @login_required
 def timeoff_left(request, timeoff, start_date=None):
     """
-        Returns time remaining for the logged in user. 
-        It returns, the 
-            time remaining : derived directly from UserTimeOffPolicy
-            overdraw_limit: derived directly from UserTimeOffPolicy
-            time_booked: sum of booked time that are un-approved and approved time that are in future
+        Returns time remaining for the logged in user.
+        actual time remaining is sum of 'time_remaining + overdraw_limit - time_booked_unapproved - time_booked_approved_future'
+        
+        Args:
+            timeoff: id of the timeoff policy being sought
             
-            The time remaining is sum of 'time_remaining + overdraw_limit - time_booked_unapproved - time_booked_approved_future    
+        Returns:
+            json. time json:: 
+                    time_remaining --- derived directly from UserTimeOffPolicy
+                    overdraw_limit --- derived directly from UserTimeOffPolicy
+                    time_booked --- sum of booked time that are un-approved and approved time that are in future
+                    
+                        
     """
     #fetch policies for the given TimeOff. We should technically have only one TimeOff. 
     policies = UserTimeOffPolicy.objects.policies(request.user, timeoff)
@@ -66,11 +72,12 @@ def timeoff_book(request, start_date=None):
     """
         Books timeoff for the individual. It creates a entry in BookTimeOff and starts the Queue for approval.
         
-        Coding Notes:
-        1. Create BookTimeOffForm and give it all the POST details
-        2. validate BookTimeOffForm [see BookTimeOffForm.is_valid() method]
-    
-        Create ApprovalQueue process, by sending it a signal
+        .. note::
+            Create ApprovalQueue process, by sending it a signal.
+        
+        Args:
+            start_date (date): optional. defaults to start of the month            
+        
     """
     if request.method == 'GET':
         return 'book-timeoff', timeoff_bookings(request, start_date)
@@ -83,7 +90,7 @@ def timeoff_book(request, start_date=None):
 
             #check if we have validators 
             #TODO: have all forms extend RuleEnabledForm that on save can actually run the ruleSet.            
-            rule_set = RuleSet.objects.for_instance(booktimeoff)
+            rule_set = RuleSet.objects.for_invoker_model(booktimeoff)
             if rule_set:
                 validated_instance = GenericAspect.validate(rule_set, booktimeoff)
                 if validated_instance.has_errors:
@@ -101,7 +108,6 @@ def timeoff_bookings(request, start_date=None):
     """
     bookings_data = {'REJTD': [], 'APPRD': [], 'INPROC': []}
     
-    #TODO: Consolidate
     if not start_date:
         start_date = datetime.date(date.today().year, date.today().month, 1)
     else:

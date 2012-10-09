@@ -81,10 +81,16 @@ def next_approver_in_queue(instance, sequence, queue=None, approver_queue=None):
     return approver_queue
 
 
+def queue_queryset(user):
+    return ApproverQueue.objects.user_queue(user, ApproverQueue.in_queue_status())
+
 @login_required
 @render_to_html_dict({'queue':'workflow/queue.html'})
 def queue(request):
-    return 'queue', {'queue_items': ApproverQueue.objects.user_queue(request.user, ApproverQueue.in_queue_status())}
+    return 'queue', {'queue_items':  queue_queryset(request.user)}
+
+def queue_count(user):
+    return queue_queryset(user).count()
 
 @login_required
 @render_to_html_dict({'queue_history':'workflow/queue_history.html'})
