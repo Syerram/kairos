@@ -198,6 +198,10 @@
 			        post_add: {'log_time': log_added_row, 'off_time': post_timeoff_added_row },			     
 			        removed: removed_row,
 			    });
+			    
+			    $('#id_display_comment').blur(function() {
+			    	$('#{{week_snapshot_form.comment.auto_id}}').val($(this).val());
+			    })
 		    {% else %}
 		        $('.hour-input').prop('disabled', true);
 		        $('.hour-input').css('background-color', '#CAC7C2');
@@ -227,7 +231,7 @@
                 <h2>Week {{week}} - {{week_snapshot.last_status.weeksnapshot_status.display}}</h2>                
             </header>
             <section class="log-time main-content">
-                <form id="id_timesheet" name="timesheet" action="/timesheet/{{week}}/" method="POST">
+                <form id="id_timesheet" name="timesheet" action="/timesheet/{{year}}/{{week}}/" method="POST">
                     {% csrf_token %}
                     <table id="id_log_hours">
 	                    <thead>
@@ -345,7 +349,7 @@
 	                    
 	                    </tfoot>
                     </table>
-                     <input type="hidden" name="is_draft" id="id_is_draft" value="true"/>
+                     <input type="hidden" name="is_draft" id="id_is_draft" value="true"/>                     
                         {{ timesheet_form_set.management_form }}
                         <div style="display:none">
                             {{week_snapshot_form.as_p}}
@@ -381,7 +385,7 @@
             {% month_calendar week_snapshot.end_week %}
             <div class="tab-content" id="tab-comments">
                 <p>Enter your timesheet comments here</p>
-                <textarea name="comments" id="comments"></textarea>
+                <textarea name="display_comment" id="id_display_comment">{% if week_snapshot.comment %}{{week_snapshot.comment}}{% endif %}</textarea>
             </div>
             <div class="tab-content" id="tab-stats">
                 <ul class="history">

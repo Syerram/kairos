@@ -66,10 +66,10 @@ var defaults = {
 	dayNames: ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],
 	dayNamesShort: ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],
 	buttonText: {
-		prev: '&nbsp;&#9668;&nbsp;',
-		next: '&nbsp;&#9658;&nbsp;',
-		prevYear: '&nbsp;&lt;&lt;&nbsp;',
-		nextYear: '&nbsp;&gt;&gt;&nbsp;',
+		prev: '&larr;',
+		next: '&rarr;',
+		prevYear: '&#8656;',
+		nextYear: '&#8658;',
 		today: 'today',
 		month: 'month',
 		week: 'week',
@@ -760,7 +760,6 @@ function Header(calendar, options) {
 												text
 												) +
 										"</span>" +
-										"<span class='fc-button-effect'><span></span></span>" +
 									"</span>" +
 								"</span>"
 							);

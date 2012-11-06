@@ -41,5 +41,5 @@ class WeekSnapshotForm(ModelForm):
                 self.initial['total_hours'] = instance.total_hours
 
     def save(self, user, commit=True):
-        self.instance.user = user
+        self.instance.user = user        
         return ModelForm.save(self, commit=commit)

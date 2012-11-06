@@ -2,8 +2,21 @@
 {% load queue_tags %}
 {% block head_title %}Approvals{% endblock %}
 
+{% block extra_style %}
+   <link rel="stylesheet" href="/static/css/chosen.css" media="screen" />
+{% endblock %}
+
 {% block script %}
     <script type="text/javascript" src="/static/js/tabs.js"></script>
+    <script type="text/javascript" src="/static/js/chosen.jquery.min.js"></script>
+    <script type="text/javascript">
+	    $(document).ready(function ()
+	    {
+	        $(".toolbar select").chosen();
+	
+	    });
+    </script>
+
 
 {% endblock %}
 
@@ -29,6 +42,26 @@
                     </li>
                 </ul>
             </header>
+        </div>
+        
+        <div class="toolbar">
+            <div class="tool">
+                <h3>Sort By</h3>
+                <select>
+                    <option>Date</option>
+                    <option>Project</option>
+                    <option>Submitted by</option>
+                </select>                   
+            </div>
+            <div class="tool">
+                <div class="buttons">
+                    <a href="javascript:" class="button gray active"><span class="icon cards">&nbsp;</span></a>
+                    <a href="javascript:" class="button gray"><span class="icon list">&nbsp;</span></a>
+                </div>
+            </div>
+            <div class="tool">
+                <input type="search" class="search" placeholder="Search..." />
+            </div>
         </div>
         
         <ul class="approvals">

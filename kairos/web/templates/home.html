@@ -13,10 +13,9 @@
 {% block main %}
     <div class="modal main">
         <ul>
-            {% current_week_number as current_week_number %}
-            <li class="timesheets"><a href="/timesheet/{{current_week_number}}/"><h3>Timesheets</h3></a></li>
+            <li class="timesheets"><a href='/timesheet/{% now "Y/W" %}/'><h3>Timesheets</h3></a></li>
             <li class="time-off"><a href="/timeoff/book/"><h3>Time Off</h3></a></li>
-            <li class="reports"><a href="#"><h3>Reports</h3></a></li>
+            <li class="reports"><a href="/reports/"><h3>Reports</h3></a></li>
             {% queue_count request.user as q_count%}
             <li class="approve"><a href="/q/"><h3>Approve</h3>
                 {% if q_count %}

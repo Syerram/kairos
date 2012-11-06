@@ -1,0 +1,81 @@
+{% extends "includes/content_base.html" %}
+{% load queue_tags %}
+{% block head_title %}Approvals{% endblock %}
+
+{% block extra_style %}
+   <link rel="stylesheet" href="/static/css/chosen.css" media="screen" />
+{% endblock %}
+
+{% block script %}
+    <script type="text/javascript" src="/static/js/tabs.js"></script>
+    <script type="text/javascript" src="/static/js/chosen.jquery.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function ()
+        {
+            $(".toolbar select").chosen();
+    
+        });
+    </script>
+
+
+{% endblock %}
+
+{% block reports_active %}active{% endblock %}
+
+{% block main %} 
+<div class="wrapper">
+        <div class="content nofx">
+            <header>
+                <h1 class="left">Reports</h1>                
+            </header>
+        </div>
+        
+        <div class="toolbar">
+            <div class="tool">
+                <h3>Sort By</h3>
+                <select>
+                    <option>Name</option>
+                    <option>Group</option>                    
+                </select>                   
+            </div>
+            <div class="tool">
+                <div class="buttons">
+                    <a href="javascript:" class="button gray active"><span class="icon cards">&nbsp;</span></a>
+                    <a href="javascript:" class="button gray"><span class="icon list">&nbsp;</span></a>
+                </div>
+            </div>
+            <div class="tool">
+                <input type="search" class="search" placeholder="Search..." />
+            </div>
+        </div>
+        
+        <ul class="approvals">
+            <li class="col">
+                <div class="box">
+                    <h2>
+					    <strong>Offenders</strong>
+					    <span title="Timesheet" class="icon timesheet">&nbsp;</span>
+					</h2>
+					<h3>
+					    <strong><span>09/30</span> to <span>10/06</span></strong>
+					    <strong>Total Count <span class="hours">3</span></strong>
+					</h3>
+					<ul class="tasks">
+				        <li>
+					       <h4>Offenders List</h4>
+				           <h5>Reports the list of offenders who are past due</h5>
+				        </li>					        
+					</ul>
+					<div class="comments">
+					    This is my comment text I entered with this comment available to read here...
+					</div>
+					<div class="buttons">
+					    <a href="javascript:" class="button comments" onclick="comments_toggle(this);"><span>&nbsp;</span></a>
+					    <a href="#" class="button approve"><span>Run</span></a>
+					    
+					</div>
+                </div>
+            </li>                        
+        </ul>
+    </div>
+{% endblock %}

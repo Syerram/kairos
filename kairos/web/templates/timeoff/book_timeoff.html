@@ -7,33 +7,10 @@
     <link rel='stylesheet' type='text/css' href='/static/css/fullcalendar.css' />
     <link rel='stylesheet' type='text/css' href='/static/css/fullcalendar.print.css' media='print' />
     <link rel="stylesheet" href="/static/css/chosen.css" media="screen" />
-    <style type='text/css'>
+    
+    
 
-	    #calendar {
-	        width: 650px;
-	        height: 650px;
-	        margin: 10px;
-	        float:left;
-	        display:block;	        
-	       }
-	        
-	    #sidebar {
-	        float:left;
-	        margin: 10px;
-	        display:block;
-	        width: 200px;
-	    }
-	    
-	    #sidebar select {
-            width: 100%;
-        }
-        	    
-	    #sidebar span {
-	        clear:both;
-	        display:block;
-	    }
-	    
-    </style>
+
 {% endblock %}    
     
 {% block script %}
@@ -41,6 +18,8 @@
     <script type='text/javascript' src='/static/js/jquery-ui-custom.min.js'></script>
     <script type='text/javascript' src='/static/js/fullcalendar.js'></script>
     <script type="text/javascript" src="/static/js/chosen.jquery.min.js"></script>
+    <script type="text/javascript" src="/static/js/tabs.js"></script>
+    <script type="text/javascript" src="/static/js//placeholders.js"></script>
     <script type='text/javascript'>
 
     $(document).ready(function() {
@@ -58,10 +37,11 @@
         var y = date.getFullYear();
         
         var calendar = $('#calendar').fullCalendar({
+        	height: 550,
             header: {
-                left: 'prev,next today',
+                left: 'prevYear,prev',
                 center: 'title',
-                right: 'month'                
+                right: 'next,nextYear ',                
             },
             weekends: false,
             selectable: true,
@@ -168,7 +148,7 @@
 		                    $('#id_number_of_days').val(time_at_hand);
 		                    $('.start').text(fmt_st_dt);
 		                    $('.end').text(fmt_end_dt);
-		                    $('.time-remaining').text('total time remaining: ' + time_remaining);
+		                    $('.time-remaining').text(time_remaining + 'd');
 		                    $('#id_timeoff_type').data('time_remaining', time_remaining);  		                    
 		                 }
 	                }
@@ -211,7 +191,7 @@
                     $('#id_end_date').val(fmt_end_dt);
             		$('.end').text(fmt_end_dt);
             		$('#id_number_of_days').val(time_at_hand);
-                    $('.time-remaining').text('total time remaining: ' + time_remaining);
+                    $('.time-remaining').text(time_remaining + 'd');
                     $('#id_timeoff_type').data('time_remaining', time_remaining);              		
             	} else {
             		revertFunc();            		
@@ -235,15 +215,19 @@
 	             $('#id_end_date').val('');
 	             $('.start').text('');
 	             $('.end').text('');
-	             var url = '/u/timeoff/left/' + $(this).val() + '/';
+	             var url = '/timeoff/left/' + $(this).val() + '/';
 	             //do ajax call to get total remaining hours
 	             $.getJSON(url, function(data) {
 	            	   var time_remaining = parseInt(data.time_remaining) + parseInt(data.overdraw_limit) - parseInt(data.booked_days);            	   
 	            	   $(that).data('time_remaining', time_remaining);  
 	            	   $(that).data('orig_time_remaining', time_remaining);
-	            	   $('.time-remaining').text('total time remaining: ' + time_remaining);
+	            	   $('.time-remaining').text(time_remaining + 'd');
 	             });
         	 }
+        });
+        
+        $('#today').click(function() {
+        	calendar.fullCalendar('today');
         });
         
         $('#reset').click(function() {
@@ -276,27 +260,86 @@
 
 {% block timeoff_active %}active{% endblock %}
 
-{% block main %}  
-<div id='calendar'></div>
-<div id='sidebar'>
-    <form id='book_timeoff' action="/timeoff/book/" method="post">
-        {%csrf_token%}
-        <input type="hidden" id="id_user" name="user" value="{{request.user.id}}"/>
-        <input type="hidden" id="id_start_date" name="start_date" value=""/>
-        <input type="hidden" id="id_end_date" name="end_date" value=""/>
-        <input type="hidden" id="id_number_of_days" name="number_of_days" value="0"/>
-        
-	    <span class="header">Time off Booking</span>
-        <select id='id_timeoff_type' name='timeoff_type'>
-            {% timeoff_options 'True' %} 
-        </select>
-	    <span class="time-remaining"></span>	    
-	    
-	    <span class='prefix'>Start:&nbsp;</span><span class='start'></span>
-	    <span class='prefix'>End:&nbsp;</span><span class='end'></span>
-	    
-	    <a href="#" class="button gray left" id="id_reset">Reset</a>
-        <a href="#" class="button default right" id="id_booktimeoff">Book</a>	    
-    </form>
+{% block main %}
+<div class="wrapper">  
+    <div class="calendar-container">
+		<div id='calendar'></div>
+		<a href="#" id="today" class="date-navigation-bottom right">Today</a>
+	</div>
+	<div class='calendar-sidebar'>
+		    <form id='book_timeoff' action="/timeoff/book/" method="post">
+		        {%csrf_token%}
+		        <input type="hidden" id="id_user" name="user" value="{{request.user.id}}"/>
+		        <input type="hidden" id="id_start_date" name="start_date" value=""/>
+		        <input type="hidden" id="id_end_date" name="end_date" value=""/>
+		        <input type="hidden" id="id_number_of_days" name="number_of_days" value="0"/>
+		        
+			    <div class="title">Time off booking</div>
+		        <select id='id_timeoff_type' name='timeoff_type'>
+		            {% timeoff_options 'True' %} 
+		        </select>
+		        <div class="stats">
+                    <div class="row">
+                        <label>Start </label>
+                        <span class="start"></span>
+                    </div>
+                    
+                    <div class="row odd">
+                        <label>End </label>
+                        <span class="end"></span>
+                    </div>
+                    
+                    <div class="row">
+                        <label>Time available </label>
+                        <span  class="time-remaining"></span>
+                    </div>
+                    
+                    <div class="row odd">
+                        <label>After booking &#8224;</label>
+                        <span></span>
+                    </div>
+                    
+		        </div>
+		        <div class="buttons">			        
+				    <a href="#" class="button gray" id="id_reset">Reset</a>
+			        <a href="#" class="button default" id="id_booktimeoff">Book</a>
+		        </div>	    
+		    </form>
+      </div>
+      <div class="calendar-sidebar tab-box">
+            <ul class="tabs">
+                <li class="active"><a href="javascript:" onclick="tab_open('tab-stats', this);">Activity</a></li><li><a href="javascript:" onclick="tab_open('tab-history', this);">History</a></li>
+            </ul>
+            <div class="tab-content" id="tab-stats">
+                <ul class="history">
+                    <li>
+                        <h4>Bert</h4> updated <a href="#">timesheet 3</a>
+                        <time datetime="2012-10-01">a few moments ago</time>
+                    </li>
+
+                </ul>
+            </div>
+            <div class="tab-content" id="tab-history">
+                <ul class="history">
+                    <li>
+                        <h4>Bert</h4> updated <a href="#">timesheet 3</a>
+                        <time datetime="2012-10-01">a few moments ago</time>
+                    </li>
+                    <li>
+                        <h4>Bert</h4> submitted <a href="#">timesheet 3</a>
+                        <time datetime="2012-10-01">a few moments ago</time>
+                    </li>
+                    <li>
+                        <h4>Bert</h4> submitted <a href="#">timesheet 2</a>
+                        <time datetime="2012-10-01">about two hours ago</time>
+                    </li>
+                    <li>
+                        <h4>Bert</h4> submitted <a href="#">timesheet 1</a>
+                        <time datetime="2012-10-01">this morning</time>
+                    </li>
+                </ul>
+            </div>
 </div>
+</div>
+
 {% endblock %}

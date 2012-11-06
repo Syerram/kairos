@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.contrib.contenttypes.generic import GenericRelation
-from django.contrib.comments.models import Comment
+from django.contrib.comments.models import COMMENT_MAX_LENGTH
 from django.utils.translation import ugettext_lazy as _
 from django.db.models import Q
 
@@ -71,9 +70,9 @@ class TimesheetNote(models.Model):
 
 class WeekSnapshotManager(models.Manager):
         
-    def in_period(self, week, user):
+    def in_period(self, year, week, user):
         #the dates passed in have time element, so we are using min/max time to get all timesheets
-        week_snapshot_mgr = self.get_query_set().filter(week=week, user=user).prefetch_related('timesheets')
+        week_snapshot_mgr = self.get_query_set().filter(week=week, year=year, user=user).prefetch_related('timesheets')
         if week_snapshot_mgr.exists():
             weeksnapshot = week_snapshot_mgr.all()[0]
             timesheets = weeksnapshot.timesheets.all()
@@ -91,8 +90,9 @@ class WeekSnapshot(models.Model):
     
     start_week = models.DateTimeField()
     end_week = models.DateTimeField()
-    comment = GenericRelation(Comment, object_id_field='object_pk', null=True, blank=True)
-    week = models.PositiveIntegerField(_('week number'))    
+    comment = models.TextField(_('comment'), max_length=COMMENT_MAX_LENGTH, blank=True, null=True)
+    week = models.PositiveIntegerField(_('Week'))    
+    year = models.PositiveIntegerField(_('Year'))
     
     user = models.ForeignKey(User)
     

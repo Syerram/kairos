@@ -12,7 +12,13 @@ register = template.Library()
 
 MONTH_NAMES = list(calendar.month_name)
 
-month_check = lambda m: int(m) if int(m) <= 12 else 1
+def month_check(month):
+    if int(month) > 12:
+        return 1
+    elif int(month) <= 0:
+        return 12
+    else:
+        return month
 
 @register.inclusion_tag('snippets/calendar.html')
 def month_calendar(date):
@@ -24,16 +30,14 @@ def month_calendar(date):
 
     month = date.month
     year = date.year
-    current_week = date.isocalendar()[1]
+    curr_week = date.isocalendar()[1]
     first_week = datetime(year, month, 1).isocalendar()[1]    
-    last_week = datetime(year, month_check(month + 1), 1).isocalendar()[1]
-    
     cal = calendar.HTMLCalendar()
     
     return {'month_calendar': cal.monthdayscalendar(int(year), int(month)),
             'month_name': month_name(year, month),
-            'year': year, 'month': month, 'current_week': current_week,
-            'first_week': first_week, 'last_week': last_week, 'today_day': today_day, 'today_month': today_month}
+            'year': year, 'month': month, 'curr_week': curr_week,
+            'first_week': first_week, 'today_day': today_day, 'today_month': today_month}
 
 def month_name(year, month=None):
     '''
@@ -47,7 +51,7 @@ def month_name(year, month=None):
     
     return MONTH_NAMES[month_check(month)]
 
-def month_shift(month, shift=0):
+def month_name_shift(month, shift=0):
     if isinstance(month, int) or month.isdigit():
         month = int(month) + int(shift)
     else:
@@ -55,5 +59,19 @@ def month_shift(month, shift=0):
     
     return MONTH_NAMES[month_check(month)]
 
+def month_shift(year, month, shift=0):
+    month = int(month) + int(shift)
+    if month > 12:
+        year = int(year) + 1
+        month = 1
+    elif month <= 0:
+        year = int(year) - 1
+        month = 12
+        
+    week = datetime(year, month, 1).isocalendar()[1]
+    return '/'.join([str(year), str(week)])
+   
+
 register.filter('month_name', month_name)
-register.filter('month_shift', month_shift)
+register.filter('name_shift', month_name_shift)
+register.simple_tag(month_shift)

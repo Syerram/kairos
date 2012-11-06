@@ -4,6 +4,26 @@ from django.contrib import admin
 from users.models import Role
 from django.contrib.auth.models import User
 from django.db.models import Q
+from common.models import DropdownValue
+
+class Rate(models.Model):
+    """
+        Define rates
+    """
+    name = models.CharField(_('Name'), max_length=125)
+    description = models.TextField(_('Description'), null=True, blank=True)
+    rate = models.DecimalField(_('Rate'), default=0, decimal_places=2, max_digits=10)
+    rate_type = models.ForeignKey(DropdownValue, verbose_name=_('Rate Denominator'), related_name="rate_types")
+    currency = models.ForeignKey(DropdownValue, verbose_name=_('Currency'), related_name='currencies')
+    
+    class Meta:
+        verbose_name = _('Rate')
+        verbose_name_plural = _('Rates')
+        
+    def __unicode__(self):
+        return self.name
+    
+admin.site.register(Rate)
 
 class Client(models.Model):
     
@@ -49,7 +69,7 @@ admin.site.register(Taxonomy)
 class TaxonomyRole(models.Model):
     """Defines Taxonomy roles"""
     
-    role = models.ForeignKey(Role)
+    role = models.ForeignKey(Role, verbose_name='Role')
     user = models.ForeignKey(User)
     taxonomy = models.ForeignKey(Taxonomy)
     
@@ -64,17 +84,15 @@ class TaxonomyRole(models.Model):
 admin.site.register(TaxonomyRole)
 
 class Activity(models.Model):
-    code = models.CharField(max_length=5, unique=True)
-    name = models.CharField(max_length=50)
+    code = models.CharField(_('Activity Code'), max_length=5, unique=True)
+    name = models.CharField(_('Activity Name'), max_length=50)
+    billable = models.BooleanField(_('Billable'), default=False)
 
     class Meta:
         verbose_name_plural = "activities"
         ordering = ['name']
 
     def __unicode__(self):
-        """
-        The string representation of an instance of this class
-        """
         return self.name
 
 admin.site.register(Activity)
@@ -91,6 +109,7 @@ class Project(models.Model):
     description = models.TextField(blank=True, null=True)
     project_code = models.CharField(max_length=5)
     project_url = models.URLField(blank=True, null=True)
+    project_rate = models.ForeignKey(Rate, verbose_name='Rate', related_name='rates', blank=True, null=True)
     
     data_added = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)

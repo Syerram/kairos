@@ -61,9 +61,14 @@ def next_approver_in_queue(instance, sequence, queue=None, approver_queue=None):
             return None
     
     #create new approver-queue 
-    #gather the user using the taxonomy role 
-    taxonomy = instance.user.get_profile().taxonomy
-    taxonomy_role = TaxonomyRole.objects.get(Q(taxonomy=taxonomy) & Q(role=approver.role))
+    if approver.user:
+        user = approver.user
+    else:
+        #check user or taxonomy user
+        #gather the user using the taxonomy role 
+        taxonomy = instance.user.get_profile().taxonomy
+        taxonomy_role = TaxonomyRole.objects.get(Q(taxonomy=taxonomy) & Q(role=approver.role))
+        user = taxonomy_role.user
     
     #If the approver is final then, status will be approved
     status = ApproverQueue.in_queue_status() 
@@ -74,7 +79,7 @@ def next_approver_in_queue(instance, sequence, queue=None, approver_queue=None):
                                    content_type=queue.content_type)
         
     approver_queue.current_status = status
-    approver_queue.current_user = taxonomy_role.user
+    approver_queue.current_user = user
     approver_queue.current_sequence = approver.sequence
     approver_queue.save()
     
@@ -125,7 +130,7 @@ def queue_shift(request, bit, id):
         approver_queue_history.save()  
         
         if approver_queue.current_status == ApproverQueue.approved_status():
-            workflow.signals.post_final_status_event.send(sender=type(approver_queue.content_object), 
+            workflow.signals.post_final_status_event.send(sender=type(approver_queue.content_object),
                                          instance=approver_queue.content_object, status=ApproverQueue.approved_status())   
         
         #TODO: post signal to send email to the next person in queue if not the last one
@@ -154,7 +159,7 @@ def queue_shift(request, bit, id):
         approver_queue.save()
         
         #update the weeksnapshot status
-        workflow.signals.post_final_status_event.send(sender=type(approver_queue.content_object), 
+        workflow.signals.post_final_status_event.send(sender=type(approver_queue.content_object),
                                      instance=approver_queue.content_object, status=ApproverQueue.rejected_status())
             
         #TODO: post signal to send email to the submitter with the rejection   

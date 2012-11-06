@@ -35,6 +35,7 @@ class Queue(models.Model):
     description = models.TextField(blank=True, null=True)
     content_type = models.ForeignKey(ContentType)
     active = models.BooleanField(_('Active'), default=False)
+    system = models.BooleanField(_('System'), help_text="True if this is default system queue", default=False)
     
     objects = QueueManager()    
     
@@ -60,7 +61,8 @@ class Approver(models.Model):
     """
         defines approver sequence for each queue. 
     """
-    role = models.ForeignKey(Role)
+    role = models.ForeignKey(Role, help_text=_('Choose either a Role or User'), null=True, blank=True)
+    user = models.ForeignKey(User, null=True, blank=True)
     sequence = models.PositiveSmallIntegerField(_('Sequence'), default=0)
     queue = models.ForeignKey(Queue)
     final = models.BooleanField(_('Final Approval'), default=False)
